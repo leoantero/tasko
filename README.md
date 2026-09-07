@@ -55,7 +55,7 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### Backend
 
-* Node.js 
+* Python 
 
 ### Banco de Dados
 
