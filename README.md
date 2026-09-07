@@ -55,7 +55,7 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### Backend
 
-* [A definir]
+* Python 
 
 ### Banco de Dados
 
@@ -63,7 +63,7 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### Ferramentas de IA
 
-* [A definir]
+* Claude, 
 
 ## Equipe
 
