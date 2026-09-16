@@ -55,7 +55,9 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### Backend
 
-* Python 
+* Python
+* Flask
+* psycopg3
 
 ### Banco de Dados
 
