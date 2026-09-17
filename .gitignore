@@ -1,3 +1,5 @@
 openspec/
 .agents/
 .claude/
+venv/
+a
