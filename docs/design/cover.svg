@@ -1,0 +1,21 @@
+<!--
+  blocks: brand (#c84a2c) 260x260 slab rx=16 (radius-lg); ink (#2b2118) 110x80 rx=10 (radius-md); accent (#2f6f62) 110x80 rx=10 (radius-md)
+  arrangement: staggered stack — tall brand slab on the left, two stacked satellites to its right
+  pattern: focus ring (contagem do Pomodoro) — tres arcos concentricos de um quarto de circulo, cor do fundo, cortados no canto inferior direito do bloco de marca
+  scales: radius-lg (slab), radius-md (satellites), space-2 (espessura do traco)
+  theme: valores fixos do tema claro (docs/design/tokens.json) — sem dependencia de CSS vars ou fontes externas
+-->
+<svg viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tasko">
+  <rect x="0" y="0" width="960" height="320" fill="#fffdfb" />
+
+  <rect x="520" y="30" width="260" height="260" rx="16" fill="#c84a2c" />
+  <path d="M 780 130 A 160 160 0 0 0 620 290" fill="none" stroke="#fffdfb" stroke-width="8" />
+  <path d="M 780 180 A 110 110 0 0 0 670 290" fill="none" stroke="#fffdfb" stroke-width="8" />
+  <path d="M 780 230 A 60 60 0 0 0 720 290" fill="none" stroke="#fffdfb" stroke-width="8" />
+
+  <rect x="800" y="30" width="110" height="80" rx="10" fill="#2b2118" />
+  <rect x="800" y="126" width="110" height="80" rx="10" fill="#2f6f62" />
+
+  <text x="48" y="230" font-size="120" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" fill="#2b2118">Tasko</text>
+  <text x="48" y="262" font-size="14" font-family="Inter, system-ui, -apple-system, sans-serif" fill="#6b5f52">Clareza para focar, ritmo para produzir.</text>
+</svg>
