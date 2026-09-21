@@ -47,6 +47,14 @@ Como usuário, quero consultar meu histórico de sessões, tarefas concluídas, 
 
 Como usuário, quero definir metas de produtividade e acompanhar meu progresso para manter uma rotina de estudos ou trabalho consistente.
 
+### HU09 — Login
+
+Como usuário, quero criar minha conta e fazer login com email e senha para acessar meus projetos e tarefas de forma segura.
+
+### HU10 — Tela inicial
+
+Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas do dia e a sessão de foco em andamento, para retomar meu trabalho rapidamente.
+
 ## Tecnologias
 
 ### Frontend
