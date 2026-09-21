@@ -1,6 +1,7 @@
 from flask import Flask
 
 from app.config import Config
+from app.errors import register_error_handlers
 
 
 def create_app(config_class=Config):
@@ -8,6 +9,8 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     config_class.validar()
+
+    register_error_handlers(app)
 
     @app.get("/health")
     def health():
