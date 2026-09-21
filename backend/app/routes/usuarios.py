@@ -1,22 +1,17 @@
-from flask import Blueprint, g, jsonify, request
+from flask import Blueprint, g, jsonify
 
 from app.auth import gerar_hash, gerar_token, login_required, senha_confere
 from app.errors import ApiError
 from app.repositories import usuarios as repo
+from app.validacao import corpo, exigir
 
 bp = Blueprint("usuarios", __name__)
 
 
-def _exigir(dados, *campos):
-    for campo in campos:
-        if not dados.get(campo):
-            raise ApiError(f"O campo {campo} e obrigatorio.")
-
-
 @bp.post("/usuarios")
 def cadastrar():
-    dados = request.get_json(silent=True) or {}
-    _exigir(dados, "nome", "email", "senha")
+    dados = corpo()
+    exigir(dados, "nome", "email", "senha")
 
     usuario = repo.criar(
         dados["nome"].strip(),
@@ -28,8 +23,8 @@ def cadastrar():
 
 @bp.post("/login")
 def login():
-    dados = request.get_json(silent=True) or {}
-    _exigir(dados, "email", "senha")
+    dados = corpo()
+    exigir(dados, "email", "senha")
 
     usuario = repo.buscar_por_email(dados["email"].strip().lower())
     if not usuario or not senha_confere(dados["senha"], usuario["senha_hash"]):
