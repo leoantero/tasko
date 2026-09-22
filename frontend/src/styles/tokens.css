@@ -1,7 +1,7 @@
 :root {
   --color-surface-0: #fbf7f1;
   --color-surface-100: #fffdfb;
-  --color-surface-200: #f2ece2;
+  --color-surface-200: #f7f1e8;
   --color-border: #e4dbcb;
   --color-ink: #2b2118;
   --color-ink-muted: #6b5f52;
@@ -52,7 +52,7 @@
   :root {
     --color-surface-0: #17140f;
     --color-surface-100: #211d17;
-    --color-surface-200: #2a251d;
+    --color-surface-200: #3a3326;
     --color-border: #3a332a;
     --color-ink: #f5efe6;
     --color-ink-muted: #c9bdaf;
