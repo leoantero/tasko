@@ -1,5 +1,7 @@
+import AuthForm from './features/auth/AuthForm.jsx'
+
 function App() {
-  return <p>Tasko</p>
+  return <AuthForm />
 }
 
 export default App
