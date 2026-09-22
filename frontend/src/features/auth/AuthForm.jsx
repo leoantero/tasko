@@ -16,6 +16,27 @@ function AuthForm() {
             <p className="auth-tagline">Clareza para focar, ritmo para produzir.</p>
           </div>
         </div>
+
+        <ul className="auth-hero-features">
+          <li>
+            <span className="auth-hero-dot auth-hero-dot--brand" aria-hidden="true" />
+            Sessões de foco com Pomodoro
+          </li>
+          <li>
+            <span className="auth-hero-dot auth-hero-dot--accent" aria-hidden="true" />
+            Metas e progresso acompanhados
+          </li>
+          <li>
+            <span className="auth-hero-dot auth-hero-dot--low" aria-hidden="true" />
+            Projetos organizados, prazos claros
+          </li>
+        </ul>
+
+        <svg className="auth-hero-pattern" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+          <path d="M 360 40 A 320 320 0 0 1 40 360" />
+          <path d="M 360 140 A 220 220 0 0 1 140 360" />
+          <path d="M 360 240 A 120 120 0 0 1 240 360" />
+        </svg>
       </aside>
 
       <section className="auth-form-panel">
