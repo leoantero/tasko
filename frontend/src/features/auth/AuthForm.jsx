@@ -3,8 +3,13 @@ import './AuthForm.css'
 function AuthForm() {
   return (
     <main className="auth-page">
+      <header className="auth-brand">
+        <h1 className="auth-wordmark">Tasko</h1>
+        <p className="auth-tagline">Clareza para focar, ritmo para produzir.</p>
+      </header>
+
       <form className="auth-card">
-        <h1 className="auth-title">Entrar no Tasko</h1>
+        <h2 className="auth-card-label">Entrar</h2>
 
         <label className="auth-field">
           <span>Email</span>
