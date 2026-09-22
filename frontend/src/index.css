@@ -4,4 +4,7 @@
 
 body {
   margin: 0;
+  background: var(--color-surface-0);
+  color: var(--color-ink);
+  font: var(--text-body);
 }
