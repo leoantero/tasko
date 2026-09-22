@@ -19,6 +19,32 @@
   --shadow-sm: 0 1px 2px rgba(43, 33, 24, 0.08), 0 1px 1px rgba(43, 33, 24, 0.04);
   --shadow-md: 0 8px 24px rgba(43, 33, 24, 0.12);
 
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-display-lg: 700 32px/40px var(--font-sans);
+  --text-display-md: 700 24px/32px var(--font-sans);
+  --text-body-lg: 400 16px/24px var(--font-sans);
+  --text-body: 400 14px/20px var(--font-sans);
+  --text-body-sm: 400 13px/18px var(--font-sans);
+  --text-label: 600 12px/16px var(--font-sans);
+  --text-label-tracking: 0.04em;
+  --text-timer-lg: 600 56px/56px var(--font-mono);
+  --text-timer-sm: 500 20px/24px var(--font-mono);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
   color-scheme: light dark;
 }
 
