@@ -34,6 +34,7 @@ CREATE TABLE tarefas (
 CREATE TABLE sessoes_pomodoro (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL REFERENCES usuarios(id),
+    tarefa_id INT REFERENCES tarefas(id),
     inicio TIMESTAMPTZ NOT NULL,
     fim TIMESTAMPTZ,
     tempo_foco_segundos INT,
