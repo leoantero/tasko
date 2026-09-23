@@ -74,6 +74,7 @@ Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas d
 ### Ferramentas de IA
 
 * Claude, 
+* Github Copilot
 
 ## Equipe
 
