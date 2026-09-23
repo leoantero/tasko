@@ -1,4 +1,4 @@
-from app.db import query_one
+from app.db import query_one, query
 
 
 def resumo_semana(usuario_id):
@@ -47,10 +47,27 @@ def resumo_semana(usuario_id):
         (usuario_id,),
     )
 
+    distribuicao = query(
+        """
+        SELECT 
+            p.id AS projeto_id,
+            p.nome AS projeto_nome,
+            COALESCE(SUM(sp.tempo_foco_segundos), 0) AS total_segundos
+        FROM sessoes_pomodoro sp
+        JOIN tarefas t ON sp.tarefa_id = t.id
+        JOIN projetos p ON t.projeto_id = p.id
+        WHERE sp.usuario_id = %s
+          AND sp.inicio >= NOW() - INTERVAL '7 days'
+        GROUP BY p.id, p.nome
+        ORDER BY total_segundos DESC
+        """,
+        (usuario_id,),
+    )
+
     return {
         "total_horas_foco": float((total_horas or {}).get("total_horas_foco", 0) or 0),
         "numero_sessoes": int((sessoes or {}).get("numero_sessoes", 0) or 0),
         "tarefas_concluidas": int((tarefas or {}).get("tarefas_concluidas", 0) or 0),
         "projetos_ativos": int((projetos or {}).get("projetos_ativos", 0) or 0),
-        "distribuicao_por_projeto": [],
+        "distribuicao_por_projeto": distribuicao or [],
     }
