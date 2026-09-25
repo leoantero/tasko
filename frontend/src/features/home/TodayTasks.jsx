@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import './TodayTasks.css'
 import { formatarHora } from './tempo'
 
@@ -6,10 +7,18 @@ const ROTULO_PRIORIDADE = { alta: 'Prioridade alta', media: 'Prioridade média',
 const porPrazo = (a, b) => a.prazo - b.prazo
 
 function TodayTasks({ tarefas, emFocoId, agora, onAlternar }) {
+  const checkboxes = useRef(new Map())
+
   const emFoco = tarefas.filter((t) => t.id === emFocoId && !t.concluida)
   const pendentes = tarefas.filter((t) => !t.concluida && t.id !== emFocoId).sort(porPrazo)
   const concluidas = tarefas.filter((t) => t.concluida).sort(porPrazo)
-  const percentual = Math.round((concluidas.length / tarefas.length) * 100)
+  const percentual = tarefas.length ? Math.round((concluidas.length / tarefas.length) * 100) : 0
+
+  // A tarefa muda de lista ao ser marcada; devolve o foco ao novo checkbox.
+  function alternar(id) {
+    onAlternar(id)
+    requestAnimationFrame(() => checkboxes.current.get(id)?.focus())
+  }
 
   function renderTarefa(tarefa) {
     const atrasada = !tarefa.concluida && tarefa.prazo < agora
@@ -22,8 +31,12 @@ function TodayTasks({ tarefas, emFocoId, agora, onAlternar }) {
           type="checkbox"
           className="task-check"
           checked={tarefa.concluida}
-          onChange={() => onAlternar(tarefa.id)}
+          onChange={() => alternar(tarefa.id)}
           aria-label={`Concluir: ${tarefa.titulo}`}
+          ref={(el) => {
+            if (el) checkboxes.current.set(tarefa.id, el)
+            else checkboxes.current.delete(tarefa.id)
+          }}
         />
         <div className="task-body">
           <span className="task-title">{tarefa.titulo}</span>
@@ -65,7 +78,11 @@ function TodayTasks({ tarefas, emFocoId, agora, onAlternar }) {
         <div className="tasks-progress-fill" style={{ width: `${percentual}%` }} />
       </div>
 
-      <ul className="tasks-list">{[...emFoco, ...pendentes].map(renderTarefa)}</ul>
+      {tarefas.length === 0 && <p className="tasks-empty">Nenhuma tarefa para hoje.</p>}
+
+      {emFoco.length + pendentes.length > 0 && (
+        <ul className="tasks-list">{[...emFoco, ...pendentes].map(renderTarefa)}</ul>
+      )}
 
       {concluidas.length > 0 && (
         <>
