@@ -6,7 +6,7 @@ const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 const ROTULO_ESTADO = { focando: 'Focando agora', pausada: 'Sessão pausada', concluida: 'Sessão concluída' }
 
-function FocusCard({ sessao, tarefa }) {
+function FocusCard({ sessao, tarefa, proxima }) {
   const [fimEm, setFimEm] = useState(() => Date.now() + sessao.restanteSeg * 1000)
   const [agora, setAgora] = useState(() => Date.now())
   const [restanteNaPausa, setRestanteNaPausa] = useState(null)
@@ -64,6 +64,16 @@ function FocusCard({ sessao, tarefa }) {
         <h2 id="focus-title" className="focus-title">{tarefa.titulo}</h2>
         <span className="focus-project">{tarefa.projeto}</span>
 
+        <div className="focus-cycles">
+          {Array.from({ length: sessao.ciclosTotal }, (_, i) => {
+            const feito = i < sessao.ciclo - 1 || (i === sessao.ciclo - 1 && concluida)
+            const atual = i === sessao.ciclo - 1 && !concluida
+            const classe = feito ? 'focus-cycle--feito' : atual ? 'focus-cycle--atual' : ''
+            return <span key={i} className={`focus-cycle ${classe}`} aria-hidden="true" />
+          })}
+          <span>Ciclo {sessao.ciclo} de {sessao.ciclosTotal}</span>
+        </div>
+
         <div className="focus-actions">
           <button
             type="button"
@@ -82,6 +92,12 @@ function FocusCard({ sessao, tarefa }) {
             Encerrar
           </button>
         </div>
+
+        {proxima && (
+          <p className="focus-next">
+            A seguir: <strong>{proxima.titulo}</strong>
+          </p>
+        )}
       </div>
     </section>
   )

@@ -4,10 +4,16 @@ import FocusCard from './FocusCard.jsx'
 import { AGORA_MIN, sessaoAtual, tarefasHoje, usuario } from './mockData'
 import { saudacao } from './tempo'
 
+const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 }
+
 function HomeScreen({ onSair }) {
   const [tarefas] = useState(tarefasHoje)
 
   const tarefaEmFoco = tarefas.find((t) => t.id === sessaoAtual.tarefaId)
+  const pendentes = tarefas.filter((t) => !t.concluida && t.id !== sessaoAtual.tarefaId)
+  const proxima = [...pendentes].sort(
+    (a, b) => PESO_PRIORIDADE[a.prioridade] - PESO_PRIORIDADE[b.prioridade] || a.prazo - b.prazo,
+  )[0]
   const concluidas = tarefas.filter((t) => t.concluida).length
   const atrasadas = tarefas.filter((t) => !t.concluida && t.prazo < AGORA_MIN).length
 
@@ -57,7 +63,7 @@ function HomeScreen({ onSair }) {
 
         <div className="home-grid">
           <div className="home-col-main">
-            <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} />
+            <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} proxima={proxima} />
           </div>
         </div>
       </main>
