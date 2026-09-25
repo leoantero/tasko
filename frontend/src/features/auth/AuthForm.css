@@ -252,3 +252,20 @@
   background: var(--color-brand-subtle);
   border-radius: var(--radius-sm);
 }
+
+.auth-toggle {
+  margin: 0;
+  padding: 0;
+  font: var(--text-body-sm);
+  color: var(--color-ink-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-toggle:hover {
+  color: var(--color-brand);
+}

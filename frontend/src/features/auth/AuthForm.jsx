@@ -1,13 +1,20 @@
 import { useState } from 'react'
 import './AuthForm.css'
-import { login } from '../../lib/api'
+import { cadastrar, login } from '../../lib/api'
 import { salvarToken } from '../../lib/session'
 
 function AuthForm({ onAuthenticated }) {
+  const [modoCadastro, setModoCadastro] = useState(false)
+  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+
+  function alternarModo() {
+    setModoCadastro((atual) => !atual)
+    setErro('')
+  }
 
   async function enviar(evento) {
     evento.preventDefault()
@@ -15,6 +22,9 @@ function AuthForm({ onAuthenticated }) {
     setCarregando(true)
 
     try {
+      if (modoCadastro) {
+        await cadastrar(nome, email, senha)
+      }
       const { token } = await login(email, senha)
       salvarToken(token)
       onAuthenticated(token)
@@ -65,7 +75,23 @@ function AuthForm({ onAuthenticated }) {
 
       <section className="auth-form-panel">
         <form className="auth-card" onSubmit={enviar}>
-          <h2 className="auth-card-label">Entrar</h2>
+          <h2 className="auth-card-label">{modoCadastro ? 'Criar conta' : 'Entrar'}</h2>
+
+          {modoCadastro && (
+            <label className="auth-field">
+              <span>Nome</span>
+              <span className="auth-input-wrap">
+                <input
+                  type="text"
+                  name="nome"
+                  placeholder="Seu nome"
+                  value={nome}
+                  onChange={(evento) => setNome(evento.target.value)}
+                  required
+                />
+              </span>
+            </label>
+          )}
 
           <label className="auth-field">
             <span>Email</span>
@@ -107,7 +133,11 @@ function AuthForm({ onAuthenticated }) {
           {erro && <p className="auth-error">{erro}</p>}
 
           <button type="submit" className="auth-submit" disabled={carregando}>
-            {carregando ? 'Entrando...' : 'Entrar'}
+            {carregando ? 'Enviando...' : modoCadastro ? 'Criar conta' : 'Entrar'}
+          </button>
+
+          <button type="button" className="auth-toggle" onClick={alternarModo}>
+            {modoCadastro ? 'Já tem conta? Entrar' : 'Não tem conta? Criar conta'}
           </button>
         </form>
       </section>
