@@ -237,3 +237,18 @@
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-error {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font: var(--text-body-sm);
+  color: var(--color-danger);
+  background: var(--color-brand-subtle);
+  border-radius: var(--radius-sm);
+}

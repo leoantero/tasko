@@ -1,6 +1,30 @@
+import { useState } from 'react'
 import './AuthForm.css'
+import { login } from '../../lib/api'
+import { salvarToken } from '../../lib/session'
 
-function AuthForm() {
+function AuthForm({ onAuthenticated }) {
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [carregando, setCarregando] = useState(false)
+  const [erro, setErro] = useState('')
+
+  async function enviar(evento) {
+    evento.preventDefault()
+    setErro('')
+    setCarregando(true)
+
+    try {
+      const { token } = await login(email, senha)
+      salvarToken(token)
+      onAuthenticated(token)
+    } catch (erroRequisicao) {
+      setErro(erroRequisicao.message)
+    } finally {
+      setCarregando(false)
+    }
+  }
+
   return (
     <main className="auth-page">
       <aside className="auth-hero">
@@ -40,13 +64,20 @@ function AuthForm() {
       </aside>
 
       <section className="auth-form-panel">
-        <form className="auth-card">
+        <form className="auth-card" onSubmit={enviar}>
           <h2 className="auth-card-label">Entrar</h2>
 
           <label className="auth-field">
             <span>Email</span>
             <span className="auth-input-wrap">
-              <input type="email" name="email" placeholder="voce@exemplo.com" />
+              <input
+                type="email"
+                name="email"
+                placeholder="voce@exemplo.com"
+                value={email}
+                onChange={(evento) => setEmail(evento.target.value)}
+                required
+              />
               <svg className="auth-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                 <path d="M3 5.5h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" />
                 <path d="m3 6 7 5 7-5" />
@@ -57,7 +88,15 @@ function AuthForm() {
           <label className="auth-field">
             <span>Senha</span>
             <span className="auth-input-wrap">
-              <input type="password" name="senha" placeholder="********" />
+              <input
+                type="password"
+                name="senha"
+                placeholder="********"
+                value={senha}
+                onChange={(evento) => setSenha(evento.target.value)}
+                required
+                minLength={6}
+              />
               <svg className="auth-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                 <rect x="4.5" y="9" width="11" height="8" rx="2" />
                 <path d="M7 9V6.5a3 3 0 0 1 6 0V9" />
@@ -65,8 +104,10 @@ function AuthForm() {
             </span>
           </label>
 
-          <button type="submit" className="auth-submit">
-            Entrar
+          {erro && <p className="auth-error">{erro}</p>}
+
+          <button type="submit" className="auth-submit" disabled={carregando}>
+            {carregando ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </section>
