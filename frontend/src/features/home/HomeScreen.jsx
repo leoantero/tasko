@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import './HomeScreen.css'
+import DayRhythm from './DayRhythm.jsx'
 import FocusCard from './FocusCard.jsx'
 import TodayTasks from './TodayTasks.jsx'
-import { AGORA_MIN, sessaoAtual, tarefasHoje, usuario } from './mockData'
+import { AGORA_MIN, blocosHoje, sessaoAtual, tarefasHoje, usuario } from './mockData'
 import { saudacao } from './tempo'
 
 const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 }
@@ -71,6 +72,7 @@ function HomeScreen({ onSair }) {
         <div className="home-grid">
           <div className="home-col-main">
             <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} proxima={proxima} />
+            <DayRhythm blocos={blocosHoje} sessaoInicio={sessaoAtual.inicio} agora={AGORA_MIN} />
           </div>
 
           <TodayTasks
