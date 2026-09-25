@@ -1,3 +1,4 @@
+import './TodayTasks.css'
 import { formatarHora } from './tempo'
 
 const ROTULO_PRIORIDADE = { alta: 'Prioridade alta', media: 'Prioridade média', baixa: 'Prioridade baixa' }
