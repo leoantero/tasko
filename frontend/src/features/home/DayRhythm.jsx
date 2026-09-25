@@ -1,3 +1,4 @@
+import './DayRhythm.css'
 import { formatarDuracao, formatarHora } from './tempo'
 
 const INICIO_DIA = 8 * 60
