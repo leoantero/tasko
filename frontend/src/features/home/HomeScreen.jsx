@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './HomeScreen.css'
 import { AGORA_MIN, tarefasHoje, usuario } from './mockData'
 import { saudacao } from './tempo'
 

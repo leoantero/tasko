@@ -1,0 +1,73 @@
+.home {
+  min-height: 100vh;
+  background: var(--color-surface-0);
+}
+
+.home-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface-100);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--text-body-lg);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.home-brand svg {
+  width: 28px;
+  height: 28px;
+}
+
+.home-brand circle {
+  fill: var(--color-brand);
+}
+
+.home-brand-cut {
+  fill: var(--color-ink);
+  opacity: 0.22;
+}
+
+.home-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.home-avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font: var(--text-label);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border-radius: var(--radius-full);
+}
+
+.home-sair {
+  padding: var(--space-1) var(--space-3);
+  font: var(--text-body-sm);
+  color: var(--color-ink-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.home-sair:hover {
+  color: var(--color-ink);
+  border-color: var(--color-ink-faint);
+}
+
+.home-sair:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
