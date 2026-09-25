@@ -1,13 +1,20 @@
 import { useState } from 'react'
 import './HomeScreen.css'
 import FocusCard from './FocusCard.jsx'
+import TodayTasks from './TodayTasks.jsx'
 import { AGORA_MIN, sessaoAtual, tarefasHoje, usuario } from './mockData'
 import { saudacao } from './tempo'
 
 const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 }
 
 function HomeScreen({ onSair }) {
-  const [tarefas] = useState(tarefasHoje)
+  const [tarefas, setTarefas] = useState(tarefasHoje)
+
+  function alternarTarefa(id) {
+    setTarefas((atuais) =>
+      atuais.map((t) => (t.id === id ? { ...t, concluida: !t.concluida } : t)),
+    )
+  }
 
   const tarefaEmFoco = tarefas.find((t) => t.id === sessaoAtual.tarefaId)
   const pendentes = tarefas.filter((t) => !t.concluida && t.id !== sessaoAtual.tarefaId)
@@ -65,6 +72,13 @@ function HomeScreen({ onSair }) {
           <div className="home-col-main">
             <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} proxima={proxima} />
           </div>
+
+          <TodayTasks
+            tarefas={tarefas}
+            emFocoId={sessaoAtual.tarefaId}
+            agora={AGORA_MIN}
+            onAlternar={alternarTarefa}
+          />
         </div>
       </main>
     </div>
