@@ -71,3 +71,56 @@
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+.home-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-12);
+}
+
+.home-date {
+  margin: 0;
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.home-greeting h1 {
+  margin: var(--space-1) 0 0;
+  font: var(--text-display-lg);
+  color: var(--color-ink);
+}
+
+.home-summary {
+  margin: var(--space-2) 0 0;
+  font: var(--text-body);
+  color: var(--color-ink-muted);
+}
+
+.home-summary-alert {
+  color: var(--color-danger);
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 960px) {
+  .home-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.home-col-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
