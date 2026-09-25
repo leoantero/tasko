@@ -38,6 +38,11 @@ function FocusCard({ sessao, tarefa, proxima }) {
 
   return (
     <section className="focus-card" data-estado={estado} aria-labelledby="focus-title">
+      <svg className="focus-pattern" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <path d="M 20 180 A 160 160 0 0 1 180 20" />
+        <path d="M 70 180 A 110 110 0 0 1 180 70" />
+      </svg>
+
       <div className="focus-dial">
         <svg className="focus-ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
           <circle className="focus-ring-track" cx="100" cy="100" r={RAIO} />
