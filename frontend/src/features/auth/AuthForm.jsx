@@ -87,6 +87,7 @@ function AuthForm({ onAuthenticated }) {
                   placeholder="Seu nome"
                   value={nome}
                   onChange={(evento) => setNome(evento.target.value)}
+                  autoComplete="name"
                   required
                 />
               </span>
@@ -102,6 +103,7 @@ function AuthForm({ onAuthenticated }) {
                 placeholder="voce@exemplo.com"
                 value={email}
                 onChange={(evento) => setEmail(evento.target.value)}
+                autoComplete="email"
                 required
               />
               <svg className="auth-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
@@ -120,8 +122,8 @@ function AuthForm({ onAuthenticated }) {
                 placeholder="********"
                 value={senha}
                 onChange={(evento) => setSenha(evento.target.value)}
+                autoComplete={modoCadastro ? 'new-password' : 'current-password'}
                 required
-                minLength={6}
               />
               <svg className="auth-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                 <rect x="4.5" y="9" width="11" height="8" rx="2" />
@@ -130,7 +132,11 @@ function AuthForm({ onAuthenticated }) {
             </span>
           </label>
 
-          {erro && <p className="auth-error">{erro}</p>}
+          {erro && (
+            <p className="auth-error" role="alert">
+              {erro}
+            </p>
+          )}
 
           <button type="submit" className="auth-submit" disabled={carregando}>
             {carregando ? 'Enviando...' : modoCadastro ? 'Criar conta' : 'Entrar'}
