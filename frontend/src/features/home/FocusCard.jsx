@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import './FocusCard.css'
 import { formatarRelogio } from './tempo'
 
 const RAIO = 88

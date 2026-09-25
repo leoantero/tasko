@@ -1,0 +1,82 @@
+.focus-card {
+  --focus-brand: #ff8360;
+  --focus-accent: #6fbfae;
+  --focus-muted: #c9bdaf;
+  --focus-line: rgba(255, 253, 251, 0.12);
+  position: relative;
+  overflow: clip;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  padding: var(--space-8);
+  color: var(--color-surface-0);
+  background: var(--color-ink);
+  border-radius: var(--radius-lg);
+}
+
+@media (min-width: 640px) {
+  .focus-card {
+    grid-template-columns: 232px minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.focus-dial {
+  position: relative;
+  width: min(232px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.focus-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.focus-ring-track,
+.focus-ring-progress {
+  fill: none;
+  stroke-width: 10;
+}
+
+.focus-ring-track {
+  stroke: var(--focus-line);
+}
+
+.focus-ring-progress {
+  stroke: var(--focus-brand);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+}
+
+.focus-card[data-estado='pausada'] .focus-ring-progress {
+  stroke: var(--focus-muted);
+}
+
+.focus-card[data-estado='concluida'] .focus-ring-progress {
+  stroke: var(--focus-accent);
+}
+
+.focus-time {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.focus-digits {
+  font: var(--text-timer-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-digits-label,
+.focus-status {
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--focus-muted);
+}
