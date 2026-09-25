@@ -1,0 +1,90 @@
+import { useEffect, useState } from 'react'
+import { formatarRelogio } from './tempo'
+
+const RAIO = 88
+const CIRCUNFERENCIA = 2 * Math.PI * RAIO
+
+const ROTULO_ESTADO = { focando: 'Focando agora', pausada: 'Sessão pausada', concluida: 'Sessão concluída' }
+
+function FocusCard({ sessao, tarefa }) {
+  const [fimEm, setFimEm] = useState(() => Date.now() + sessao.restanteSeg * 1000)
+  const [agora, setAgora] = useState(() => Date.now())
+  const [restanteNaPausa, setRestanteNaPausa] = useState(null)
+
+  const pausado = restanteNaPausa !== null
+  const restante = pausado ? restanteNaPausa : Math.max(0, Math.ceil((fimEm - agora) / 1000))
+  const concluida = restante === 0
+
+  // Recalcula a partir do horário de término: intervalos atrasam em abas de fundo.
+  useEffect(() => {
+    if (pausado || concluida) return undefined
+    const id = setInterval(() => setAgora(Date.now()), 250)
+    return () => clearInterval(id)
+  }, [pausado, concluida])
+
+  function alternarPausa() {
+    if (pausado) {
+      setFimEm(Date.now() + restanteNaPausa * 1000)
+      setAgora(Date.now())
+      setRestanteNaPausa(null)
+    } else {
+      setRestanteNaPausa(restante)
+    }
+  }
+
+  const estado = concluida ? 'concluida' : pausado ? 'pausada' : 'focando'
+  const progresso = 1 - restante / sessao.duracaoSeg
+
+  return (
+    <section className="focus-card" data-estado={estado} aria-labelledby="focus-title">
+      <div className="focus-dial">
+        <svg className="focus-ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+          <circle className="focus-ring-track" cx="100" cy="100" r={RAIO} />
+          <circle
+            className="focus-ring-progress"
+            cx="100"
+            cy="100"
+            r={RAIO}
+            strokeDasharray={CIRCUNFERENCIA}
+            strokeDashoffset={CIRCUNFERENCIA * (1 - progresso)}
+          />
+        </svg>
+        <div className="focus-time" role="timer" aria-live="off">
+          <span className="focus-digits">{formatarRelogio(restante)}</span>
+          <span className="focus-digits-label">restantes</span>
+        </div>
+      </div>
+
+      <div className="focus-info">
+        <span className="focus-status">
+          <span className="focus-status-dot" aria-hidden="true" />
+          {ROTULO_ESTADO[estado]}
+        </span>
+
+        <h2 id="focus-title" className="focus-title">{tarefa.titulo}</h2>
+        <span className="focus-project">{tarefa.projeto}</span>
+
+        <div className="focus-actions">
+          <button
+            type="button"
+            className="focus-btn focus-btn--primario"
+            onClick={alternarPausa}
+            disabled={concluida}
+          >
+            {pausado && !concluida ? 'Retomar' : 'Pausar'}
+          </button>
+          <button
+            type="button"
+            className="focus-btn focus-btn--secundario"
+            onClick={() => setRestanteNaPausa(0)}
+            disabled={concluida}
+          >
+            Encerrar
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default FocusCard

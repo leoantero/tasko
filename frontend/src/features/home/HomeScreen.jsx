@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import './HomeScreen.css'
-import { AGORA_MIN, tarefasHoje, usuario } from './mockData'
+import FocusCard from './FocusCard.jsx'
+import { AGORA_MIN, sessaoAtual, tarefasHoje, usuario } from './mockData'
 import { saudacao } from './tempo'
 
 function HomeScreen({ onSair }) {
   const [tarefas] = useState(tarefasHoje)
 
+  const tarefaEmFoco = tarefas.find((t) => t.id === sessaoAtual.tarefaId)
   const concluidas = tarefas.filter((t) => t.concluida).length
   const atrasadas = tarefas.filter((t) => !t.concluida && t.prazo < AGORA_MIN).length
 
@@ -54,7 +56,9 @@ function HomeScreen({ onSair }) {
         </section>
 
         <div className="home-grid">
-          <div className="home-col-main" />
+          <div className="home-col-main">
+            <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} />
+          </div>
         </div>
       </main>
     </div>
