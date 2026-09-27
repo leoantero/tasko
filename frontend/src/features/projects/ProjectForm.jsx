@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import './ProjectForm.css'
 import ProjectCard from './ProjectCard.jsx'
+import { mesmaCategoria } from './categorias'
 import { somarDias } from './datas'
 
 const LIMITE_NOME = 120
@@ -40,9 +41,10 @@ function ProjectForm({ categorias, onFechar, onCriar }) {
       campoNome.current.focus()
       return
     }
+    const categoriaLimpa = categoria.trim()
     onCriar({
       nome: nomeLimpo,
-      categoria: categoria.trim() || null,
+      categoria: categorias.find((c) => mesmaCategoria(c, categoriaLimpa)) ?? (categoriaLimpa || null),
       descricao: descricao.trim() || null,
       prazo: prazo || null,
     })
@@ -113,7 +115,12 @@ function ProjectForm({ categorias, onFechar, onCriar }) {
               {categorias.length > 0 && (
                 <div className="project-sugestoes" role="group" aria-label="Categorias já usadas">
                   {categorias.map((c) => (
-                    <button key={c} type="button" aria-pressed={categoria === c} onClick={() => setCategoria(c)}>
+                    <button
+                      key={c}
+                      type="button"
+                      aria-pressed={mesmaCategoria(c, categoria.trim())}
+                      onClick={() => setCategoria(c)}
+                    >
                       {c}
                     </button>
                   ))}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './ProjectsScreen.css'
 import ProjectCard from './ProjectCard.jsx'
 import ProjectForm from './ProjectForm.jsx'
+import { listarCategorias, mesmaCategoria } from './categorias'
 import { diasAte, lerData } from './datas'
 import { projetosIniciais } from './mockProjetos'
 
@@ -43,11 +44,10 @@ function ProjectsScreen() {
   const contagem = { ativo: ativos.length, concluido: projetos.length - ativos.length, todos: projetos.length }
   const atrasados = ativos.filter((p) => p.prazo && diasAte(p.prazo) < 0).length
   const proximo = ativos.filter((p) => p.prazo && diasAte(p.prazo) >= 0).sort(ordenar)[0]
-  const categorias = [...new Set(projetos.map((p) => p.categoria).filter(Boolean))].sort((a, b) =>
-    a.localeCompare(b, 'pt-BR'),
-  )
+  const categorias = listarCategorias(projetos)
   const visiveis = projetos
-    .filter((p) => (filtro === 'todos' || p.status === filtro) && (!categoria || p.categoria === categoria))
+    .filter((p) => filtro === 'todos' || p.status === filtro)
+    .filter((p) => !categoria || (p.categoria && mesmaCategoria(p.categoria, categoria)))
     .sort(ordenar)
 
   function criar(dados) {
