@@ -173,6 +173,44 @@
   margin-top: var(--space-2);
 }
 
+.btn {
+  padding: var(--space-3) var(--space-4);
+  font: var(--text-body);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.btn--secundario {
+  color: var(--color-ink);
+  background: transparent;
+  border: 1px solid var(--color-border);
+}
+
+.btn--primario {
+  color: var(--color-surface-100);
+  background: var(--color-brand);
+  border: 1px solid var(--color-brand);
+}
+
+.btn--perigo {
+  color: var(--color-surface-100);
+  background: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.campo input:focus,
+.campo textarea:focus,
+.dialogo button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
 @media (max-width: 640px) {
   .dialogo--media {
     width: 100%;
