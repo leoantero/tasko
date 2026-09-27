@@ -1,0 +1,81 @@
+.task-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-6);
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.task-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.task-panel-head h2 {
+  margin: 0;
+  font: var(--text-body-lg);
+  font-weight: 700;
+}
+
+.task-panel-contagem {
+  font: var(--text-timer-sm);
+  color: var(--color-ink-muted);
+}
+
+.task-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+  background: var(--color-surface-200);
+  border: 1px solid var(--color-ink-muted);
+  border-radius: var(--radius-md);
+}
+
+.task-add:focus-within {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.task-add-mais {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-brand);
+}
+
+.task-add input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) 0;
+  font: var(--text-body);
+  color: var(--color-ink);
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.task-add input::placeholder {
+  color: var(--color-ink-muted);
+}
+
+.task-add-btn {
+  padding: var(--space-2) var(--space-3);
+  font: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-surface-100);
+  background: var(--color-brand);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.task-add-btn:disabled {
+  color: var(--color-ink-muted);
+  background: var(--color-border);
+  cursor: not-allowed;
+}
+
