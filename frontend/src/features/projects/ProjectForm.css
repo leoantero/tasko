@@ -124,6 +124,34 @@
   font-family: var(--font-mono);
 }
 
+.project-sugestoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.project-sugestoes button {
+  padding: 2px var(--space-3);
+  font: var(--text-body-sm);
+  color: var(--color-ink-muted);
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.project-sugestoes button:hover {
+  color: var(--color-ink);
+  border-color: var(--color-ink-muted);
+}
+
+.project-sugestoes button[aria-pressed='true'] {
+  color: var(--color-surface-100);
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
 .project-form-acoes {
   display: flex;
   justify-content: flex-end;
@@ -156,6 +184,24 @@
 .project-dialog button:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 1px;
+}
+
+.project-previa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-self: start;
+  padding: var(--space-4);
+  background: var(--color-surface-0);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.project-previa-rotulo {
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
 }
 
 @media (max-width: 640px) {
