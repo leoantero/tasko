@@ -19,8 +19,8 @@ export const tarefasHoje = [
   { id: 3, titulo: 'Enviar formulário de presença do grupo', projeto: 'TP Eng. Software', prioridade: 'media', prazo: min(12), concluida: false },
   { id: 4, titulo: 'Lista 4 de Cálculo II — exercícios 1 a 6', projeto: 'Cálculo II', prioridade: 'media', prazo: min(18), concluida: false },
   { id: 5, titulo: 'Preparar slides sobre uso de IA', projeto: 'TP Eng. Software', prioridade: 'media', prazo: min(19), concluida: false },
-  { id: 6, titulo: 'Ler capítulo 3 de Sistemas Operacionais', projeto: 'Sistemas Operacionais', prioridade: 'baixa', prazo: min(20), concluida: false },
-  { id: 7, titulo: 'Responder dúvidas no fórum da disciplina', projeto: 'Redes', prioridade: 'baixa', prazo: min(11, 30), concluida: true },
+  { id: 6, titulo: 'Atualizar seção de projetos do portfólio', projeto: 'Portfólio pessoal', prioridade: 'baixa', prazo: min(20), concluida: false },
+  { id: 7, titulo: 'Responder dúvidas no fórum da disciplina', projeto: 'Monitoria de Algoritmos', prioridade: 'baixa', prazo: min(11, 30), concluida: true },
   { id: 8, titulo: 'Atualizar branch local com a main', projeto: 'TP Eng. Software', prioridade: 'baixa', prazo: min(9), concluida: true },
 ]
 
