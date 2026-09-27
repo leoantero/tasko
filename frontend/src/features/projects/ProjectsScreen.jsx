@@ -113,6 +113,18 @@ function ProjectsScreen() {
               <ProjectCard projeto={projeto} novo={projeto.id === novoId} />
             </li>
           ))}
+          {filtro !== 'concluido' && (
+            <li>
+              <button type="button" className="projects-novo" onClick={() => setFormAberto(true)}>
+                <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                  <path d="M 110 10 A 100 100 0 0 1 10 110" />
+                  <path d="M 110 45 A 65 65 0 0 1 45 110" />
+                </svg>
+                <span className="projects-novo-mais" aria-hidden="true">+</span>
+                Novo projeto
+              </button>
+            </li>
+          )}
         </ul>
       )}
 
