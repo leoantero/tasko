@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ProjectsScreen.css'
 import ProjectCard from './ProjectCard.jsx'
+import ProjectForm from './ProjectForm.jsx'
 import { diasAte } from './datas'
 import { projetosIniciais } from './mockProjetos'
 
@@ -25,9 +26,19 @@ function quando(dias) {
 }
 
 function ProjectsScreen() {
-  const [projetos] = useState(projetosIniciais)
+  const [projetos, setProjetos] = useState(projetosIniciais)
   const [filtro, setFiltro] = useState('ativo')
   const [categoria, setCategoria] = useState(null)
+  const [formAberto, setFormAberto] = useState(false)
+  const [novoId, setNovoId] = useState(null)
+  const [aviso, setAviso] = useState('')
+
+  useEffect(() => {
+    if (!aviso) return undefined
+    const id = setTimeout(() => setAviso(''), 4000)
+    return () => clearTimeout(id)
+  }, [aviso])
+
   const ativos = projetos.filter((p) => p.status === 'ativo')
   const contagem = { ativo: ativos.length, concluido: projetos.length - ativos.length, todos: projetos.length }
   const atrasados = ativos.filter((p) => p.prazo && diasAte(p.prazo) < 0).length
@@ -38,6 +49,15 @@ function ProjectsScreen() {
   const visiveis = projetos
     .filter((p) => (filtro === 'todos' || p.status === filtro) && (!categoria || p.categoria === categoria))
     .sort(ordenar)
+
+  function criar(dados) {
+    const projeto = { ...dados, id: Date.now(), status: 'ativo', criado_em: new Date().toISOString(), concluido_em: null }
+    setProjetos((atuais) => [projeto, ...atuais])
+    setFiltro('ativo')
+    setCategoria(null)
+    setNovoId(projeto.id)
+    setAviso(`Projeto "${projeto.nome}" criado.`)
+  }
 
   return (
     <main className="projects">
@@ -56,6 +76,9 @@ function ProjectsScreen() {
             )}
           </p>
         </div>
+        <button type="button" className="projects-btn-novo" onClick={() => setFormAberto(true)}>
+          <span aria-hidden="true">+</span> Novo projeto
+        </button>
       </header>
 
       <div className="projects-filtros">
@@ -87,11 +110,19 @@ function ProjectsScreen() {
         <ul className="projects-grid">
           {visiveis.map((projeto) => (
             <li key={projeto.id}>
-              <ProjectCard projeto={projeto} />
+              <ProjectCard projeto={projeto} novo={projeto.id === novoId} />
             </li>
           ))}
         </ul>
       )}
+
+      {formAberto && (
+        <ProjectForm categorias={categorias} onFechar={() => setFormAberto(false)} onCriar={criar} />
+      )}
+
+      <p className="projects-toast" role="status" data-visivel={aviso !== ''}>
+        {aviso}
+      </p>
     </main>
   )
 }
