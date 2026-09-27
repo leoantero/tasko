@@ -1,4 +1,5 @@
 .project-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -62,6 +63,43 @@
   margin: 0;
   font: var(--text-display-md);
   color: var(--color-ink);
+}
+
+.project-card-nome a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* O link do nome cobre o card inteiro, sem aninhar o card num <a>. */
+.project-card-nome a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+
+.project-card--link {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-card--link:hover {
+  border-color: var(--color-ink-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.project-card--link:has(.project-card-nome a:focus-visible) {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.project-card-nome a:focus-visible {
+  outline: none;
+}
+
+.project-card-tarefas {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-ink-muted);
 }
 
 .project-card-descricao {

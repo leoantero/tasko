@@ -29,7 +29,7 @@ function quando(dias) {
 }
 
 function ProjectsScreen() {
-  const { projetos, criarProjeto } = useDados()
+  const { projetos, tarefas, criarProjeto } = useDados()
   const [filtro, setFiltro] = useState('ativo')
   const [categoria, setCategoria] = useState(null)
   const [formAberto, setFormAberto] = useState(false)
@@ -51,6 +51,11 @@ function ProjectsScreen() {
     .filter((p) => filtro === 'todos' || p.status === filtro)
     .filter((p) => !categoria || (p.categoria && mesmaCategoria(p.categoria, categoria)))
     .sort(ordenar)
+
+  function contarTarefas(projetoId) {
+    const doProjeto = tarefas.filter((t) => t.projeto_id === projetoId)
+    return { total: doProjeto.length, concluidas: doProjeto.filter((t) => t.status === 'concluida').length }
+  }
 
   async function criar(dados) {
     const projeto = await criarProjeto(dados)
@@ -121,7 +126,12 @@ function ProjectsScreen() {
         <ul className="projects-grid">
           {visiveis.map((projeto) => (
             <li key={projeto.id}>
-              <ProjectCard projeto={projeto} novo={projeto.id === novoId} />
+              <ProjectCard
+                projeto={projeto}
+                novo={projeto.id === novoId}
+                tarefas={contarTarefas(projeto.id)}
+                href={`#/projetos/${projeto.id}`}
+              />
             </li>
           ))}
           {filtro !== 'concluido' && (
