@@ -12,6 +12,8 @@ const FILTROS = [
   { id: 'todos', rotulo: 'Todos' },
 ]
 
+const VAZIO = { ativo: 'Nenhum projeto ativo', concluido: 'Nenhum projeto concluído', todos: 'Nenhum projeto' }
+
 // Ativos por prazo mais próximo (sem prazo por último); concluídos pelos mais recentes.
 function ordenar(a, b) {
   if (a.status !== b.status) return a.status === 'ativo' ? -1 : 1
@@ -104,8 +106,18 @@ function ProjectsScreen() {
         )}
       </div>
 
-      {visiveis.length === 0 && filtro === 'concluido' ? (
-        <p className="projects-vazio">Nenhum projeto concluído{categoria ? ` em ${categoria}` : ''} ainda.</p>
+      {visiveis.length === 0 ? (
+        <div className="projects-vazio">
+          <p>
+            {VAZIO[filtro]}
+            {categoria ? ` em ${categoria}` : ''} ainda.
+          </p>
+          {filtro !== 'concluido' && (
+            <button type="button" className="projects-btn-novo" onClick={() => setFormAberto(true)}>
+              <span aria-hidden="true">+</span> Criar projeto
+            </button>
+          )}
+        </div>
       ) : (
         <ul className="projects-grid">
           {visiveis.map((projeto) => (

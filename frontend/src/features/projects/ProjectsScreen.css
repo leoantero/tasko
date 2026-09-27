@@ -196,13 +196,20 @@
 }
 
 .projects-vazio {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
   padding: var(--space-12) var(--space-4);
   font: var(--text-body);
   color: var(--color-ink-muted);
   text-align: center;
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-lg);
+}
+
+.projects-vazio p {
+  margin: 0;
 }
 
 .projects-toast {
