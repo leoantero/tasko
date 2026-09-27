@@ -10,6 +10,23 @@
   border-radius: var(--radius-lg);
 }
 
+.project-card--novo {
+  animation: project-surge 0.6s ease-out both;
+}
+
+@keyframes project-surge {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    box-shadow: 0 0 0 4px var(--color-brand-subtle);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
 .project-card-head {
   display: flex;
   align-items: center;
@@ -49,4 +66,75 @@
   color: var(--color-ink-muted);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.project-card-prazo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.project-card-regua {
+  height: 6px;
+  overflow: hidden;
+  background: var(--color-surface-200);
+  border-radius: var(--radius-full);
+}
+
+.project-card-regua span {
+  display: block;
+  height: 100%;
+  background: var(--color-ink-muted);
+  border-radius: var(--radius-full);
+}
+
+.project-card-prazo-texto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font: var(--text-body-sm);
+  color: var(--color-ink-muted);
+}
+
+.project-card-situacao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.project-card-situacao::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--color-ink-muted);
+  border-radius: var(--radius-full);
+}
+
+.project-card--urgente .project-card-regua span,
+.project-card--urgente .project-card-situacao::before {
+  background: var(--color-priority-medium);
+}
+
+.project-card--atrasado .project-card-regua span,
+.project-card--atrasado .project-card-situacao::before {
+  background: var(--color-danger);
+}
+
+.project-card--atrasado .project-card-situacao {
+  color: var(--color-danger);
+}
+
+.project-card--concluido .project-card-regua span,
+.project-card--concluido .project-card-situacao::before {
+  background: var(--color-accent);
+}
+
+.project-card--sem-prazo .project-card-situacao {
+  font-weight: 400;
+  color: var(--color-ink-muted);
 }
