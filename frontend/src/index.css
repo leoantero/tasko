@@ -9,6 +9,11 @@ body {
   font: var(--text-body);
 }
 
+/* Classes com display (flex, grid) venceriam o [hidden] do navegador. */
+[hidden] {
+  display: none !important;
+}
+
 /* Visível só para leitores de tela. */
 .sr-only {
   position: absolute;

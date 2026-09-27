@@ -14,11 +14,9 @@ function TaskConcluidas({ quantidade, aberta, onAlternar, children }) {
       >
         Concluídas ({quantidade})
       </button>
-      {aberta && (
-        <ul id={id} className="task-list">
-          {children}
-        </ul>
-      )}
+      <ul id={id} className="task-list" hidden={!aberta}>
+        {children}
+      </ul>
     </div>
   )
 }
