@@ -1,0 +1,90 @@
+.dialogo {
+  max-height: min(760px, 100% - 32px);
+  padding: 0;
+  color: var(--color-ink);
+  background: var(--color-surface-100);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.dialogo--media {
+  width: min(880px, 100% - 32px);
+}
+
+.dialogo--pequena {
+  width: min(440px, 100% - 32px);
+}
+
+.dialogo::backdrop {
+  background: rgba(43, 33, 24, 0.45);
+}
+
+.dialogo[open] {
+  animation: dialogo-entrada 0.2s ease-out;
+}
+
+@keyframes dialogo-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogo[open] {
+    animation: none;
+  }
+}
+
+.dialogo-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-8);
+}
+
+.dialogo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.dialogo-head h2 {
+  margin: 0;
+  font: var(--text-display-md);
+}
+
+.dialogo-fechar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-ink-muted);
+  background: none;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.dialogo-fechar:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-200);
+}
+
+@media (max-width: 640px) {
+  .dialogo--media {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .dialogo-corpo {
+    padding: var(--space-6) var(--space-4);
+  }
+}

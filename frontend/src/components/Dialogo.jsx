@@ -1,4 +1,5 @@
 import { useId, useLayoutEffect, useRef } from 'react'
+import './Dialogo.css'
 
 // <dialog> modal nativo: prende o foco, fecha no Esc e escurece o fundo.
 // Para fechar, o pai desmonta o Dialogo (via onFechar).
