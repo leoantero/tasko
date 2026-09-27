@@ -2,7 +2,11 @@ import { useEffect } from 'react'
 import './ProjectDetailScreen.css'
 import { useDados } from '../../lib/dados'
 import TaskPanel from '../tasks/TaskPanel.jsx'
-import { formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
+import { situacaoTarefa } from '../tasks/tarefas'
+import { diasAte, formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
+
+const RAIO = 52
+const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 function ProjectDetailScreen({ projetoId }) {
   const { projetos, tarefas } = useDados()
@@ -25,6 +29,14 @@ function ProjectDetailScreen({ projetoId }) {
   }
 
   const doProjeto = tarefas.filter((t) => t.projeto_id === projeto.id)
+  const concluidas = doProjeto.filter((t) => t.status === 'concluida').length
+  const pendentes = doProjeto.filter((t) => t.status === 'pendente')
+  const atrasadas = pendentes.filter((t) => situacaoTarefa(t).tipo === 'atrasada').length
+  const proxima = pendentes
+    .filter((t) => t.prazo && diasAte(t.prazo) >= 0)
+    .sort((a, b) => lerData(a.prazo) - lerData(b.prazo))[0]
+  const percentual = doProjeto.length ? Math.round((concluidas / doProjeto.length) * 100) : 0
+
   const situacao = situacaoPrazo(projeto)
   const progressoDoPrazo = progressoPrazo(projeto)
 
@@ -54,6 +66,49 @@ function ProjectDetailScreen({ projetoId }) {
 
       <div className="projeto-grid">
         <TaskPanel projetoId={projeto.id} tarefas={doProjeto} />
+
+        <aside className="projeto-resumo" aria-label="Resumo das tarefas">
+          <div className="projeto-anel">
+            <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+              <circle className="projeto-anel-trilha" cx="60" cy="60" r={RAIO} />
+              <circle
+                className="projeto-anel-progresso"
+                cx="60"
+                cy="60"
+                r={RAIO}
+                strokeDasharray={CIRCUNFERENCIA}
+                strokeDashoffset={CIRCUNFERENCIA * (1 - percentual / 100)}
+              />
+            </svg>
+            <span className="projeto-anel-texto">
+              <strong>{percentual}%</strong>
+              concluído
+            </span>
+          </div>
+
+          <dl className="projeto-numeros">
+            <div>
+              <dt>Pendentes</dt>
+              <dd>{pendentes.length}</dd>
+            </div>
+            <div>
+              <dt>Atrasadas</dt>
+              <dd className={atrasadas > 0 ? 'projeto-alerta' : undefined}>{atrasadas}</dd>
+            </div>
+          </dl>
+
+          <div className="projeto-proxima">
+            <span className="projeto-proxima-rotulo">Próxima entrega</span>
+            {proxima ? (
+              <>
+                <strong>{proxima.titulo}</strong>
+                <span>{situacaoTarefa(proxima).rotulo}</span>
+              </>
+            ) : (
+              <span>Nenhuma tarefa com prazo pela frente.</span>
+            )}
+          </div>
+        </aside>
       </div>
     </main>
   )
