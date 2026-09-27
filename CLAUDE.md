@@ -71,4 +71,10 @@ O sistema de design (paleta clara/escura, tipografia, espaçamento, raio) foi de
 
 Use esses arquivos em vez de inventar valores novos. O artifact original (https://claude.ai/artifact/UQdpJUS1hXPLQAnzX8sHtV) segue existindo para discussão/comentários da equipe, mas não é acessível por uma sessão de terminal — não peça para o agente abrir esse link. É um ponto de partida, não algo fechado: se um valor não fizer sentido na prática, discuta o ajuste com quem está pilotando antes de só substituir.
 
-Como o backend usa PyJWT, o front precisa armazenar o token após o login e enviá-lo no header de toda chamada autenticada — mas **não existe hoje nenhuma HU de login/cadastro no README**. Antes de implementar qualquer tela de autenticação, confirme com o time se isso vira uma HU formal (ou é tratado como pré-requisito técnico fora da numeração HU01–HU08); não presuma o fluxo sozinho.
+Login e cadastro são a HU09 (`features/auth/`): o token fica no `localStorage` (`lib/session.js`) e as rotas protegidas do backend esperam `Authorization: Bearer <token>`.
+
+### Dados e integração com a API
+
+- `lib/DadosProvider.jsx` é a única fonte de projetos e tarefas para as telas (hoje um mock em memória). Para integrar a API, mude só as ações desse arquivo, mantendo as assinaturas; as telas não mudam. A tela inicial (HU10) ainda usa o mock próprio `features/home/mockData.js`.
+- Datas: o `jsonify` do Flask devolve `DATE`/`TIMESTAMPTZ` como RFC 822 (`"Thu, 08 Oct 2026 00:00:00 GMT"`), não ISO. Use sempre `lerData`, `diasAte` e `dataParaInput` de `features/projects/datas.js`; nunca `new Date("2026-10-08")` (vira o dia anterior no Brasil) nem `.slice(0, 10)`.
+- Painéis modais: use `components/Dialogo.jsx` (foco, Esc, fundo e StrictMode já tratados).
