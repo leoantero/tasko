@@ -4,7 +4,7 @@ import ProjectCard from './ProjectCard.jsx'
 import ProjectForm from './ProjectForm.jsx'
 import { listarCategorias, mesmaCategoria } from './categorias'
 import { diasAte, lerData } from './datas'
-import { projetosIniciais } from './mockProjetos'
+import { useDados } from '../../lib/dados'
 
 const FILTROS = [
   { id: 'ativo', rotulo: 'Ativos' },
@@ -29,7 +29,7 @@ function quando(dias) {
 }
 
 function ProjectsScreen() {
-  const [projetos, setProjetos] = useState(projetosIniciais)
+  const { projetos, criarProjeto } = useDados()
   const [filtro, setFiltro] = useState('ativo')
   const [categoria, setCategoria] = useState(null)
   const [formAberto, setFormAberto] = useState(false)
@@ -52,9 +52,8 @@ function ProjectsScreen() {
     .filter((p) => !categoria || (p.categoria && mesmaCategoria(p.categoria, categoria)))
     .sort(ordenar)
 
-  function criar(dados) {
-    const projeto = { ...dados, id: Date.now(), status: 'ativo', criado_em: new Date().toISOString(), concluido_em: null }
-    setProjetos((atuais) => [projeto, ...atuais])
+  async function criar(dados) {
+    const projeto = await criarProjeto(dados)
     setFiltro('ativo')
     setCategoria(null)
     setNovoId(projeto.id)

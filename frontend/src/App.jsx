@@ -4,6 +4,7 @@ import HomeScreen from './features/home/HomeScreen.jsx'
 import { usuario } from './features/home/mockData'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectsScreen from './features/projects/ProjectsScreen.jsx'
+import { DadosProvider } from './lib/DadosProvider.jsx'
 import { useRota } from './lib/rota'
 import { limparToken, obterToken } from './lib/session'
 
@@ -30,9 +31,11 @@ function App() {
   }
 
   return (
-    <AppShell rota={tela} usuario={usuario} onSair={sair}>
-      {tela === 'projetos' ? <ProjectsScreen /> : <HomeScreen />}
-    </AppShell>
+    <DadosProvider>
+      <AppShell rota={tela} usuario={usuario} onSair={sair}>
+        {tela === 'projetos' ? <ProjectsScreen /> : <HomeScreen />}
+      </AppShell>
+    </DadosProvider>
   )
 }
 
