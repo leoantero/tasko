@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import './ProjectDetailScreen.css'
 import { useDados } from '../../lib/dados'
 import TaskPanel from '../tasks/TaskPanel.jsx'
 import { formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
