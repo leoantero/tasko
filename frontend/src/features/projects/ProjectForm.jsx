@@ -1,12 +1,16 @@
 import { useEffect, useId, useRef, useState } from 'react'
 
 const LIMITE_NOME = 120
+const LIMITE_CATEGORIA = 60
 
 function ProjectForm({ onFechar, onCriar }) {
   const dialogo = useRef(null)
   const campoNome = useRef(null)
   const id = useId()
   const [nome, setNome] = useState('')
+  const [categoria, setCategoria] = useState('')
+  const [descricao, setDescricao] = useState('')
+  const [prazo, setPrazo] = useState('')
   const [erro, setErro] = useState('')
 
   useEffect(() => {
@@ -31,6 +35,9 @@ function ProjectForm({ onFechar, onCriar }) {
     }
     onCriar({
       nome: nomeLimpo,
+      categoria: categoria.trim() || null,
+      descricao: descricao.trim() || null,
+      prazo: prazo || null,
     })
     fechar()
   }
@@ -75,6 +82,33 @@ function ProjectForm({ onFechar, onCriar }) {
                   {nome.length}/{LIMITE_NOME}
                 </span>
               </span>
+            </div>
+
+            <div className="project-field">
+              <label htmlFor={`${id}-categoria`}>Categoria</label>
+              <input
+                id={`${id}-categoria`}
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                maxLength={LIMITE_CATEGORIA}
+                placeholder="Ex.: Faculdade"
+              />
+            </div>
+
+            <div className="project-field">
+              <label htmlFor={`${id}-descricao`}>Descrição</label>
+              <textarea
+                id={`${id}-descricao`}
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+                rows={3}
+                placeholder="O que você quer alcançar com este projeto?"
+              />
+            </div>
+
+            <div className="project-field">
+              <label htmlFor={`${id}-prazo`}>Prazo</label>
+              <input id={`${id}-prazo`} type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
             </div>
 
             <footer className="project-form-acoes">
