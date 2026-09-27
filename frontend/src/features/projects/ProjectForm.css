@@ -10,40 +10,6 @@
   }
 }
 
-.project-form-acoes {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
-}
-
-.project-btn {
-  padding: var(--space-3) var(--space-4);
-  font: var(--text-body);
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-}
-
-.project-btn--secundario {
-  color: var(--color-ink);
-  background: transparent;
-  border: 1px solid var(--color-border);
-}
-
-.project-btn--primario {
-  color: var(--color-surface-100);
-  background: var(--color-brand);
-  border: 1px solid var(--color-brand);
-}
-
-.project-field input:focus,
-.project-field textarea:focus,
-.project-dialog button:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 1px;
-}
-
 .project-previa {
   display: flex;
   flex-direction: column;
@@ -61,4 +27,3 @@
   text-transform: uppercase;
   color: var(--color-ink-muted);
 }
-
