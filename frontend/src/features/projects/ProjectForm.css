@@ -24,6 +24,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .project-dialog[open] {
+    animation: none;
+  }
+}
+
 .project-dialog-corpo {
   display: flex;
   flex-direction: column;
@@ -96,7 +102,7 @@
   font: var(--text-body);
   color: var(--color-ink);
   background: var(--color-surface-200);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-ink-muted);
   border-radius: var(--radius-sm);
 }
 

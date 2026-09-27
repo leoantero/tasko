@@ -27,6 +27,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .project-card--novo {
+    animation: none;
+  }
+}
+
 .project-card-head {
   display: flex;
   align-items: center;
