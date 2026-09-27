@@ -1,5 +1,5 @@
 import './ProjectCard.css'
-import { formatarData, progressoPrazo, situacaoPrazo } from './datas'
+import { formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
 
 function ProjectCard({ projeto, novo = false }) {
   const situacao = situacaoPrazo(projeto)
@@ -24,7 +24,7 @@ function ProjectCard({ projeto, novo = false }) {
         )}
         <div className="project-card-prazo-texto">
           <span className="project-card-situacao">{situacao.rotulo}</span>
-          {projeto.prazo && <span>prazo {formatarData(projeto.prazo)}</span>}
+          {projeto.prazo && <span>prazo {formatarData(lerData(projeto.prazo))}</span>}
         </div>
       </footer>
     </article>

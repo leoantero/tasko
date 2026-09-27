@@ -1,10 +1,12 @@
 const DIA_MS = 24 * 60 * 60 * 1000
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
-// "2026-10-08" com new Date() vira meia-noite UTC, que no Brasil é o dia anterior.
-export function lerData(iso) {
-  const [ano, mes, dia] = iso.slice(0, 10).split('-').map(Number)
-  return new Date(ano, mes - 1, dia)
+// Campos DATE chegam como "2026-10-08" (input/mock) ou "Thu, 08 Oct 2026 00:00:00 GMT"
+// (jsonify do Flask). Os dois são meia-noite UTC do dia; ler os componentes UTC evita
+// cair no dia anterior no fuso do Brasil.
+export function lerData(valor) {
+  const data = new Date(valor)
+  return new Date(data.getUTCFullYear(), data.getUTCMonth(), data.getUTCDate())
 }
 
 function inicioDoDia(data) {
@@ -19,20 +21,19 @@ export function somarDias(dias, base = new Date()) {
   return `${data.getFullYear()}-${mes}-${dia}`
 }
 
-export function diasAte(iso, hoje = new Date()) {
-  return Math.round((lerData(iso) - inicioDoDia(hoje)) / DIA_MS)
+export function diasAte(prazo, hoje = new Date()) {
+  return Math.round((lerData(prazo) - inicioDoDia(hoje)) / DIA_MS)
 }
 
 export function formatarData(data) {
-  const valor = typeof data === 'string' && data.length === 10 ? lerData(data) : new Date(data)
-  return `${valor.getDate()} ${MESES[valor.getMonth()]}`
+  return `${data.getDate()} ${MESES[data.getMonth()]}`
 }
 
 const plural = (n, singular, varios) => `${n} ${n === 1 ? singular : varios}`
 
 export function situacaoPrazo(projeto, hoje = new Date()) {
   if (projeto.status === 'concluido') {
-    return { tipo: 'concluido', rotulo: `concluído em ${formatarData(projeto.concluido_em)}` }
+    return { tipo: 'concluido', rotulo: `concluído em ${formatarData(new Date(projeto.concluido_em))}` }
   }
   if (!projeto.prazo) return { tipo: 'sem-prazo', rotulo: 'sem prazo' }
 

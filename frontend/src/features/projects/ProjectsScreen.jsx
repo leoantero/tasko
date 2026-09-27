@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './ProjectsScreen.css'
 import ProjectCard from './ProjectCard.jsx'
 import ProjectForm from './ProjectForm.jsx'
-import { diasAte } from './datas'
+import { diasAte, lerData } from './datas'
 import { projetosIniciais } from './mockProjetos'
 
 const FILTROS = [
@@ -16,7 +16,7 @@ function ordenar(a, b) {
   if (a.status !== b.status) return a.status === 'ativo' ? -1 : 1
   if (a.status === 'concluido') return new Date(b.concluido_em) - new Date(a.concluido_em)
   if (!a.prazo || !b.prazo) return (a.prazo ? -1 : 0) + (b.prazo ? 1 : 0)
-  return a.prazo.localeCompare(b.prazo)
+  return lerData(a.prazo) - lerData(b.prazo)
 }
 
 function quando(dias) {
