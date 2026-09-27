@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './ProjectsScreen.css'
 import ProjectCard from './ProjectCard.jsx'
 import { diasAte } from './datas'
 import { projetosIniciais } from './mockProjetos'
