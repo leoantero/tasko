@@ -13,12 +13,21 @@ function inicioDoDia(data) {
   return new Date(data.getFullYear(), data.getMonth(), data.getDate())
 }
 
-export function somarDias(dias, base = new Date()) {
-  const data = inicioDoDia(base)
-  data.setDate(data.getDate() + dias)
+// "YYYY-MM-DD": formato do <input type="date"> e do que a API aceita no POST/PUT.
+function paraIso(data) {
   const mes = String(data.getMonth() + 1).padStart(2, '0')
   const dia = String(data.getDate()).padStart(2, '0')
   return `${data.getFullYear()}-${mes}-${dia}`
+}
+
+export function somarDias(dias, base = new Date()) {
+  const data = inicioDoDia(base)
+  data.setDate(data.getDate() + dias)
+  return paraIso(data)
+}
+
+export function dataParaInput(valor) {
+  return valor ? paraIso(lerData(valor)) : ''
 }
 
 export function diasAte(prazo, hoje = new Date()) {
