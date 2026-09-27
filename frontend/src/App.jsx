@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AuthForm from './features/auth/AuthForm.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
 import { usuario } from './features/home/mockData'
@@ -10,6 +10,15 @@ import { limparToken, obterToken } from './lib/session'
 function App() {
   const [token, setToken] = useState(() => obterToken())
   const tela = useRota() === 'projetos' ? 'projetos' : 'inicio'
+
+  useEffect(() => {
+    const titulos = { inicio: 'Início', projetos: 'Projetos' }
+    document.title = `${token ? titulos[tela] : 'Entrar'} · Tasko`
+  }, [token, tela])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [tela])
 
   function sair() {
     limparToken()
