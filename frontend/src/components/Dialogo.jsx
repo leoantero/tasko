@@ -5,6 +5,7 @@ import './Dialogo.css'
 // Para fechar, o pai desmonta o Dialogo (via onFechar).
 function Dialogo({ titulo, onFechar, largura = 'media', children }) {
   const dialogo = useRef(null)
+  const cliqueComecouNoFundo = useRef(false)
   const id = useId()
 
   useLayoutEffect(() => {
@@ -25,7 +26,14 @@ function Dialogo({ titulo, onFechar, largura = 'media', children }) {
       // O evento "close" é assíncrono: no StrictMode ele chega depois de o diálogo já
       // ter sido reaberto pela remontagem; só avisa o pai se ele continua fechado (Esc).
       onClose={(evento) => !evento.currentTarget.open && onFechar()}
-      onClick={(evento) => evento.target === evento.currentTarget && onFechar()}
+      // Arrastar uma seleção de dentro de um campo e soltar sobre o fundo também gera um
+      // click no <dialog>: só fecha se o clique começou no fundo.
+      onMouseDown={(evento) => {
+        cliqueComecouNoFundo.current = evento.target === evento.currentTarget
+      }}
+      onClick={(evento) => {
+        if (cliqueComecouNoFundo.current && evento.target === evento.currentTarget) onFechar()
+      }}
     >
       <div className="dialogo-corpo">
         <header className="dialogo-head">
