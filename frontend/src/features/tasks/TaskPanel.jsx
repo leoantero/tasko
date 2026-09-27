@@ -28,11 +28,19 @@ function TaskPanel({ projetoId, tarefas }) {
   // Marcar muda a tarefa de seção (o checkbox é recriado) e excluir remove o botão que
   // abriu a confirmação: devolve o foco depois que a tela atualiza e o diálogo fecha
   // (com o modal aberto, o resto da página é inerte e não recebe foco).
+  // O pedido só é consumido quando a tarefa já está no status novo e o checkbox existe
+  // (a seção de concluídas pode abrir num render posterior; com a API, o status chega depois).
   useLayoutEffect(() => {
-    if (focarDepois.current === null || editando || excluindo) return
-    const alvo = focarDepois.current === 'nova' ? campoNova.current : checkboxes.current.get(focarDepois.current)
+    const pedido = focarDepois.current
+    if (pedido === null || editando || excluindo) return
+    let alvo = campoNova.current
+    if (pedido !== 'nova') {
+      if (tarefas.find((t) => t.id === pedido.id)?.status !== pedido.status) return
+      alvo = checkboxes.current.get(pedido.id)
+      if (!alvo || alvo.closest('[hidden]')) return
+    }
     focarDepois.current = null
-    alvo?.focus()
+    alvo.focus()
   })
 
   const pendentes = tarefas.filter((t) => t.status === 'pendente').sort(ordenarPendentes)
@@ -45,7 +53,7 @@ function TaskPanel({ projetoId, tarefas }) {
 
   async function alternar(tarefa) {
     const status = tarefa.status === 'concluida' ? 'pendente' : 'concluida'
-    focarDepois.current = tarefa.id
+    focarDepois.current = { id: tarefa.id, status }
     await atualizarTarefa(tarefa.id, { status })
     if (status === 'concluida') setMostrarConcluidas(true)
     setAviso(status === 'concluida' ? 'Tarefa concluída.' : 'Tarefa reaberta.')
