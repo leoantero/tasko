@@ -1,3 +1,4 @@
+import './AppShell.css'
 
 const LINKS = [
   { rota: 'inicio', href: '#/', rotulo: 'Início' },

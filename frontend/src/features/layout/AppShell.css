@@ -1,0 +1,74 @@
+.shell {
+  min-height: 100vh;
+  background: var(--color-surface-0);
+}
+
+.shell-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface-100);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--text-body-lg);
+  font-weight: 700;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.shell-brand svg {
+  width: 28px;
+  height: 28px;
+}
+
+.shell-brand circle {
+  fill: var(--color-brand);
+}
+
+.shell-brand-cut {
+  fill: var(--color-ink);
+  opacity: 0.22;
+}
+
+.shell-nav {
+  display: flex;
+  flex: 1;
+  gap: var(--space-1);
+}
+
+.shell-link {
+  position: relative;
+  padding: var(--space-2) var(--space-3);
+  font: var(--text-body);
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+}
+
+.shell-link:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-200);
+}
+
+.shell-link[aria-current='page'] {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.shell-link[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  right: var(--space-3);
+  bottom: 2px;
+  left: var(--space-3);
+  height: 2px;
+  background: var(--color-brand);
+  border-radius: var(--radius-full);
+}
+
