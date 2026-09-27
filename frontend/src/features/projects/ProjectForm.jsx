@@ -1,9 +1,15 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import ProjectCard from './ProjectCard.jsx'
+import { somarDias } from './datas'
 
 const LIMITE_NOME = 120
 const LIMITE_CATEGORIA = 60
+const ATALHOS_PRAZO = [
+  { rotulo: '+1 semana', dias: 7 },
+  { rotulo: '+1 mês', dias: 30 },
+]
 
-function ProjectForm({ onFechar, onCriar }) {
+function ProjectForm({ categorias, onFechar, onCriar }) {
   const dialogo = useRef(null)
   const campoNome = useRef(null)
   const id = useId()
@@ -40,6 +46,16 @@ function ProjectForm({ onFechar, onCriar }) {
       prazo: prazo || null,
     })
     fechar()
+  }
+
+  const previa = {
+    nome: nome.trim() || 'Nome do projeto',
+    categoria: categoria.trim() || null,
+    descricao: descricao.trim() || null,
+    prazo: prazo || null,
+    status: 'ativo',
+    criado_em: new Date().toISOString(),
+    concluido_em: null,
   }
 
   return (
@@ -93,6 +109,15 @@ function ProjectForm({ onFechar, onCriar }) {
                 maxLength={LIMITE_CATEGORIA}
                 placeholder="Ex.: Faculdade"
               />
+              {categorias.length > 0 && (
+                <div className="project-sugestoes" role="group" aria-label="Categorias já usadas">
+                  {categorias.map((c) => (
+                    <button key={c} type="button" aria-pressed={categoria === c} onClick={() => setCategoria(c)}>
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="project-field">
@@ -109,6 +134,16 @@ function ProjectForm({ onFechar, onCriar }) {
             <div className="project-field">
               <label htmlFor={`${id}-prazo`}>Prazo</label>
               <input id={`${id}-prazo`} type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
+              <div className="project-sugestoes" role="group" aria-label="Atalhos de prazo">
+                {ATALHOS_PRAZO.map((a) => (
+                  <button key={a.dias} type="button" onClick={() => setPrazo(somarDias(a.dias))}>
+                    {a.rotulo}
+                  </button>
+                ))}
+                <button type="button" aria-pressed={prazo === ''} onClick={() => setPrazo('')}>
+                  Sem prazo
+                </button>
+              </div>
             </div>
 
             <footer className="project-form-acoes">
@@ -120,6 +155,11 @@ function ProjectForm({ onFechar, onCriar }) {
               </button>
             </footer>
           </form>
+
+          <aside className="project-previa" aria-hidden="true">
+            <span className="project-previa-rotulo">Pré-visualização</span>
+            <ProjectCard projeto={previa} />
+          </aside>
         </div>
       </div>
     </dialog>
