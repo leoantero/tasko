@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { DadosContext } from './dados'
+import { sessoesIniciais } from '../features/pomodoro/mockSessoes'
 import { projetosIniciais } from '../features/projects/mockProjetos'
 import { tarefasIniciais } from '../features/tasks/mockTarefas'
 
-// Fonte única de projetos e tarefas para todas as telas. Hoje em memória (mock);
+// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Hoje em memória (mock);
 // na integração, cada ação passa a chamar a API e as telas não mudam.
 
 let ultimoId = 1000
@@ -12,6 +13,7 @@ const agora = () => new Date().toISOString()
 export function DadosProvider({ children }) {
   const [projetos, setProjetos] = useState(projetosIniciais)
   const [tarefas, setTarefas] = useState(tarefasIniciais)
+  const [sessoes, setSessoes] = useState(sessoesIniciais)
 
   async function criarProjeto(dados) {
     const projeto = { ...dados, id: ++ultimoId, status: 'ativo', criado_em: agora(), concluido_em: null }
@@ -46,11 +48,47 @@ export function DadosProvider({ children }) {
     )
   }
 
+  // Como o backend (409): tarefa com Pomodoros não pode ser excluída.
   async function excluirTarefa(id) {
+    if (sessoes.some((s) => s.tarefa_id === id)) {
+      throw new Error('Esta tarefa possui Pomodoros. Apague-os primeiro.')
+    }
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
   }
 
-  const valor = { projetos, tarefas, criarProjeto, criarTarefa, atualizarTarefa, excluirTarefa }
+  // POST /api/sessoes-pomodoro/iniciar: o início é a hora do servidor.
+  async function iniciarSessao({ tarefa_id, tempo_total_segundos }) {
+    const sessao = {
+      id: ++ultimoId,
+      usuario_id: 1,
+      tarefa_id,
+      inicio: agora(),
+      fim: null,
+      tempo_foco_segundos: null,
+      tempo_total_segundos,
+    }
+    setSessoes((atuais) => [sessao, ...atuais])
+    return sessao
+  }
+
+  // POST /api/sessoes-pomodoro/finalizar
+  async function finalizarSessao(id, { tempo_foco_segundos, tempo_total_segundos }) {
+    const sessao = { ...sessoes.find((s) => s.id === id), fim: agora(), tempo_foco_segundos, tempo_total_segundos }
+    setSessoes((atuais) => atuais.map((s) => (s.id === id ? sessao : s)))
+    return sessao
+  }
+
+  const valor = {
+    projetos,
+    tarefas,
+    sessoes,
+    criarProjeto,
+    criarTarefa,
+    atualizarTarefa,
+    excluirTarefa,
+    iniciarSessao,
+    finalizarSessao,
+  }
   return <DadosContext.Provider value={valor}>{children}</DadosContext.Provider>
 }
 
