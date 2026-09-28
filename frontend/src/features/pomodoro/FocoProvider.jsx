@@ -77,7 +77,11 @@ export function FocoProvider({ children }) {
     encerrar: () => estado?.fase === 'foco' && terminarFoco(restanteDe(estado, Date.now())),
     comecarIntervalo: () =>
       setEstado((atual) => ({ ...atual, fase: 'intervalo', fimEm: Date.now() + atual.intervaloSeg * 1000, parado: null })),
-    proxima: () => comecar(estado.tarefaId, { focoSeg: estado.focoSeg, intervaloSeg: estado.intervaloSeg }),
+    // Sem o catch, uma recusa da API (ex.: 409) ao começar a próxima sessão sumiria sem aviso.
+    proxima: () =>
+      comecar(estado.tarefaId, { focoSeg: estado.focoSeg, intervaloSeg: estado.intervaloSeg }).catch((erroApi) =>
+        setErro(erroApi.message),
+      ),
     sair: () => setEstado(null),
   }
 
