@@ -58,3 +58,50 @@
   text-transform: uppercase;
   color: var(--foco-muted);
 }
+
+.foco-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.foco-btn {
+  padding: var(--space-3) var(--space-6);
+  font: var(--text-body);
+  font-weight: 600;
+  color: var(--color-surface-0);
+  background: transparent;
+  border: 1px solid var(--foco-muted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.foco-btn:hover {
+  background: var(--foco-linha);
+}
+
+.foco-btn--primario {
+  color: var(--color-ink);
+  background: var(--foco-brand);
+  border-color: var(--foco-brand);
+}
+
+.foco-btn--primario:hover {
+  opacity: 0.9;
+}
+
+.foco-palco:not([data-fase='foco']) .foco-btn--primario {
+  background: var(--foco-accent);
+  border-color: var(--foco-accent);
+}
+
+.foco-btn--texto {
+  border-color: transparent;
+}
+
+.foco-btn:focus-visible,
+.foco-tarefa a:focus-visible {
+  outline: 2px solid var(--color-surface-0);
+  outline-offset: 2px;
+}
