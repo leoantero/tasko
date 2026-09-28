@@ -87,6 +87,33 @@
   list-style: none;
 }
 
+.task-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-grupo-titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding-bottom: var(--space-1);
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.task-grupo-titulo .prio-ponto {
+  width: 8px;
+  height: 8px;
+}
+
+.task-grupo-contagem {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
 .task-item {
   display: flex;
   align-items: flex-start;

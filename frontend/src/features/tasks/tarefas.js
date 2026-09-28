@@ -1,5 +1,13 @@
 import { diasAte, formatarData, lerData } from '../projects/datas'
 
+// Valores da API: 3 alta, 2 média, 1 baixa, null sem prioridade (mesma ordem de exibição).
+export const PRIORIDADES = [3, 2, 1, null]
+export const NOME_PRIORIDADE = { 3: 'Alta', 2: 'Média', 1: 'Baixa' }
+
+export function rotuloPrioridade(valor) {
+  return valor ? `Prioridade ${NOME_PRIORIDADE[valor].toLowerCase()}` : 'Sem prioridade'
+}
+
 export const ROTULO_PRIORIDADE = { 3: 'Prioridade alta', 2: 'Prioridade média', 1: 'Prioridade baixa' }
 
 export function situacaoTarefa(tarefa, hoje = new Date()) {

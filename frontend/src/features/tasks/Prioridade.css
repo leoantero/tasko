@@ -1,0 +1,22 @@
+.prio-ponto {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.prio-ponto--3 {
+  background: var(--color-priority-high);
+}
+
+.prio-ponto--2 {
+  background: var(--color-priority-medium);
+}
+
+.prio-ponto--1 {
+  background: var(--color-priority-low);
+}
+
+.prio-ponto--0 {
+  border: 1.5px dashed var(--color-ink-muted);
+}

@@ -4,6 +4,7 @@ import { useDados } from '../../lib/dados'
 import ConfirmarExclusao from './ConfirmarExclusao.jsx'
 import TaskConcluidas from './TaskConcluidas.jsx'
 import TaskForm from './TaskForm.jsx'
+import TaskGrupos from './TaskGrupos.jsx'
 import TaskItem from './TaskItem.jsx'
 import TaskQuickAdd from './TaskQuickAdd.jsx'
 import { ordenarConcluidas, ordenarPendentes } from './tarefas'
@@ -83,7 +84,7 @@ function TaskPanel({ projetoId, tarefas }) {
       <TaskQuickAdd campoRef={campoNova} onAdicionar={adicionar} />
 
       {pendentes.length > 0 ? (
-        <ul className="task-list">{pendentes.map(renderizar)}</ul>
+        <TaskGrupos pendentes={pendentes} renderizar={renderizar} />
       ) : (
         <p className="task-vazio">
           {tarefas.length === 0 ? 'Nenhuma tarefa ainda. Comece pela primeira acima.' : 'Tudo em dia por aqui.'}
