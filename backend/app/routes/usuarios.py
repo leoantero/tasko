@@ -10,6 +10,7 @@ from app.validacao import corpo, email, exigir, texto
 bp = Blueprint("usuarios", __name__)
 
 SENHA_MINIMA = 8
+NOME_MAXIMO = 120  # VARCHAR(120) em usuarios.nome
 
 
 @bp.post("/usuarios")
@@ -22,7 +23,7 @@ def cadastrar():
 
     try:
         usuario = repo.criar(
-            texto(dados["nome"], "nome"),
+            texto(dados["nome"], "nome", NOME_MAXIMO),
             email(dados["email"]),
             gerar_hash(dados["senha"]),
         )

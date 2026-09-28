@@ -4,11 +4,13 @@ from psycopg import errors as pg_errors
 from app.auth import login_required
 from app.errors import ApiError
 from app.repositories import projetos as repo
-from app.validacao import corpo, data, exigir, texto
+from app.validacao import corpo, data, exigir, texto, texto_opcional
 
 bp = Blueprint("projetos", __name__)
 
 STATUS_VALIDOS = ("ativo", "concluido")
+NOME_MAXIMO = 120  # VARCHAR(120) em projetos.nome
+CATEGORIA_MAXIMA = 60  # VARCHAR(60) em projetos.categoria
 
 
 def _buscar_ou_404(projeto_id):
@@ -32,8 +34,8 @@ def criar():
 
     projeto = repo.criar(
         g.usuario_id,
-        texto(dados["nome"], "nome"),
-        dados.get("categoria"),
+        texto(dados["nome"], "nome", NOME_MAXIMO),
+        texto_opcional(dados.get("categoria"), "categoria", CATEGORIA_MAXIMA),
         dados.get("descricao"),
         data(dados.get("prazo"), "prazo"),
     )
@@ -60,8 +62,10 @@ def atualizar(projeto_id):
         repo.atualizar(
             projeto_id,
             g.usuario_id,
-            texto(dados.get("nome", atual["nome"]), "nome"),
-            dados.get("categoria", atual["categoria"]),
+            texto(dados.get("nome", atual["nome"]), "nome", NOME_MAXIMO),
+            texto_opcional(
+                dados.get("categoria", atual["categoria"]), "categoria", CATEGORIA_MAXIMA
+            ),
             dados.get("descricao", atual["descricao"]),
             data(dados.get("prazo", atual["prazo"]), "prazo"),
             status,

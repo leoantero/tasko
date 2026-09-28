@@ -11,6 +11,7 @@ bp = Blueprint("tarefas", __name__)
 
 STATUS_VALIDOS = ("pendente", "concluida")
 PRIORIDADES = (1, 2, 3)
+TITULO_MAXIMO = 150  # VARCHAR(150) em tarefas.titulo
 
 def _buscar_ou_404(tarefa_id):
     tarefa = repo.buscar(tarefa_id, g.usuario_id)
@@ -50,7 +51,7 @@ def criar():
 
     tarefa = repo.criar(
         g.usuario_id,
-        texto(dados["titulo"], "titulo"),
+        texto(dados["titulo"], "titulo", TITULO_MAXIMO),
         projeto_id,
         dados.get("descricao"),
         prioridade,
@@ -79,7 +80,7 @@ def atualizar(tarefa_id):
     tarefa = repo.atualizar(
         tarefa_id,
         g.usuario_id,
-        texto(dados.get("titulo", atual["titulo"]), "titulo"),
+        texto(dados.get("titulo", atual["titulo"]), "titulo", TITULO_MAXIMO),
         projeto_id,
         dados.get("descricao", atual["descricao"]),
         prioridade,

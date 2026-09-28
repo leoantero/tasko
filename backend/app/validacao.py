@@ -60,11 +60,12 @@ def email(valor, campo="email"):
     return limpo
 
 
-def texto(valor, campo):
-    """Normaliza texto obrigatorio.
+def texto(valor, campo, maximo=None):
+    """Normaliza texto obrigatorio, respeitando o limite da coluna.
 
     Sem a checagem de tipo, um numero chegava no .strip() e derrubava a
-    rota com AttributeError, que o handler generico vira 500.
+    rota com AttributeError. Sem o limite, texto maior que a coluna
+    estourava no banco. Os dois casos viravam 500.
     """
     if not isinstance(valor, str):
         raise ApiError(f"O campo {campo} deve ser um texto.")
@@ -72,4 +73,13 @@ def texto(valor, campo):
     limpo = valor.strip()
     if not limpo:
         raise ApiError(f"O campo {campo} e obrigatorio.")
+    if maximo and len(limpo) > maximo:
+        raise ApiError(f"O campo {campo} deve ter no maximo {maximo} caracteres.")
     return limpo
+
+
+def texto_opcional(valor, campo, maximo=None):
+    """Como texto, mas aceita ausencia do campo."""
+    if valor in (None, ""):
+        return None
+    return texto(valor, campo, maximo)
