@@ -28,15 +28,33 @@ def criar(usuario_id, tarefa_id, inicio, tempo_total_segundos=None):
     )
 
 
-def finalizar(sessao_id, usuario_id, fim, tempo_foco_segundos, tempo_total_segundos):
+def finalizar(sessao_id, usuario_id, fim, tempo_foco_segundos=None):
+    """Grava o fim da sessao calculando os tempos a partir de inicio e fim.
+
+    O tempo total e sempre o decorrido. O tempo de foco so vem do cliente
+    quando ele informa (sabe das pausas) e fica limitado ao tempo decorrido,
+    para nao registrar duracao negativa nem maior que a sessao.
+    """
     return execute(
         f"""
         UPDATE sessoes_pomodoro
-           SET fim = %s,
-               tempo_foco_segundos = %s,
-               tempo_total_segundos = %s
-         WHERE id = %s AND usuario_id = %s
+           SET fim = %(fim)s,
+               tempo_total_segundos = GREATEST(
+                   EXTRACT(EPOCH FROM (%(fim)s - inicio))::int, 0
+               ),
+               -- CASE e nao COALESCE: no Postgres GREATEST ignora NULL,
+               -- entao GREATEST(NULL, 0) daria 0 em vez de cair no calculado.
+               -- O ::int e obrigatorio: sem ele o IS NULL nao infere o tipo.
+               tempo_foco_segundos = CASE
+                   WHEN %(foco)s::int IS NULL
+                       THEN GREATEST(EXTRACT(EPOCH FROM (%(fim)s - inicio))::int, 0)
+                   ELSE LEAST(
+                       GREATEST(%(foco)s::int, 0),
+                       GREATEST(EXTRACT(EPOCH FROM (%(fim)s - inicio))::int, 0)
+                   )
+               END
+         WHERE id = %(id)s AND usuario_id = %(usuario)s
         RETURNING {COLUNAS}
         """,
-        (fim, tempo_foco_segundos, tempo_total_segundos, sessao_id, usuario_id),
+        {"fim": fim, "foco": tempo_foco_segundos, "id": sessao_id, "usuario": usuario_id},
     )

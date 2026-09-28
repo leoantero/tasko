@@ -47,12 +47,13 @@ def finalizar():
     if sessao["fim"] is not None:
         raise ApiError("Sessao ja finalizada.", 400)
 
+    # O fim e sempre do servidor: a HU05 pede registro automatico, e aceitar
+    # o horario do cliente permitia gravar sessao terminando antes de comecar.
     sessao_finalizada = repo.finalizar(
         dados["sessao_id"],
         g.usuario_id,
-        dados.get("fim") or datetime.now(timezone.utc),
-        dados.get("tempo_foco_segundos", 0),
-        dados.get("tempo_total_segundos", sessao.get("tempo_total_segundos") or 0),
+        datetime.now(timezone.utc),
+        dados.get("tempo_foco_segundos"),
     )
     return jsonify(sessao_finalizada)
 
