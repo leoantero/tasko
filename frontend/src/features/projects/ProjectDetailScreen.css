@@ -125,6 +125,13 @@
   gap: var(--space-6);
 }
 
+.projeto-principal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
 @media (min-width: 960px) {
   .projeto-grid {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);

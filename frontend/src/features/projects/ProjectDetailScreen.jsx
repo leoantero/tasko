@@ -3,6 +3,7 @@ import './ProjectDetailScreen.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
 import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
+import TempoDedicado from '../pomodoro/TempoDedicado.jsx'
 import TaskPanel from '../tasks/TaskPanel.jsx'
 import { ordenarPendentes, rotuloPrioridade, situacaoTarefa } from '../tasks/tarefas'
 import { diasAte, formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
@@ -11,7 +12,7 @@ const RAIO = 52
 const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 function ProjectDetailScreen({ projetoId }) {
-  const { projetos, tarefas } = useDados()
+  const { projetos, tarefas, sessoes } = useDados()
   const { estado: foco } = useFoco()
   const [focando, setFocando] = useState(null)
   const projeto = projetos.find((p) => p.id === projetoId)
@@ -72,7 +73,10 @@ function ProjectDetailScreen({ projetoId }) {
       </header>
 
       <div className="projeto-grid">
-        <TaskPanel projetoId={projeto.id} tarefas={doProjeto} />
+        <div className="projeto-principal">
+          <TaskPanel projetoId={projeto.id} tarefas={doProjeto} />
+          <TempoDedicado tarefas={doProjeto} sessoes={sessoes} />
+        </div>
 
         <aside className="projeto-resumo" aria-label="Resumo das tarefas">
           <div className="projeto-anel">
