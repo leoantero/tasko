@@ -1,3 +1,68 @@
+.foco {
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-12);
+}
+
+/* Mesmos tons do cartão de foco da tela inicial: o timer é o momento de maior atenção. */
+.foco-palco {
+  --foco-brand: #ff8360;
+  --foco-accent: #6fbfae;
+  --foco-muted: #c9bdaf;
+  --foco-linha: rgba(255, 253, 251, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-6);
+  color: var(--color-surface-0);
+  text-align: center;
+  background: var(--color-ink);
+  border-radius: var(--radius-lg);
+}
+
+.foco-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--foco-muted);
+}
+
+.foco-status-ponto {
+  width: 8px;
+  height: 8px;
+  background: var(--foco-brand);
+  border-radius: var(--radius-full);
+}
+
+.foco-palco[data-fase='foco'][data-pausado='false'] .foco-status-ponto {
+  animation: foco-pulso 1.6s ease-in-out infinite;
+}
+
+.foco-palco[data-pausado='true'] .foco-status-ponto {
+  background: var(--foco-muted);
+}
+
+.foco-palco:not([data-fase='foco']) .foco-status-ponto {
+  background: var(--foco-accent);
+}
+
+@keyframes foco-pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 131, 96, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 131, 96, 0);
+  }
+}
+
 .foco-mostrador {
   position: relative;
   width: min(280px, 100%);
@@ -57,6 +122,33 @@
   letter-spacing: var(--text-label-tracking);
   text-transform: uppercase;
   color: var(--foco-muted);
+}
+
+.foco-tarefa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.foco-tarefa h1 {
+  margin: 0;
+  font: var(--text-display-md);
+}
+
+.foco-tarefa a {
+  padding: 2px var(--space-2);
+  font: var(--text-body-sm);
+  color: var(--foco-muted);
+  text-decoration: none;
+  border: 1px solid var(--foco-linha);
+  border-radius: var(--radius-full);
+}
+
+.foco-tarefa a:hover {
+  color: var(--color-surface-0);
 }
 
 .foco-acoes {
