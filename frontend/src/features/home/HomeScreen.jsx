@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './HomeScreen.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
+import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
 import { ehHoje } from '../pomodoro/produtividade'
 import { diasAte } from '../projects/datas'
 import { ordenarPendentes, situacaoTarefa } from '../tasks/tarefas'
@@ -15,6 +16,7 @@ import { saudacao } from './tempo'
 function HomeScreen({ usuario }) {
   const { tarefas, sessoes, atualizarTarefa } = useDados()
   const { estado } = useFoco()
+  const [focando, setFocando] = useState(null)
   const [agora, setAgora] = useState(() => new Date())
 
   // A linha do tempo e a saudação só precisam de precisão de minuto.
@@ -58,7 +60,7 @@ function HomeScreen({ usuario }) {
 
       <div className="home-grid">
         <div className="home-col-main">
-          <FocusCard proxima={proxima} />
+          <FocusCard proxima={proxima} onIniciar={setFocando} />
           <DayRhythm sessoes={sessoes.filter((s) => ehHoje(s.inicio, agora))} agora={agora} />
         </div>
 
@@ -68,6 +70,8 @@ function HomeScreen({ usuario }) {
           onAlternar={(t) => atualizarTarefa(t.id, { status: t.status === 'concluida' ? 'pendente' : 'concluida' })}
         />
       </div>
+
+      {focando && <IniciarSessao tarefa={focando} onFechar={() => setFocando(null)} />}
     </main>
   )
 }

@@ -1,15 +1,18 @@
 import './FocusCard.css'
 import { useDados } from '../../lib/dados'
 import { EM_CURSO, restanteDe, useAgora, useFoco } from '../pomodoro/foco'
+import { ehHoje } from '../pomodoro/produtividade'
 import { ROTULO, mostradorDe, tipoDe } from './cartaoFoco'
 import { formatarRelogio } from './tempo'
 
 const RAIO = 88
 const CIRCUNFERENCIA = 2 * Math.PI * RAIO
+const POR_CICLO = 4
 
-// Mostra a sessão real do FocoProvider, a mesma da tela de foco (HU10).
-function FocusCard({ proxima }) {
-  const { projetos, tarefas } = useDados()
+// Mostra a sessão real do FocoProvider (a mesma da tela de foco) ou, sem sessão,
+// sugere por onde começar para retomar o trabalho rapidamente (HU10).
+function FocusCard({ proxima, onIniciar }) {
+  const { projetos, tarefas, sessoes } = useDados()
   const foco = useFoco()
   const { estado, tempos } = foco
   const emCurso = EM_CURSO.includes(estado?.fase)
@@ -17,10 +20,15 @@ function FocusCard({ proxima }) {
 
   const tipo = tipoDe(estado)
   const pausado = tipo === 'pausada'
-  const tarefa = estado ? tarefas.find((t) => t.id === estado.tarefaId) : null
+  const tarefa = estado ? tarefas.find((t) => t.id === estado.tarefaId) : proxima
   const projeto = projetos.find((p) => p.id === tarefa?.projeto_id)
 
   const [segundos, legenda, progresso] = mostradorDe(estado, emCurso ? restanteDe(estado, agora) : 0, tempos)
+
+  // Técnica Pomodoro: um intervalo maior a cada 4 sessões. Conta as de hoje.
+  const feitasHoje = sessoes.filter((s) => s.fim && ehHoje(s.inicio)).length
+  const noCiclo = feitasHoje % POR_CICLO
+  const seguinte = estado ? proxima : null
 
   return (
     <section className="focus-card" data-estado={tipo} aria-labelledby="focus-title">
@@ -54,9 +62,22 @@ function FocusCard({ proxima }) {
         </span>
 
         <h2 id="focus-title" className="focus-title">
-          {tarefa ? tarefa.titulo : 'Escolha uma tarefa para focar'}
+          {tarefa ? tarefa.titulo : 'Tudo em dia'}
         </h2>
         {projeto && <span className="focus-project">{projeto.nome}</span>}
+        {!estado && tarefa && <p className="focus-dica">Sugestão: a tarefa de maior prioridade e prazo mais próximo.</p>}
+
+        <div className="focus-cycles">
+          {Array.from({ length: POR_CICLO }, (_, i) => {
+            const classe = i < noCiclo ? 'focus-cycle--feito' : i === noCiclo && tipo !== 'livre' ? 'focus-cycle--atual' : ''
+            return <span key={i} className={`focus-cycle ${classe}`} aria-hidden="true" />
+          })}
+          <span>
+            {estado?.fase === 'foco'
+              ? `Ciclo ${noCiclo + 1} de ${POR_CICLO}`
+              : `${feitasHoje} ${feitasHoje === 1 ? 'sessão' : 'sessões'} hoje`}
+          </span>
+        </div>
 
         <div className="focus-actions">
           {estado?.fase === 'foco' && (
@@ -69,11 +90,21 @@ function FocusCard({ proxima }) {
               Abrir sessão
             </a>
           )}
+          {!estado && tarefa && (
+            <button type="button" className="focus-btn focus-btn--primario" onClick={() => onIniciar(tarefa)}>
+              Iniciar foco
+            </button>
+          )}
+          {!estado && !tarefa && (
+            <a className="focus-btn focus-btn--secundario" href="#/projetos">
+              Ver projetos
+            </a>
+          )}
         </div>
 
-        {proxima && (
+        {seguinte && (
           <p className="focus-next">
-            A seguir: <strong>{proxima.titulo}</strong>
+            A seguir: <strong>{seguinte.titulo}</strong>
           </p>
         )}
       </div>
