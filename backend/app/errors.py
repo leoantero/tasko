@@ -1,3 +1,4 @@
+import psycopg
 from flask import jsonify
 from psycopg import errors as pg_errors
 from werkzeug.exceptions import HTTPException
@@ -29,6 +30,12 @@ def register_error_handlers(app):
     @app.errorhandler(pg_errors.ForeignKeyViolation)
     def _foreign_key_violation(erro):
         return jsonify(erro="Referencia informada nao existe."), 400
+
+    @app.errorhandler(psycopg.OperationalError)
+    def _banco_indisponivel(erro):
+        """Banco fora do ar e indisponibilidade temporaria, nao erro nosso."""
+        app.logger.error("banco indisponivel: %s", erro)
+        return jsonify(erro="Servico indisponivel. Tente novamente."), 503
 
     @app.errorhandler(HTTPException)
     def _http_error(erro):
