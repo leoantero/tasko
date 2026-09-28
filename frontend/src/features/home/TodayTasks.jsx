@@ -59,9 +59,12 @@ function TodayTasks({ tarefas, emFocoId, onAlternar }) {
                 <span aria-hidden="true">·</span>
               </>
             )}
-            <span>{situacao.rotulo}</span>
+            {atrasada ? (
+              <span className="task-badge task-badge--atrasada">{situacao.rotulo}</span>
+            ) : (
+              <span>{situacao.rotulo}</span>
+            )}
             {foco && <span className="task-badge task-badge--foco">Em foco</span>}
-            {atrasada && <span className="task-badge task-badge--atrasada">Atrasada</span>}
           </span>
         </div>
       </li>
@@ -88,7 +91,9 @@ function TodayTasks({ tarefas, emFocoId, onAlternar }) {
         <div className="tasks-progress-fill" style={{ width: `${percentual}%` }} />
       </div>
 
-      {tarefas.length === 0 && <p className="tasks-empty">Nenhuma tarefa para hoje.</p>}
+      {tarefas.length === 0 && (
+        <p className="tasks-empty">Nada vence hoje. Veja seus projetos para escolher o que adiantar.</p>
+      )}
 
       {emFoco.length + pendentes.length > 0 && (
         <ul className="tasks-list">{[...emFoco, ...pendentes].map(renderTarefa)}</ul>
