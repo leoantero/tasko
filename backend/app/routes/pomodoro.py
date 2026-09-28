@@ -42,23 +42,20 @@ def iniciar():
     return jsonify(sessao), 201
 
 
-@bp.post("/sessoes-pomodoro/finalizar")
+@bp.post("/sessoes-pomodoro/<int:sessao_id>/finalizar")
 @login_required
-def finalizar():
-    dados = corpo()
-    exigir(dados, "sessao_id")
-
-    sessao = _buscar_ou_404(dados["sessao_id"])
+def finalizar(sessao_id):
+    sessao = _buscar_ou_404(sessao_id)
     if sessao["fim"] is not None:
         raise ApiError("Sessao ja finalizada.", 400)
 
     # O fim e sempre do servidor: a HU05 pede registro automatico, e aceitar
     # o horario do cliente permitia gravar sessao terminando antes de comecar.
     sessao_finalizada = repo.finalizar(
-        dados["sessao_id"],
+        sessao_id,
         g.usuario_id,
         datetime.now(timezone.utc),
-        dados.get("tempo_foco_segundos"),
+        corpo().get("tempo_foco_segundos"),
     )
     return jsonify(sessao_finalizada)
 
