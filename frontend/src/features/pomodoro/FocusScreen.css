@@ -192,6 +192,18 @@
   border-color: transparent;
 }
 
+.foco-erro {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--foco-brand);
+}
+
+.foco-historico {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--foco-muted);
+}
+
 .foco-btn:focus-visible,
 .foco-tarefa a:focus-visible {
   outline: 2px solid var(--color-surface-0);

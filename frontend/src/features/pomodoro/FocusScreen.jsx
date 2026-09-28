@@ -5,12 +5,12 @@ import { formatarRelogio } from '../home/tempo'
 import ConfirmarEncerrar from './ConfirmarEncerrar.jsx'
 import FocoAcoes from './FocoAcoes.jsx'
 import FocoMostrador from './FocoMostrador.jsx'
-import { EM_CURSO, restanteDe, useAgora, useFoco } from './foco'
+import { EM_CURSO, minutos, restanteDe, useAgora, useFoco } from './foco'
 
 const TITULOS = { 'fim-foco': 'Sessão concluída', 'fim-intervalo': 'Intervalo encerrado' }
 
 function FocusScreen() {
-  const { projetos, tarefas, atualizarTarefa } = useDados()
+  const { projetos, tarefas, sessoes, atualizarTarefa } = useDados()
   const foco = useFoco()
   const { estado } = foco
   const agora = useAgora(EM_CURSO.includes(estado?.fase))
@@ -42,6 +42,8 @@ function FocusScreen() {
 
   const tarefa = tarefas.find((t) => t.id === estado.tarefaId)
   const projeto = projetos.find((p) => p.id === tarefa?.projeto_id)
+  const anteriores = sessoes.filter((s) => s.tarefa_id === estado.tarefaId && s.fim)
+  const focadoNaTarefa = anteriores.reduce((total, s) => total + (s.tempo_foco_segundos ?? 0), 0)
   const pausado = estado.parado !== null
   const completa = estado.focadoSeg === estado.focoSeg
 
@@ -92,7 +94,26 @@ function FocusScreen() {
           onVoltar={voltar}
         />
 
+        {foco.erro && (
+          <p className="foco-erro" role="alert">
+            {foco.erro}
+          </p>
+        )}
+
+        <p className="foco-historico">
+          {fase === 'foco'
+            ? `${anteriores.length + 1}ª sessão nesta tarefa`
+            : `${anteriores.length} ${anteriores.length === 1 ? 'sessão' : 'sessões'} nesta tarefa`}
+          {focadoNaTarefa > 0 && ` · ${minutos(focadoNaTarefa)} de foco no total`}
+        </p>
       </section>
+
+      <p className="sr-only" role="status">
+        {fase === 'fim-foco' && `${status}. Você focou ${minutos(estado.focadoSeg)}.`}
+        {fase === 'intervalo' && `Intervalo de ${minutos(estado.intervaloSeg)} começou.`}
+        {fase === 'fim-intervalo' && 'Intervalo encerrado. Pronto para a próxima sessão?'}
+        {fase === 'foco' && pausado && 'Sessão pausada. O tempo pausado não conta como foco.'}
+      </p>
 
       {confirmando && (
         <ConfirmarEncerrar
