@@ -4,6 +4,7 @@ from flask_cors import CORS
 from app.config import Config
 from app.db import verificar
 from app.errors import register_error_handlers
+from app.log import registrar_log
 from app.routes import (
     dashboard,
     historico,
@@ -22,6 +23,7 @@ def create_app(config_class=Config):
     config_class.validar()
 
     CORS(app, origins=config_class.CORS_ORIGENS)
+    registrar_log(app)
     register_error_handlers(app)
     app.register_blueprint(usuarios.bp, url_prefix="/api")
     app.register_blueprint(projetos.bp, url_prefix="/api")
