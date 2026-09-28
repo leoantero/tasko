@@ -1,3 +1,4 @@
+import re
 from datetime import date, datetime
 
 from flask import request
@@ -44,3 +45,16 @@ def inteiro(valor, campo):
         return int(valor)
     except (TypeError, ValueError):
         raise ApiError(f"O campo {campo} deve ser um numero inteiro.")
+
+
+# Formato minimo: algo@algo.dominio, sem espaco. Validacao de verdade so
+# com email de confirmacao, que esta fora do escopo do TP.
+FORMATO_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def email(valor, campo="email"):
+    """Normaliza o email em minusculas e recusa formato invalido."""
+    limpo = str(valor or "").strip().lower()
+    if not FORMATO_EMAIL.match(limpo):
+        raise ApiError(f"O campo {campo} deve ser um email valido.")
+    return limpo

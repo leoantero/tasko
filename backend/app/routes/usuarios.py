@@ -3,7 +3,7 @@ from flask import Blueprint, g, jsonify
 from app.auth import gerar_hash, gerar_token, login_required, senha_confere
 from app.errors import ApiError
 from app.repositories import usuarios as repo
-from app.validacao import corpo, exigir
+from app.validacao import corpo, email, exigir
 
 bp = Blueprint("usuarios", __name__)
 
@@ -15,7 +15,7 @@ def cadastrar():
 
     usuario = repo.criar(
         dados["nome"].strip(),
-        dados["email"].strip().lower(),
+        email(dados["email"]),
         gerar_hash(dados["senha"]),
     )
     return jsonify(usuario), 201
