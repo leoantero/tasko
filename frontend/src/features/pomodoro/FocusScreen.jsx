@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './FocusScreen.css'
 import { useDados } from '../../lib/dados'
 import { formatarRelogio } from '../home/tempo'
+import ConfirmarEncerrar from './ConfirmarEncerrar.jsx'
 import FocoAcoes from './FocoAcoes.jsx'
 import FocoMostrador from './FocoMostrador.jsx'
 import { EM_CURSO, restanteDe, useAgora, useFoco } from './foco'
@@ -13,10 +14,13 @@ function FocusScreen() {
   const foco = useFoco()
   const { estado } = foco
   const agora = useAgora(EM_CURSO.includes(estado?.fase))
+  // Guarda a sessão que pediu confirmação: se o tempo acabar antes, o diálogo some sozinho.
+  const [confirmarSessao, setConfirmarSessao] = useState(null)
   const primario = useRef(null)
   const tela = useRef(null)
 
   const fase = estado?.fase
+  const confirmando = fase === 'foco' && confirmarSessao === estado.sessaoId
   const restante = EM_CURSO.includes(fase) ? restanteDe(estado, agora) : 0
   const titulo = !estado
     ? 'Foco'
@@ -83,12 +87,24 @@ function FocusScreen() {
         <FocoAcoes
           tarefa={tarefa}
           primario={primario}
-          onEncerrar={foco.encerrar}
+          onEncerrar={() => setConfirmarSessao(estado.sessaoId)}
           onConcluir={concluirTarefa}
           onVoltar={voltar}
         />
 
       </section>
+
+      {confirmando && (
+        <ConfirmarEncerrar
+          focadoSeg={estado.focoSeg - restante}
+          focoSeg={estado.focoSeg}
+          onFechar={() => setConfirmarSessao(null)}
+          onEncerrar={async () => {
+            await foco.encerrar()
+            setConfirmarSessao(null)
+          }}
+        />
+      )}
     </main>
   )
 }
