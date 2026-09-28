@@ -1,6 +1,11 @@
 from app.db import execute, query, query_one
 
-COLUNAS = "id, usuario_id, tipo, valor_alvo, data_limite, criado_em"
+# valor_alvo e NUMERIC: sem o ::float o Flask serializa o Decimal como
+# string ("10") e o front recebe texto onde espera numero.
+COLUNAS = """
+    id, usuario_id, tipo, valor_alvo::float AS valor_alvo,
+    data_limite, criado_em
+"""
 
 
 def listar(usuario_id):
