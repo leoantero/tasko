@@ -3,3 +3,4 @@ openspec/
 .claude/
 venv/
 a
+.DS_Store

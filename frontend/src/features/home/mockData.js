@@ -1,6 +1,6 @@
 const min = (h, m = 0) => h * 60 + m
 
-export const usuario = { nome: 'Leonardo' }
+//export const usuario = { nome: 'Leonardo' }
 
 export const AGORA_MIN = min(14, 20)
 

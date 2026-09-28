@@ -1,12 +1,20 @@
+import { obterToken } from './session'
+
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api'
 
 async function request(path, options = {}) {
   let response
 
+  const token = obterToken()
+
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...options,
-      headers: { 'Content-Type': 'application/json', ...options.headers },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
     })
   } catch {
     throw new Error('Não foi possível conectar ao servidor.')
@@ -33,4 +41,8 @@ export function cadastrar(nome, email, senha) {
     method: 'POST',
     body: JSON.stringify({ nome, email, senha }),
   })
+}
+
+export function perfil() {
+  return request('/perfil')
 }

@@ -3,12 +3,12 @@ import './HomeScreen.css'
 import DayRhythm from './DayRhythm.jsx'
 import FocusCard from './FocusCard.jsx'
 import TodayTasks from './TodayTasks.jsx'
-import { AGORA_MIN, blocosHoje, sessaoAtual, tarefasHoje, usuario } from './mockData'
+import { AGORA_MIN, blocosHoje, sessaoAtual, tarefasHoje } from './mockData'
 import { saudacao } from './tempo'
 
 const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 }
 
-function HomeScreen() {
+function HomeScreen({ usuario }) {
   const [tarefas, setTarefas] = useState(tarefasHoje)
 
   function alternarTarefa(id) {

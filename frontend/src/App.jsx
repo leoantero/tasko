@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import AuthForm from './features/auth/AuthForm.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
-import { usuario } from './features/home/mockData'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
 import ProjectsScreen from './features/projects/ProjectsScreen.jsx'
+import { perfil } from './lib/api'
 import { DadosProvider } from './lib/DadosProvider.jsx'
 import { useRota } from './lib/rota'
 import { limparToken, obterToken } from './lib/session'
@@ -17,6 +17,7 @@ function lerTela(rota) {
 
 function App() {
   const [token, setToken] = useState(() => obterToken())
+  const [usuario, setUsuario] = useState(null)
   const { tela, projetoId } = lerTela(useRota())
 
   // O detalhe do projeto define o próprio título (usa o nome do projeto).
@@ -30,19 +31,34 @@ function App() {
     window.scrollTo(0, 0)
   }, [tela, projetoId])
 
+  // O nome exibido vem do dono do token; token invalido ou expirado derruba a sessao.
+  useEffect(() => {
+    if (!token) return
+    let ativo = true
+    perfil()
+      .then((dados) => ativo && setUsuario(dados))
+      .catch(() => ativo && sair())
+    return () => {
+      ativo = false
+    }
+  }, [token])
+
   function sair() {
     limparToken()
     setToken(null)
+    setUsuario(null)
   }
 
   if (!token) {
     return <AuthForm onAuthenticated={setToken} />
   }
 
+  if (!usuario) return null
+
   return (
     <DadosProvider>
       <AppShell rota={tela === 'inicio' ? 'inicio' : 'projetos'} usuario={usuario} onSair={sair}>
-        {tela === 'inicio' && <HomeScreen />}
+        {tela === 'inicio' && <HomeScreen usuario={usuario} />}
         {tela === 'projetos' && <ProjectsScreen />}
         {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
       </AppShell>
