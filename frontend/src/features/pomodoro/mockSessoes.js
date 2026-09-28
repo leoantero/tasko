@@ -1,5 +1,5 @@
-// Mesmo formato de GET /api/sessoes-pomodoro. tempo_total_segundos é a duração escolhida
-// ao iniciar; tempo_foco_segundos é quanto foi focado de fato (menos, se encerrada antes).
+// Mesmo formato de GET /api/sessoes-pomodoro. tempo_total_segundos é o tempo decorrido entre
+// início e fim (calculado pelo servidor); tempo_foco_segundos é o focado, sem as pausas.
 const sessao = (id, tarefa_id, haDias, hora, focoMin, totalMin = focoMin) => {
   const inicio = new Date()
   inicio.setDate(inicio.getDate() - haDias)
@@ -9,7 +9,7 @@ const sessao = (id, tarefa_id, haDias, hora, focoMin, totalMin = focoMin) => {
     usuario_id: 1,
     tarefa_id,
     inicio: inicio.toISOString(),
-    fim: new Date(inicio.getTime() + focoMin * 60 * 1000).toISOString(),
+    fim: new Date(inicio.getTime() + totalMin * 60 * 1000).toISOString(),
     tempo_foco_segundos: focoMin * 60,
     tempo_total_segundos: totalMin * 60,
   }

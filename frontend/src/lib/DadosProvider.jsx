@@ -71,9 +71,14 @@ export function DadosProvider({ children }) {
     return sessao
   }
 
-  // POST /api/sessoes-pomodoro/finalizar
-  async function finalizarSessao(id, { tempo_foco_segundos, tempo_total_segundos }) {
-    const sessao = { ...sessoes.find((s) => s.id === id), fim: agora(), tempo_foco_segundos, tempo_total_segundos }
+  // POST /api/sessoes-pomodoro/finalizar: como no backend, o fim é a hora do servidor, o total
+  // é o tempo decorrido desde o início e o foco informado fica limitado a esse total.
+  async function finalizarSessao(id, { tempo_foco_segundos }) {
+    const atual = sessoes.find((s) => s.id === id)
+    const fim = new Date()
+    const total = Math.max(0, Math.round((fim - new Date(atual.inicio)) / 1000))
+    const foco = Math.min(Math.max(tempo_foco_segundos, 0), total)
+    const sessao = { ...atual, fim: fim.toISOString(), tempo_foco_segundos: foco, tempo_total_segundos: total }
     setSessoes((atuais) => atuais.map((s) => (s.id === id ? sessao : s)))
     return sessao
   }

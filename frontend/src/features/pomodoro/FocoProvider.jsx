@@ -36,10 +36,7 @@ export function FocoProvider({ children }) {
     finalizando.current = true
     const focadoSeg = estado.focoSeg - restante
     try {
-      await finalizarSessao(estado.sessaoId, {
-        tempo_foco_segundos: focadoSeg,
-        tempo_total_segundos: estado.focoSeg,
-      })
+      await finalizarSessao(estado.sessaoId, { tempo_foco_segundos: focadoSeg })
       setErro('')
       setEstado((atual) => ({ ...atual, fase: 'fim-foco', parado: null, focadoSeg }))
     } catch (erroApi) {
