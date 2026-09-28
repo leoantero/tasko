@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import Dialogo from '../../components/Dialogo.jsx'
 import CampoPrazo from '../projects/CampoPrazo.jsx'
 import { dataParaInput } from '../projects/datas'
+import PrioridadeCampo from './PrioridadeCampo.jsx'
 
 const LIMITE_TITULO = 150
 
@@ -10,6 +11,7 @@ function TaskForm({ tarefa, onFechar, onSalvar }) {
   const [titulo, setTitulo] = useState(tarefa.titulo)
   const [descricao, setDescricao] = useState(tarefa.descricao ?? '')
   const [prazo, setPrazo] = useState(dataParaInput(tarefa.prazo))
+  const [prioridade, setPrioridade] = useState(tarefa.prioridade ?? null)
   const [erro, setErro] = useState('')
   const [salvando, setSalvando] = useState(false)
 
@@ -23,7 +25,7 @@ function TaskForm({ tarefa, onFechar, onSalvar }) {
     }
     setSalvando(true)
     try {
-      await onSalvar({ titulo: tituloLimpo, descricao: descricao.trim() || null, prazo: prazo || null })
+      await onSalvar({ titulo: tituloLimpo, descricao: descricao.trim() || null, prioridade, prazo: prazo || null })
       onFechar()
     } catch (erroApi) {
       setErro(erroApi.message)
@@ -67,6 +69,8 @@ function TaskForm({ tarefa, onFechar, onSalvar }) {
             placeholder="Detalhes, links, próximos passos…"
           />
         </div>
+
+        <PrioridadeCampo valor={prioridade} onChange={setPrioridade} />
 
         <CampoPrazo valor={prazo} onChange={setPrazo} />
 

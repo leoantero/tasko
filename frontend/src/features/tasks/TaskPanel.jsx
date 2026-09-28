@@ -107,6 +107,13 @@ function TaskPanel({ projetoId, tarefas }) {
           onFechar={() => setEditando(null)}
           onSalvar={async (mudancas) => {
             await atualizarTarefa(editando.id, mudancas)
+            // Mudar a prioridade leva a tarefa para outro grupo: o foco volta ao "Editar" dela.
+            focarDepois.current = {
+              id: editando.id,
+              campo: 'prioridade',
+              valor: mudancas.prioridade,
+              alvo: '.task-item-acao--editar',
+            }
             setAviso('Tarefa atualizada.')
           }}
         />
