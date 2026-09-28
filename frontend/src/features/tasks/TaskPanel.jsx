@@ -2,6 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import './TaskPanel.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
+import { focoPorTarefa } from '../pomodoro/produtividade'
 import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
 import ConfirmarExclusao from './ConfirmarExclusao.jsx'
 import TaskConcluidas from './TaskConcluidas.jsx'
@@ -12,7 +13,7 @@ import TaskQuickAdd from './TaskQuickAdd.jsx'
 import { ordenarConcluidas, ordenarPendentes, rotuloPrioridade } from './tarefas'
 
 function TaskPanel({ projetoId, tarefas }) {
-  const { criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
+  const { sessoes, criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
   const { estado: foco } = useFoco()
   const id = useId()
   const painel = useRef(null)
@@ -50,6 +51,7 @@ function TaskPanel({ projetoId, tarefas }) {
 
   const pendentes = tarefas.filter((t) => t.status === 'pendente').sort(ordenarPendentes)
   const concluidas = tarefas.filter((t) => t.status === 'concluida').sort(ordenarConcluidas)
+  const focoDaTarefa = focoPorTarefa(sessoes)
 
   async function adicionar(titulo) {
     await criarTarefa({ projeto_id: projetoId, titulo })
@@ -77,6 +79,7 @@ function TaskPanel({ projetoId, tarefas }) {
         key={tarefa.id}
         tarefa={tarefa}
         emFoco={emFoco}
+        focoSeg={focoDaTarefa.get(tarefa.id)}
         onFocar={() => (emFoco ? (window.location.hash = '#/foco') : setFocando(tarefa))}
         onAlternar={() => alternar(tarefa)}
         onPriorizar={(prioridade) => priorizar(tarefa, prioridade)}

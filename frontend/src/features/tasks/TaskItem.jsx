@@ -1,7 +1,8 @@
+import { duracaoCurta } from '../pomodoro/produtividade'
 import PrioridadeMenu from './PrioridadeMenu.jsx'
 import { situacaoTarefa } from './tarefas'
 
-function TaskItem({ tarefa, emFoco, onAlternar, onFocar, onPriorizar, onEditar, onExcluir }) {
+function TaskItem({ tarefa, emFoco, focoSeg = 0, onAlternar, onFocar, onPriorizar, onEditar, onExcluir }) {
   const situacao = situacaoTarefa(tarefa)
   const concluida = tarefa.status === 'concluida'
 
@@ -21,6 +22,15 @@ function TaskItem({ tarefa, emFoco, onAlternar, onFocar, onPriorizar, onEditar, 
         <span className="task-item-meta">
           {emFoco && <span className="task-item-em-foco">em foco</span>}
           <span className="task-item-situacao">{situacao.rotulo}</span>
+          {focoSeg > 0 && (
+            <span className="task-item-tempo" title="Tempo de foco registrado nesta tarefa">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <circle cx="8" cy="8" r="6" />
+                <path d="M8 4.5V8l2.5 1.5" />
+              </svg>
+              {duracaoCurta(focoSeg)} de foco
+            </span>
+          )}
         </span>
       </div>
 

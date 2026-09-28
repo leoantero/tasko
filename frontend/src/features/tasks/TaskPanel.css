@@ -180,6 +180,7 @@
 
 .task-item-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
   margin-top: 2px;
@@ -236,6 +237,23 @@
 
 .task-item-acao--focar {
   color: var(--color-brand);
+}
+
+.task-item-tempo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.task-item-tempo svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
 }
 
 .task-item-em-foco {
