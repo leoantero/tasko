@@ -5,7 +5,7 @@ from app.errors import ApiError
 from psycopg import errors as pg_errors
 from app.repositories import projetos as repo_projetos
 from app.repositories import tarefas as repo
-from app.validacao import corpo, data, exigir
+from app.validacao import corpo, data, exigir, inteiro
 
 bp = Blueprint("tarefas", __name__)
 
@@ -43,14 +43,17 @@ def listar():
 def criar():
     dados = corpo()
     exigir(dados, "titulo")
-    _validar(dados.get("projeto_id"), dados.get("prioridade"), "pendente")
+
+    projeto_id = inteiro(dados.get("projeto_id"), "projeto_id")
+    prioridade = inteiro(dados.get("prioridade"), "prioridade")
+    _validar(projeto_id, prioridade, "pendente")
 
     tarefa = repo.criar(
         g.usuario_id,
         dados["titulo"].strip(),
-        dados.get("projeto_id"),
+        projeto_id,
         dados.get("descricao"),
-        dados.get("prioridade"),
+        prioridade,
         data(dados.get("prazo"), "prazo"),
     )
     return jsonify(tarefa), 201
@@ -68,8 +71,8 @@ def atualizar(tarefa_id):
     atual = _buscar_ou_404(tarefa_id)
     dados = corpo()
 
-    projeto_id = dados.get("projeto_id", atual["projeto_id"])
-    prioridade = dados.get("prioridade", atual["prioridade"])
+    projeto_id = inteiro(dados.get("projeto_id", atual["projeto_id"]), "projeto_id")
+    prioridade = inteiro(dados.get("prioridade", atual["prioridade"]), "prioridade")
     status = dados.get("status", atual["status"])
     _validar(projeto_id, prioridade, status)
 

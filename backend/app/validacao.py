@@ -31,3 +31,16 @@ def data(valor, campo):
         return datetime.strptime(str(valor), "%Y-%m-%d").date()
     except ValueError:
         raise ApiError(f"O campo {campo} deve estar no formato AAAA-MM-DD.")
+
+
+def inteiro(valor, campo):
+    """Converte para int, com 400 em vez do erro de tipo no banco."""
+    if valor in (None, ""):
+        return None
+    if isinstance(valor, bool):
+        raise ApiError(f"O campo {campo} deve ser um numero inteiro.")
+
+    try:
+        return int(valor)
+    except (TypeError, ValueError):
+        raise ApiError(f"O campo {campo} deve ser um numero inteiro.")
