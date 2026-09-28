@@ -96,6 +96,8 @@ flowchart LR
     A --> B[(Banco de Dados)]
 ```
 
+O estado do frontend, o que falta e o guia de integração com a API estão em [docs/FRONTEND.md](docs/FRONTEND.md).
+
 ## Possíveis extensões
 
 * Notificações
