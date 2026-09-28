@@ -38,7 +38,17 @@ function FocusScreen() {
     primario.current?.focus()
   }, [fase])
 
-  if (!estado) return null
+  if (!estado) {
+    return (
+      <main className="foco foco--vazio" ref={tela}>
+        <h1>Nenhuma sessão em andamento</h1>
+        <p>Abra um projeto e use "Iniciar foco" em uma tarefa para começar uma sessão Pomodoro.</p>
+        <a className="foco-link" href="#/projetos" ref={primario}>
+          Ver projetos
+        </a>
+      </main>
+    )
+  }
 
   const tarefa = tarefas.find((t) => t.id === estado.tarefaId)
   const projeto = projetos.find((p) => p.id === tarefa?.projeto_id)

@@ -209,3 +209,61 @@
   outline: 2px solid var(--color-surface-0);
   outline-offset: 2px;
 }
+
+/* Sem sessão. */
+.foco--vazio {
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.foco--vazio h1 {
+  margin: 0;
+  font: var(--text-display-lg);
+}
+
+.foco--vazio p {
+  margin: 0;
+  font: var(--text-body-lg);
+  color: var(--color-ink-muted);
+}
+
+.foco-link {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font: var(--text-body);
+  font-weight: 600;
+  color: var(--color-surface-100);
+  text-decoration: none;
+  background: var(--color-brand);
+  border-radius: var(--radius-md);
+}
+
+.foco-link:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .foco {
+    padding: var(--space-4) var(--space-4) var(--space-8);
+  }
+
+  .foco-palco {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .foco-digitos {
+    font-size: 52px;
+    line-height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foco-palco .foco-status-ponto {
+    animation: none !important;
+  }
+
+  .foco-progresso {
+    transition: none;
+  }
+}
