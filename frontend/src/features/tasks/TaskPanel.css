@@ -230,6 +230,19 @@
   background: var(--color-surface-200);
 }
 
+.task-item-play {
+  fill: currentColor;
+}
+
+.task-item-acao--focar {
+  color: var(--color-brand);
+}
+
+.task-item-em-foco {
+  font-weight: 600;
+  color: var(--color-brand);
+}
+
 .task-item-acao--perigo:hover {
   color: var(--color-danger);
 }

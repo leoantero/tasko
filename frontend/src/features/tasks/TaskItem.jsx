@@ -1,7 +1,7 @@
 import PrioridadeMenu from './PrioridadeMenu.jsx'
 import { situacaoTarefa } from './tarefas'
 
-function TaskItem({ tarefa, onAlternar, onPriorizar, onEditar, onExcluir }) {
+function TaskItem({ tarefa, emFoco, onAlternar, onFocar, onPriorizar, onEditar, onExcluir }) {
   const situacao = situacaoTarefa(tarefa)
   const concluida = tarefa.status === 'concluida'
 
@@ -19,13 +19,32 @@ function TaskItem({ tarefa, onAlternar, onPriorizar, onEditar, onExcluir }) {
         <span className="task-item-titulo">{tarefa.titulo}</span>
         {tarefa.descricao && <span className="task-item-descricao">{tarefa.descricao}</span>}
         <span className="task-item-meta">
+          {emFoco && <span className="task-item-em-foco">em foco</span>}
           <span className="task-item-situacao">{situacao.rotulo}</span>
         </span>
       </div>
 
       <div className="task-item-acoes">
         {!concluida && (
-          <PrioridadeMenu valor={tarefa.prioridade ?? null} titulo={tarefa.titulo} onEscolher={onPriorizar} />
+          <button
+            type="button"
+            className="task-item-acao task-item-acao--focar"
+            onClick={onFocar}
+            aria-label={`${emFoco ? 'Ver sessão em andamento' : 'Iniciar foco'}: ${tarefa.titulo}`}
+            title={emFoco ? 'Ver sessão em andamento' : 'Iniciar foco'}
+          >
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <circle cx="10" cy="10" r="7.25" />
+              <path className="task-item-play" d="M8.5 7.25v5.5L13 10z" />
+            </svg>
+          </button>
+        )}
+        {!concluida && (
+          <PrioridadeMenu
+            valor={tarefa.prioridade ?? null}
+            titulo={tarefa.titulo}
+            onEscolher={onPriorizar}
+          />
         )}
         <button type="button" className="task-item-acao task-item-acao--editar" onClick={onEditar} aria-label={`Editar: ${tarefa.titulo}`}>
           <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">

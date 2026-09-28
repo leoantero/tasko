@@ -1,6 +1,8 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import './TaskPanel.css'
 import { useDados } from '../../lib/dados'
+import { useFoco } from '../pomodoro/foco'
+import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
 import ConfirmarExclusao from './ConfirmarExclusao.jsx'
 import TaskConcluidas from './TaskConcluidas.jsx'
 import TaskForm from './TaskForm.jsx'
@@ -11,12 +13,14 @@ import { ordenarConcluidas, ordenarPendentes, rotuloPrioridade } from './tarefas
 
 function TaskPanel({ projetoId, tarefas }) {
   const { criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
+  const { estado: foco } = useFoco()
   const id = useId()
   const painel = useRef(null)
   const campoNova = useRef(null)
   const focarDepois = useRef(null)
   const [editando, setEditando] = useState(null)
   const [excluindo, setExcluindo] = useState(null)
+  const [focando, setFocando] = useState(null)
   const [mostrarConcluidas, setMostrarConcluidas] = useState(false)
   const [aviso, setAviso] = useState('')
 
@@ -67,10 +71,13 @@ function TaskPanel({ projetoId, tarefas }) {
   }
 
   function renderizar(tarefa) {
+    const emFoco = foco?.fase === 'foco' && foco.tarefaId === tarefa.id
     return (
       <TaskItem
         key={tarefa.id}
         tarefa={tarefa}
+        emFoco={emFoco}
+        onFocar={() => (emFoco ? (window.location.hash = '#/foco') : setFocando(tarefa))}
         onAlternar={() => alternar(tarefa)}
         onPriorizar={(prioridade) => priorizar(tarefa, prioridade)}
         onEditar={() => setEditando(tarefa)}
@@ -125,6 +132,8 @@ function TaskPanel({ projetoId, tarefas }) {
           }}
         />
       )}
+
+      {focando && <IniciarSessao tarefa={focando} onFechar={() => setFocando(null)} />}
 
       {excluindo && (
         <ConfirmarExclusao

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Dialogo from '../../components/Dialogo.jsx'
+import { useDados } from '../../lib/dados'
 import CampoMinutos from './CampoMinutos.jsx'
 import { useFoco } from './foco'
 
@@ -10,13 +11,39 @@ function lerMinutos(texto, max) {
   return texto !== '' && Number.isInteger(n) && n >= 1 && n <= max ? n : null
 }
 
-// Escolha dos tempos de foco e de intervalo antes de começar a sessão.
+// Escolha dos tempos antes de começar. Só um foco por vez: com outro em curso, oferece ir até ele
+// (no intervalo a sessão anterior já foi registrada, então dá para trocar de tarefa).
 function IniciarSessao({ tarefa, onFechar }) {
-  const { tempos, comecar } = useFoco()
+  const { tarefas } = useDados()
+  const { estado, tempos, comecar } = useFoco()
   const [foco, setFoco] = useState(String(tempos.focoSeg / 60))
   const [intervalo, setIntervalo] = useState(String(tempos.intervaloSeg / 60))
   const [erro, setErro] = useState('')
   const [iniciando, setIniciando] = useState(false)
+
+  if (estado?.fase === 'foco') {
+    const atual = tarefas.find((t) => t.id === estado.tarefaId)
+    return (
+      <Dialogo titulo="Já existe uma sessão" onFechar={onFechar} largura="pequena">
+        <p className="dialogo-texto">
+          Você está focando em <strong>{atual?.titulo}</strong>. Encerre essa sessão antes de começar outra.
+        </p>
+        <footer className="acoes">
+          <button type="button" className="btn btn--secundario" onClick={onFechar}>
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="btn btn--primario"
+            onClick={() => (window.location.hash = '#/foco')}
+            data-autofocus
+          >
+            Ir para a sessão
+          </button>
+        </footer>
+      </Dialogo>
+    )
+  }
 
   const focoMin = lerMinutos(foco, LIMITE.foco)
   const intervaloMin = lerMinutos(intervalo, LIMITE.intervalo)

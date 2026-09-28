@@ -4,6 +4,8 @@ import HomeScreen from './features/home/HomeScreen.jsx'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
 import ProjectsScreen from './features/projects/ProjectsScreen.jsx'
+import FocusScreen from './features/pomodoro/FocusScreen.jsx'
+import { FocoProvider } from './features/pomodoro/FocoProvider.jsx'
 import { perfil } from './lib/api'
 import { DadosProvider } from './lib/DadosProvider.jsx'
 import { useRota } from './lib/rota'
@@ -11,6 +13,7 @@ import { limparToken, obterToken } from './lib/session'
 
 function lerTela(rota) {
   const [secao, id] = rota.split('/')
+  if (secao === 'foco') return { tela: 'foco' }
   if (secao !== 'projetos') return { tela: 'inicio' }
   return id ? { tela: 'projeto', projetoId: Number(id) } : { tela: 'projetos' }
 }
@@ -20,7 +23,7 @@ function App() {
   const [usuario, setUsuario] = useState(null)
   const { tela, projetoId } = lerTela(useRota())
 
-  // O detalhe do projeto define o próprio título (usa o nome do projeto).
+  // O detalhe do projeto e a sessão de foco definem o próprio título (nome do projeto, timer).
   useEffect(() => {
     const titulos = { inicio: 'Início', projetos: 'Projetos' }
     if (!token) document.title = 'Entrar · Tasko'
@@ -57,11 +60,14 @@ function App() {
 
   return (
     <DadosProvider>
-      <AppShell rota={tela === 'inicio' ? 'inicio' : 'projetos'} usuario={usuario} onSair={sair}>
-        {tela === 'inicio' && <HomeScreen usuario={usuario} />}
-        {tela === 'projetos' && <ProjectsScreen />}
-        {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
-      </AppShell>
+      <FocoProvider>
+        <AppShell rota={tela === 'projeto' ? 'projetos' : tela} usuario={usuario} onSair={sair}>
+          {tela === 'inicio' && <HomeScreen usuario={usuario} />}
+          {tela === 'projetos' && <ProjectsScreen />}
+          {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
+          {tela === 'foco' && <FocusScreen />}
+        </AppShell>
+      </FocoProvider>
     </DadosProvider>
   )
 }
