@@ -56,6 +56,7 @@ function FocusScreen() {
   const tarefa = tarefas.find((t) => t.id === estado.tarefaId)
   const projeto = projetos.find((p) => p.id === tarefa?.projeto_id)
   const anteriores = sessoes.filter((s) => s.tarefa_id === estado.tarefaId && s.fim)
+  const registrada = sessoes.find((s) => s.id === estado.sessaoId && s.fim)
   const focadoNaTarefa = anteriores.reduce((total, s) => total + (s.tempo_foco_segundos ?? 0), 0)
   const pausado = estado.parado !== null
   const completa = estado.focadoSeg === estado.focoSeg
@@ -98,6 +99,14 @@ function FocusScreen() {
           <h1 id="foco-tarefa">{tarefa?.titulo ?? 'Tarefa removida'}</h1>
           {projeto && <a href={`#/projetos/${projeto.id}`}>{projeto.nome}</a>}
         </div>
+
+        {fase === 'fim-foco' && registrada && (
+          <p className="foco-registro">
+            Registrada {completa ? 'automaticamente ' : ''}às{' '}
+            {new Date(registrada.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} ·{' '}
+            {minutos(registrada.tempo_foco_segundos)} de foco
+          </p>
+        )}
 
         <FocoAcoes
           tarefa={tarefa}

@@ -192,6 +192,24 @@
   border-color: transparent;
 }
 
+.foco-registro {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--foco-accent);
+}
+
+.foco-registro::before {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+
 .foco-erro {
   margin: 0;
   font: var(--text-body-sm);
