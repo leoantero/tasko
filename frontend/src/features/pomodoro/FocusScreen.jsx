@@ -22,9 +22,12 @@ function FocusScreen() {
   const fase = estado?.fase
   const confirmando = fase === 'foco' && confirmarSessao === estado.sessaoId
   const restante = EM_CURSO.includes(fase) ? restanteDe(estado, agora) : 0
+  const encerradaAntes = fase === 'fim-foco' && estado.focadoSeg < estado.focoSeg
   const titulo = !estado
     ? 'Foco'
-    : (TITULOS[fase] ?? `${formatarRelogio(restante)} · ${fase === 'foco' ? 'Foco' : 'Intervalo'}`)
+    : encerradaAntes
+      ? 'Sessão encerrada'
+      : (TITULOS[fase] ?? `${formatarRelogio(restante)} · ${fase === 'foco' ? 'Foco' : 'Intervalo'}`)
 
   useEffect(() => {
     document.title = `${titulo} · Tasko`
