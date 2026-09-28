@@ -17,7 +17,6 @@ function HomeScreen({ usuario }) {
     )
   }
 
-  const tarefaEmFoco = tarefas.find((t) => t.id === sessaoAtual.tarefaId)
   const pendentes = tarefas.filter((t) => !t.concluida && t.id !== sessaoAtual.tarefaId)
   const proxima = [...pendentes].sort(
     (a, b) => PESO_PRIORIDADE[a.prioridade] - PESO_PRIORIDADE[b.prioridade] || a.prazo - b.prazo,
@@ -51,7 +50,7 @@ function HomeScreen({ usuario }) {
 
       <div className="home-grid">
         <div className="home-col-main">
-          <FocusCard sessao={sessaoAtual} tarefa={tarefaEmFoco} proxima={proxima} />
+          <FocusCard proxima={proxima} />
           <DayRhythm blocos={blocosHoje} sessaoInicio={sessaoAtual.inicio} agora={AGORA_MIN} />
         </div>
 
