@@ -1,6 +1,7 @@
-import { ROTULO_PRIORIDADE, situacaoTarefa } from './tarefas'
+import PrioridadeMenu from './PrioridadeMenu.jsx'
+import { situacaoTarefa } from './tarefas'
 
-function TaskItem({ tarefa, onAlternar, onEditar, onExcluir }) {
+function TaskItem({ tarefa, onAlternar, onPriorizar, onEditar, onExcluir }) {
   const situacao = situacaoTarefa(tarefa)
   const concluida = tarefa.status === 'concluida'
 
@@ -18,19 +19,14 @@ function TaskItem({ tarefa, onAlternar, onEditar, onExcluir }) {
         <span className="task-item-titulo">{tarefa.titulo}</span>
         {tarefa.descricao && <span className="task-item-descricao">{tarefa.descricao}</span>}
         <span className="task-item-meta">
-          {tarefa.prioridade && (
-            <span
-              className={`task-item-prio task-item-prio--${tarefa.prioridade}`}
-              role="img"
-              title={ROTULO_PRIORIDADE[tarefa.prioridade]}
-              aria-label={ROTULO_PRIORIDADE[tarefa.prioridade]}
-            />
-          )}
           <span className="task-item-situacao">{situacao.rotulo}</span>
         </span>
       </div>
 
       <div className="task-item-acoes">
+        {!concluida && (
+          <PrioridadeMenu valor={tarefa.prioridade ?? null} titulo={tarefa.titulo} onEscolher={onPriorizar} />
+        )}
         <button type="button" className="task-item-acao task-item-acao--editar" onClick={onEditar} aria-label={`Editar: ${tarefa.titulo}`}>
           <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
             <path d="M13.5 3.5l3 3L7 16H4v-3z" />

@@ -8,8 +8,6 @@ export function rotuloPrioridade(valor) {
   return valor ? `Prioridade ${NOME_PRIORIDADE[valor].toLowerCase()}` : 'Sem prioridade'
 }
 
-export const ROTULO_PRIORIDADE = { 3: 'Prioridade alta', 2: 'Prioridade média', 1: 'Prioridade baixa' }
-
 export function situacaoTarefa(tarefa, hoje = new Date()) {
   if (tarefa.status === 'concluida') {
     return { tipo: 'concluida', rotulo: `concluída em ${formatarData(new Date(tarefa.concluida_em))}` }

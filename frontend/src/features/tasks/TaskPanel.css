@@ -187,24 +187,6 @@
   color: var(--color-ink-muted);
 }
 
-.task-item-prio {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
-}
-
-.task-item-prio--3 {
-  background: var(--color-priority-high);
-}
-
-.task-item-prio--2 {
-  background: var(--color-priority-medium);
-}
-
-.task-item-prio--1 {
-  background: var(--color-priority-low);
-}
-
 .task-item--urgente .task-item-situacao {
   font-weight: 600;
   color: var(--color-ink);

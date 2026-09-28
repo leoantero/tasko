@@ -7,7 +7,7 @@ import TaskForm from './TaskForm.jsx'
 import TaskGrupos from './TaskGrupos.jsx'
 import TaskItem from './TaskItem.jsx'
 import TaskQuickAdd from './TaskQuickAdd.jsx'
-import { ordenarConcluidas, ordenarPendentes } from './tarefas'
+import { ordenarConcluidas, ordenarPendentes, rotuloPrioridade } from './tarefas'
 
 function TaskPanel({ projetoId, tarefas }) {
   const { criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
@@ -26,11 +26,11 @@ function TaskPanel({ projetoId, tarefas }) {
     return () => clearTimeout(timer)
   }, [aviso])
 
-  // Marcar muda a tarefa de seção (o checkbox é recriado) e excluir remove o botão que
-  // abriu a confirmação: devolve o foco depois que a tela atualiza e o diálogo fecha
-  // (com o modal aberto, o resto da página é inerte e não recebe foco).
+  // Marcar ou mudar a prioridade leva a tarefa para outra seção (o botão é recriado) e
+  // excluir remove o botão que abriu a confirmação: devolve o foco depois que a tela
+  // atualiza e o diálogo fecha (com o modal aberto, o resto da página é inerte).
   // O pedido só é consumido quando a tarefa já tem o valor novo e o botão existe
-  // (a seção de concluídas pode abrir num render posterior; com a API, o status chega depois).
+  // (a seção de concluídas pode abrir num render posterior; com a API, o valor chega depois).
   useLayoutEffect(() => {
     const pedido = focarDepois.current
     if (pedido === null || editando || excluindo) return
@@ -60,12 +60,19 @@ function TaskPanel({ projetoId, tarefas }) {
     setAviso(status === 'concluida' ? 'Tarefa concluída.' : 'Tarefa reaberta.')
   }
 
+  async function priorizar(tarefa, prioridade) {
+    focarDepois.current = { id: tarefa.id, campo: 'prioridade', valor: prioridade, alvo: '.prio-bandeira' }
+    await atualizarTarefa(tarefa.id, { prioridade })
+    setAviso(`${rotuloPrioridade(prioridade)}: ${tarefa.titulo}.`)
+  }
+
   function renderizar(tarefa) {
     return (
       <TaskItem
         key={tarefa.id}
         tarefa={tarefa}
         onAlternar={() => alternar(tarefa)}
+        onPriorizar={(prioridade) => priorizar(tarefa, prioridade)}
         onEditar={() => setEditando(tarefa)}
         onExcluir={() => setExcluindo(tarefa)}
       />
