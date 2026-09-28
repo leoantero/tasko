@@ -1,4 +1,5 @@
 from flask import Blueprint, g, jsonify
+from psycopg import errors as pg_errors
 
 from app.auth import gerar_hash, gerar_token, login_required, senha_confere
 from app.errors import ApiError
@@ -18,11 +19,15 @@ def cadastrar():
     if len(dados["senha"]) < SENHA_MINIMA:
         raise ApiError(f"A senha deve ter ao menos {SENHA_MINIMA} caracteres.")
 
-    usuario = repo.criar(
-        dados["nome"].strip(),
-        email(dados["email"]),
-        gerar_hash(dados["senha"]),
-    )
+    try:
+        usuario = repo.criar(
+            dados["nome"].strip(),
+            email(dados["email"]),
+            gerar_hash(dados["senha"]),
+        )
+    except pg_errors.UniqueViolation:
+        raise ApiError("Este email ja esta cadastrado.", 409)
+
     return jsonify(usuario), 201
 
 
