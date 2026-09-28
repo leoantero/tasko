@@ -20,7 +20,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     config_class.validar()
 
-    CORS(app)
+    CORS(app, origins=config_class.CORS_ORIGENS)
     register_error_handlers(app)
     app.register_blueprint(usuarios.bp, url_prefix="/api")
     app.register_blueprint(projetos.bp, url_prefix="/api")
