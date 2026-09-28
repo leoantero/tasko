@@ -1,4 +1,5 @@
 import './AppShell.css'
+import SessaoIndicador from '../pomodoro/SessaoIndicador.jsx'
 
 const LINKS = [
   { rota: 'inicio', href: '#/', rotulo: 'Início' },
@@ -29,6 +30,8 @@ function AppShell({ rota, usuario, onSair, children }) {
             </a>
           ))}
         </nav>
+
+        {rota !== 'foco' && <SessaoIndicador />}
 
         <div className="shell-user">
           <span className="shell-avatar" aria-hidden="true">
