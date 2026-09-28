@@ -5,7 +5,7 @@ from app.errors import ApiError
 from psycopg import errors as pg_errors
 from app.repositories import projetos as repo_projetos
 from app.repositories import tarefas as repo
-from app.validacao import corpo, exigir
+from app.validacao import corpo, data, exigir
 
 bp = Blueprint("tarefas", __name__)
 
@@ -51,7 +51,7 @@ def criar():
         dados.get("projeto_id"),
         dados.get("descricao"),
         dados.get("prioridade"),
-        dados.get("prazo"),
+        data(dados.get("prazo"), "prazo"),
     )
     return jsonify(tarefa), 201
 
@@ -80,7 +80,7 @@ def atualizar(tarefa_id):
         projeto_id,
         dados.get("descricao", atual["descricao"]),
         prioridade,
-        dados.get("prazo", atual["prazo"]),
+        data(dados.get("prazo", atual["prazo"]), "prazo"),
         status,
     )
     return jsonify(tarefa)
