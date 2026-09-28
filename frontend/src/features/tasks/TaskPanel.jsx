@@ -11,7 +11,7 @@ import { ordenarConcluidas, ordenarPendentes } from './tarefas'
 function TaskPanel({ projetoId, tarefas }) {
   const { criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
   const id = useId()
-  const checkboxes = useRef(new Map())
+  const painel = useRef(null)
   const campoNova = useRef(null)
   const focarDepois = useRef(null)
   const [editando, setEditando] = useState(null)
@@ -28,15 +28,15 @@ function TaskPanel({ projetoId, tarefas }) {
   // Marcar muda a tarefa de seção (o checkbox é recriado) e excluir remove o botão que
   // abriu a confirmação: devolve o foco depois que a tela atualiza e o diálogo fecha
   // (com o modal aberto, o resto da página é inerte e não recebe foco).
-  // O pedido só é consumido quando a tarefa já está no status novo e o checkbox existe
+  // O pedido só é consumido quando a tarefa já tem o valor novo e o botão existe
   // (a seção de concluídas pode abrir num render posterior; com a API, o status chega depois).
   useLayoutEffect(() => {
     const pedido = focarDepois.current
     if (pedido === null || editando || excluindo) return
     let alvo = campoNova.current
     if (pedido !== 'nova') {
-      if (tarefas.find((t) => t.id === pedido.id)?.status !== pedido.status) return
-      alvo = checkboxes.current.get(pedido.id)
+      if ((tarefas.find((t) => t.id === pedido.id)?.[pedido.campo] ?? null) !== pedido.valor) return
+      alvo = painel.current.querySelector(`[data-tarefa="${pedido.id}"] ${pedido.alvo}`)
       if (!alvo || alvo.closest('[hidden]')) return
     }
     focarDepois.current = null
@@ -53,7 +53,7 @@ function TaskPanel({ projetoId, tarefas }) {
 
   async function alternar(tarefa) {
     const status = tarefa.status === 'concluida' ? 'pendente' : 'concluida'
-    focarDepois.current = { id: tarefa.id, status }
+    focarDepois.current = { id: tarefa.id, campo: 'status', valor: status, alvo: '.task-item-check' }
     await atualizarTarefa(tarefa.id, { status })
     if (status === 'concluida') setMostrarConcluidas(true)
     setAviso(status === 'concluida' ? 'Tarefa concluída.' : 'Tarefa reaberta.')
@@ -64,10 +64,6 @@ function TaskPanel({ projetoId, tarefas }) {
       <TaskItem
         key={tarefa.id}
         tarefa={tarefa}
-        checkboxRef={(el) => {
-          if (el) checkboxes.current.set(tarefa.id, el)
-          else checkboxes.current.delete(tarefa.id)
-        }}
         onAlternar={() => alternar(tarefa)}
         onEditar={() => setEditando(tarefa)}
         onExcluir={() => setExcluindo(tarefa)}
@@ -76,7 +72,7 @@ function TaskPanel({ projetoId, tarefas }) {
   }
 
   return (
-    <section className="task-panel" aria-labelledby={`${id}-titulo`}>
+    <section ref={painel} className="task-panel" aria-labelledby={`${id}-titulo`}>
       <header className="task-panel-head">
         <h2 id={`${id}-titulo`}>Tarefas</h2>
         <span className="task-panel-contagem">

@@ -1,13 +1,12 @@
 import { ROTULO_PRIORIDADE, situacaoTarefa } from './tarefas'
 
-function TaskItem({ tarefa, checkboxRef, onAlternar, onEditar, onExcluir }) {
+function TaskItem({ tarefa, onAlternar, onEditar, onExcluir }) {
   const situacao = situacaoTarefa(tarefa)
   const concluida = tarefa.status === 'concluida'
 
   return (
-    <li className={`task-item task-item--${situacao.tipo}`}>
+    <li className={`task-item task-item--${situacao.tipo}`} data-tarefa={tarefa.id}>
       <input
-        ref={checkboxRef}
         type="checkbox"
         className="task-item-check"
         checked={concluida}
