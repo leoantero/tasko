@@ -56,3 +56,10 @@ def execute(sql, params=None):
         if cur.description is None:
             return None
         return cur.fetchone()
+
+
+def verificar():
+    """Confere se o banco responde. Usado pelo /health."""
+    with get_cursor() as cur:
+        cur.execute("SELECT 1")
+        return cur.fetchone() is not None

@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 
 from app.config import Config
+from app.db import verificar
 from app.errors import register_error_handlers
 from app.routes import (
     dashboard,
@@ -32,6 +33,13 @@ def create_app(config_class=Config):
 
     @app.get("/health")
     def health():
-        return {"status": "ok"}
+        """Responde 503 com o banco fora, para o monitoramento perceber."""
+        try:
+            verificar()
+        except Exception as erro:
+            app.logger.warning("health: banco indisponivel: %s", erro)
+            return {"status": "degradado", "banco": "indisponivel"}, 503
+
+        return {"status": "ok", "banco": "ok"}
 
     return app
