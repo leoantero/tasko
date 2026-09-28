@@ -7,11 +7,16 @@ from app.validacao import corpo, email, exigir
 
 bp = Blueprint("usuarios", __name__)
 
+SENHA_MINIMA = 8
+
 
 @bp.post("/usuarios")
 def cadastrar():
     dados = corpo()
     exigir(dados, "nome", "email", "senha")
+
+    if len(dados["senha"]) < SENHA_MINIMA:
+        raise ApiError(f"A senha deve ter ao menos {SENHA_MINIMA} caracteres.")
 
     usuario = repo.criar(
         dados["nome"].strip(),
