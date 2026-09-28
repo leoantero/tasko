@@ -299,3 +299,20 @@
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+/* Em telas estreitas, as quatro ações descem para baixo do texto da tarefa. */
+@media (max-width: 560px) {
+  .task-item {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+  }
+
+  .task-item-corpo {
+    flex-basis: calc(100% - 20px - var(--space-3));
+  }
+
+  .task-item-acoes {
+    width: 100%;
+    padding-left: calc(20px + var(--space-3) - 7px);
+  }
+}

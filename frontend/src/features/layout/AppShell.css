@@ -113,12 +113,22 @@
 
 @media (max-width: 480px) {
   .shell-topbar {
-    gap: var(--space-3);
+    gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
   }
 
   .shell-brand-nome,
   .shell-avatar {
     display: none;
+  }
+
+  /* Abre espaço para o timer da sessão Pomodoro na barra. */
+  .shell-link {
+    padding: var(--space-2);
+  }
+
+  .shell-link[aria-current='page']::after {
+    right: var(--space-2);
+    left: var(--space-2);
   }
 }

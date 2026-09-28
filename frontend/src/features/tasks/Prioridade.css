@@ -61,6 +61,14 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Com as ações embaixo do texto (TaskPanel.css), a bandeira fica à esquerda: o menu abre para a direita. */
+@media (max-width: 560px) {
+  .prio-menu-lista {
+    right: auto;
+    left: 0;
+  }
+}
+
 .prio-menu-item {
   display: flex;
   align-items: center;

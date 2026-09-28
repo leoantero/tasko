@@ -42,3 +42,21 @@
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+@media (max-width: 480px) {
+  .sessao-ind {
+    gap: 6px;
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
+/* Nos celulares menores, o aviso de fim cabe só como o ponto verde (o nome acessível continua). */
+@media (max-width: 400px) {
+  .sessao-ind[data-fase^='fim'] {
+    padding: var(--space-2);
+  }
+
+  .sessao-ind[data-fase^='fim'] .sessao-ind-texto {
+    display: none;
+  }
+}
