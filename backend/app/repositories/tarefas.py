@@ -77,7 +77,20 @@ def atualizar(tarefa_id, usuario_id, titulo, projeto_id, descricao, prioridade, 
 
 
 def excluir(tarefa_id, usuario_id):
+    """Solta as sessoes da tarefa antes de apagar, na mesma transacao.
+
+    A sessao nao e apagada junto: o tempo ja focado continua valendo no
+    dashboard e no historico, so deixa de apontar para a tarefa.
+    """
     return execute(
-        "DELETE FROM tarefas WHERE id = %s AND usuario_id = %s RETURNING id",
-        (tarefa_id, usuario_id),
+        """
+        WITH soltas AS (
+            UPDATE sessoes_pomodoro SET tarefa_id = NULL
+             WHERE tarefa_id = %(id)s AND usuario_id = %(usuario)s
+        )
+        DELETE FROM tarefas
+         WHERE id = %(id)s AND usuario_id = %(usuario)s
+        RETURNING id
+        """,
+        {"id": tarefa_id, "usuario": usuario_id},
     )

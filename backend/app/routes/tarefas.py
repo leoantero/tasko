@@ -2,7 +2,6 @@ from flask import Blueprint, g, jsonify, request
 
 from app.auth import login_required
 from app.errors import ApiError
-from psycopg import errors as pg_errors
 from app.repositories import projetos as repo_projetos
 from app.repositories import tarefas as repo
 from app.validacao import corpo, data, exigir, inteiro, texto
@@ -93,9 +92,6 @@ def atualizar(tarefa_id):
 @bp.delete("/tarefas/<int:tarefa_id>")
 @login_required
 def excluir(tarefa_id):
-    try:
-        if repo.excluir(tarefa_id, g.usuario_id) is None:
-            raise ApiError("Tarefa nao encontrada.", 404)
-    except pg_errors.ForeignKeyViolation:
-        raise ApiError("Esta tarefa possui Pomodoros. Apague-os primeiro.", 409)
+    if repo.excluir(tarefa_id, g.usuario_id) is None:
+        raise ApiError("Tarefa nao encontrada.", 404)
     return "", 204
