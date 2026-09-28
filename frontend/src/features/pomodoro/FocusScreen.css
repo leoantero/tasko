@@ -1,0 +1,60 @@
+.foco-mostrador {
+  position: relative;
+  width: min(280px, 100%);
+  aspect-ratio: 1;
+}
+
+.foco-mostrador svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.foco-trilha,
+.foco-progresso {
+  fill: none;
+  stroke-width: 8;
+}
+
+.foco-trilha {
+  stroke: var(--foco-linha);
+}
+
+.foco-progresso {
+  stroke: var(--foco-brand);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+}
+
+.foco-palco[data-pausado='true'] .foco-progresso {
+  stroke: var(--foco-muted);
+}
+
+/* Intervalo e fim de sessão usam o verde de progresso, como no design system. */
+.foco-palco:not([data-fase='foco']) .foco-progresso {
+  stroke: var(--foco-accent);
+}
+
+.foco-tempo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.foco-digitos {
+  font: var(--text-timer-lg);
+  font-size: 64px;
+  line-height: 64px;
+  font-variant-numeric: tabular-nums;
+}
+
+.foco-legenda {
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  color: var(--foco-muted);
+}
