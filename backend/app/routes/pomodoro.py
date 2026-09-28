@@ -28,6 +28,11 @@ def iniciar():
     if tarefa is None:
         raise ApiError("Tarefa nao encontrada.", 404)
 
+    # Uma sessao por vez: com duas abertas, o tempo de foco de uma delas
+    # seria contado em dobro no dashboard.
+    if repo.buscar_aberta(g.usuario_id) is not None:
+        raise ApiError("Ja existe uma sessao em andamento.", 409)
+
     sessao = repo.criar(
         g.usuario_id,
         dados["tarefa_id"],

@@ -17,6 +17,19 @@ def buscar(sessao_id, usuario_id):
     )
 
 
+def buscar_aberta(usuario_id):
+    """Sessao ja iniciada e ainda sem fim, se houver alguma."""
+    return query_one(
+        f"""
+        SELECT {COLUNAS} FROM sessoes_pomodoro
+         WHERE usuario_id = %s AND fim IS NULL
+         ORDER BY inicio DESC
+         LIMIT 1
+        """,
+        (usuario_id,),
+    )
+
+
 def criar(usuario_id, tarefa_id, inicio, tempo_total_segundos=None):
     return execute(
         f"""
