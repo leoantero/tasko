@@ -56,8 +56,10 @@ export function DadosProvider({ children }) {
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
   }
 
-  // POST /api/sessoes-pomodoro/iniciar: o início é a hora do servidor.
+  // POST /api/sessoes-pomodoro/iniciar: o início é a hora do servidor e só pode haver
+  // uma sessão aberta por vez (409).
   async function iniciarSessao({ tarefa_id, tempo_total_segundos }) {
+    if (sessoes.some((s) => !s.fim)) throw new Error('Ja existe uma sessao em andamento.')
     const sessao = {
       id: ++ultimoId,
       usuario_id: 1,
@@ -71,7 +73,7 @@ export function DadosProvider({ children }) {
     return sessao
   }
 
-  // POST /api/sessoes-pomodoro/finalizar: como no backend, o fim é a hora do servidor, o total
+  // POST /api/sessoes-pomodoro/<id>/finalizar: como no backend, o fim é a hora do servidor, o total
   // é o tempo decorrido desde o início e o foco informado fica limitado a esse total.
   async function finalizarSessao(id, { tempo_foco_segundos }) {
     const atual = sessoes.find((s) => s.id === id)
