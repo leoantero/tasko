@@ -10,6 +10,9 @@ from app.validacao import corpo, exigir
 
 bp = Blueprint("pomodoro", __name__)
 
+# Depois disso a sessao aberta e considerada abandonada, nao esquecida.
+HORAS_ABANDONO = 4
+
 
 def _buscar_ou_404(sessao_id):
     sessao = repo.buscar(sessao_id, g.usuario_id)
@@ -27,6 +30,8 @@ def iniciar():
     tarefa = repo_tarefas.buscar(dados["tarefa_id"], g.usuario_id)
     if tarefa is None:
         raise ApiError("Tarefa nao encontrada.", 404)
+
+    repo.descartar_abandonadas(g.usuario_id, HORAS_ABANDONO)
 
     # Uma sessao por vez: com duas abertas, o tempo de foco de uma delas
     # seria contado em dobro no dashboard.

@@ -49,6 +49,23 @@ def cancelar(sessao_id, usuario_id):
     )
 
 
+def descartar_abandonadas(usuario_id, horas):
+    """Apaga sessoes abertas ha mais tempo que o limite.
+
+    Ninguem foca por tantas horas seguidas: sao sessoes em que a pessoa
+    fechou o navegador e nunca finalizou, e que bloqueariam as proximas.
+    """
+    return query(
+        """
+        DELETE FROM sessoes_pomodoro
+         WHERE usuario_id = %s AND fim IS NULL
+           AND inicio < now() - make_interval(hours => %s)
+        RETURNING id
+        """,
+        (usuario_id, horas),
+    )
+
+
 def criar(usuario_id, tarefa_id, inicio, tempo_total_segundos=None):
     return execute(
         f"""
