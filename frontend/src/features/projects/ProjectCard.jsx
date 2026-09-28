@@ -1,4 +1,5 @@
 import './ProjectCard.css'
+import { duracaoCurta } from '../pomodoro/produtividade'
 import { formatarData, lerData, progressoPrazo, situacaoPrazo } from './datas'
 
 function ProjectCard({ projeto, novo = false, tarefas = null, href = null }) {
@@ -22,6 +23,7 @@ function ProjectCard({ projeto, novo = false, tarefas = null, href = null }) {
       {tarefas?.total > 0 && (
         <p className="project-card-tarefas">
           {tarefas.concluidas} de {tarefas.total} {tarefas.total === 1 ? 'tarefa concluída' : 'tarefas concluídas'}
+          {tarefas.focoSeg > 0 && ` · ${duracaoCurta(tarefas.focoSeg)} de foco`}
         </p>
       )}
       {projeto.descricao && <p className="project-card-descricao">{projeto.descricao}</p>}

@@ -5,6 +5,7 @@ import ProjectForm from './ProjectForm.jsx'
 import { listarCategorias, mesmaCategoria } from './categorias'
 import { diasAte, lerData } from './datas'
 import { useDados } from '../../lib/dados'
+import { focoPorTarefa } from '../pomodoro/produtividade'
 
 const FILTROS = [
   { id: 'ativo', rotulo: 'Ativos' },
@@ -29,7 +30,7 @@ function quando(dias) {
 }
 
 function ProjectsScreen() {
-  const { projetos, tarefas, criarProjeto } = useDados()
+  const { projetos, tarefas, sessoes, criarProjeto } = useDados()
   const [filtro, setFiltro] = useState('ativo')
   const [categoria, setCategoria] = useState(null)
   const [formAberto, setFormAberto] = useState(false)
@@ -52,9 +53,15 @@ function ProjectsScreen() {
     .filter((p) => !categoria || (p.categoria && mesmaCategoria(p.categoria, categoria)))
     .sort(ordenar)
 
+  const focoDaTarefa = focoPorTarefa(sessoes)
+
   function contarTarefas(projetoId) {
     const doProjeto = tarefas.filter((t) => t.projeto_id === projetoId)
-    return { total: doProjeto.length, concluidas: doProjeto.filter((t) => t.status === 'concluida').length }
+    return {
+      total: doProjeto.length,
+      concluidas: doProjeto.filter((t) => t.status === 'concluida').length,
+      focoSeg: doProjeto.reduce((soma, t) => soma + (focoDaTarefa.get(t.id) ?? 0), 0),
+    }
   }
 
   async function criar(dados) {
