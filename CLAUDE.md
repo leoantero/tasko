@@ -75,7 +75,7 @@ Login e cadastro são a HU09 (`features/auth/`): o token fica no `localStorage` 
 
 ### Dados e integração com a API
 
-- `lib/DadosProvider.jsx` é a única fonte de projetos, tarefas e sessões Pomodoro para as telas (hoje um mock em memória). Para integrar a API, mude só as ações desse arquivo, mantendo as assinaturas; as telas não mudam. A tela inicial (HU10) ainda usa o mock próprio `features/home/mockData.js`.
+- `lib/DadosProvider.jsx` é a única fonte de projetos, tarefas e sessões Pomodoro para todas as telas, inclusive a inicial (hoje um mock em memória). Para integrar a API, mude só as ações desse arquivo, mantendo as assinaturas; as telas não mudam.
 - Prioridade da tarefa (HU03) é número: 3 alta, 2 média, 1 baixa, `null` sem prioridade (`PRIORIDADES` em `features/tasks/tarefas.js`).
 - Pomodoro (HU04): `features/pomodoro/FocoProvider.jsx` guarda a sessão em curso (fases foco → fim-foco → intervalo → fim-intervalo) acima das telas, para o timer seguir ao navegar. Ele registra a sessão pelo `DadosProvider` (`iniciarSessao`/`finalizarSessao`, formato de `/api/sessoes-pomodoro`). "Pausar" congela o foco e não conta como tempo focado; o intervalo não é salvo na API.
 - Datas: o `jsonify` do Flask devolve `DATE`/`TIMESTAMPTZ` como RFC 822 (`"Thu, 08 Oct 2026 00:00:00 GMT"`), não ISO. Use sempre `lerData`, `diasAte` e `dataParaInput` de `features/projects/datas.js`; nunca `new Date("2026-10-08")` (vira o dia anterior no Brasil) nem `.slice(0, 10)`.
