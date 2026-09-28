@@ -3,7 +3,7 @@ from flask import Blueprint, g, jsonify
 from app.auth import login_required
 from app.errors import ApiError
 from app.repositories import metas as repo
-from app.validacao import corpo, exigir
+from app.validacao import corpo, data, exigir
 
 bp = Blueprint("metas", __name__)
 
@@ -63,7 +63,7 @@ def criar():
         g.usuario_id,
         dados["tipo"],
         valor_alvo,
-        dados["data_limite"],
+        data(dados["data_limite"], "data_limite"),
     )
     return jsonify(meta), 201
 
@@ -82,7 +82,7 @@ def atualizar(meta_id):
 
     tipo = dados.get("tipo", atual["tipo"])
     valor_alvo = dados.get("valor_alvo", atual["valor_alvo"])
-    data_limite = dados.get("data_limite", atual["data_limite"])
+    data_limite = data(dados.get("data_limite", atual["data_limite"]), "data_limite")
 
     meta = repo.atualizar(
         meta_id, g.usuario_id, tipo, _validar(tipo, valor_alvo), data_limite
