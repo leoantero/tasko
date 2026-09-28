@@ -1,5 +1,8 @@
-import { useState } from 'react'
 import './HomeScreen.css'
+import { useDados } from '../../lib/dados'
+import { useFoco } from '../pomodoro/foco'
+import { ehHoje } from '../pomodoro/produtividade'
+import { diasAte } from '../projects/datas'
 import DayRhythm from './DayRhythm.jsx'
 import FocusCard from './FocusCard.jsx'
 import TodayTasks from './TodayTasks.jsx'
@@ -9,13 +12,17 @@ import { saudacao } from './tempo'
 const PESO_PRIORIDADE = { alta: 0, media: 1, baixa: 2 }
 
 function HomeScreen({ usuario }) {
-  const [tarefas, setTarefas] = useState(tarefasHoje)
+  const tarefas = tarefasHoje
+  const { tarefas: todas, atualizarTarefa } = useDados()
+  const { estado } = useFoco()
+  const emFocoId = estado?.fase === 'foco' ? estado.tarefaId : null
 
-  function alternarTarefa(id) {
-    setTarefas((atuais) =>
-      atuais.map((t) => (t.id === id ? { ...t, concluida: !t.concluida } : t)),
-    )
-  }
+  // Do dia: pendentes que vencem hoje ou já venceram, a que está em foco e as concluídas hoje.
+  const doDia = todas.filter((t) =>
+    t.status === 'pendente'
+      ? t.id === emFocoId || (t.prazo && diasAte(t.prazo) <= 0)
+      : ehHoje(t.concluida_em),
+  )
 
   const pendentes = tarefas.filter((t) => !t.concluida && t.id !== sessaoAtual.tarefaId)
   const proxima = [...pendentes].sort(
@@ -55,10 +62,9 @@ function HomeScreen({ usuario }) {
         </div>
 
         <TodayTasks
-          tarefas={tarefas}
-          emFocoId={sessaoAtual.tarefaId}
-          agora={AGORA_MIN}
-          onAlternar={alternarTarefa}
+          tarefas={doDia}
+          emFocoId={emFocoId}
+          onAlternar={(t) => atualizarTarefa(t.id, { status: t.status === 'concluida' ? 'pendente' : 'concluida' })}
         />
       </div>
     </main>
