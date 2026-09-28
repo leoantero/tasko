@@ -3,7 +3,15 @@ from flask_cors import CORS
 
 from app.config import Config
 from app.errors import register_error_handlers
-from app.routes import metas, pomodoro, projetos, tarefas, usuarios, dashboard
+from app.routes import (
+    dashboard,
+    historico,
+    metas,
+    pomodoro,
+    projetos,
+    tarefas,
+    usuarios,
+)
 
 
 def create_app(config_class=Config):
@@ -20,6 +28,7 @@ def create_app(config_class=Config):
     app.register_blueprint(metas.bp, url_prefix="/api")
     app.register_blueprint(dashboard.bp, url_prefix="/api")
     app.register_blueprint(pomodoro.bp, url_prefix="/api")
+    app.register_blueprint(historico.bp, url_prefix="/api")
 
     @app.get("/health")
     def health():
