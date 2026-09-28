@@ -49,6 +49,13 @@ def login():
     return jsonify(token=gerar_token(usuario["id"]))
 
 
+@bp.post("/renovar")
+@login_required
+def renovar():
+    """Troca um token ainda valido por outro, sem pedir a senha de novo."""
+    return jsonify(token=gerar_token(g.usuario_id))
+
+
 @bp.get("/perfil")
 @login_required
 def perfil():

@@ -15,6 +15,8 @@ class Config:
         "CORS_ORIGENS",
         "http://localhost:5173,http://localhost:5174,http://localhost:3000",
     ).split(",")
+    # Validade do token em horas; o front renova antes de expirar.
+    TOKEN_HORAS = int(os.getenv("TOKEN_HORAS", "24"))
     JSON_SORT_KEYS = False
 
     @classmethod

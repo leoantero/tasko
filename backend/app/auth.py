@@ -7,8 +7,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.errors import ApiError
 
-EXPIRACAO_HORAS = 24
-
 # scrypt (padrao do Werkzeug) nao existe em todo build do Python
 METODO_HASH = "pbkdf2:sha256"
 
@@ -24,7 +22,8 @@ def senha_confere(senha, senha_hash):
 def gerar_token(usuario_id):
     payload = {
         "sub": str(usuario_id),
-        "exp": datetime.now(timezone.utc) + timedelta(hours=EXPIRACAO_HORAS),
+        "exp": datetime.now(timezone.utc)
+        + timedelta(hours=current_app.config["TOKEN_HORAS"]),
     }
     return jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
 
