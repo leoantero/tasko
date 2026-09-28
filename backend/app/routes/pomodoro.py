@@ -66,6 +66,17 @@ def listar():
     return jsonify(repo.listar(g.usuario_id))
 
 
+@bp.delete("/sessoes-pomodoro/<int:sessao_id>")
+@login_required
+def cancelar(sessao_id):
+    """Descarta a sessao em andamento: o tempo dela nao vira registro."""
+    if _buscar_ou_404(sessao_id)["fim"] is not None:
+        raise ApiError("Sessao finalizada nao pode ser cancelada.", 400)
+
+    repo.cancelar(sessao_id, g.usuario_id)
+    return "", 204
+
+
 @bp.get("/sessoes-pomodoro/atual")
 @login_required
 def atual():

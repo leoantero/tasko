@@ -37,6 +37,18 @@ def buscar_aberta(usuario_id):
     )
 
 
+def cancelar(sessao_id, usuario_id):
+    """Descarta uma sessao ainda aberta. Sessao finalizada fica no historico."""
+    return execute(
+        """
+        DELETE FROM sessoes_pomodoro
+         WHERE id = %s AND usuario_id = %s AND fim IS NULL
+        RETURNING id
+        """,
+        (sessao_id, usuario_id),
+    )
+
+
 def criar(usuario_id, tarefa_id, inicio, tempo_total_segundos=None):
     return execute(
         f"""
