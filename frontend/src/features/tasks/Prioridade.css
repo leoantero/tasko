@@ -21,6 +21,80 @@
   border: 1.5px dashed var(--color-ink-muted);
 }
 
+/* Bandeira na linha da tarefa: cheia com a cor da prioridade, vazada sem prioridade. */
+.prio-menu {
+  position: relative;
+}
+
+.prio-bandeira-pano {
+  fill: none;
+}
+
+.prio-bandeira[data-prioridade='3'] {
+  color: var(--color-priority-high);
+}
+
+.prio-bandeira[data-prioridade='2'] {
+  color: var(--color-priority-medium);
+}
+
+.prio-bandeira[data-prioridade='1'] {
+  color: var(--color-priority-low);
+}
+
+.prio-bandeira:not([data-prioridade='0']) .prio-bandeira-pano {
+  fill: currentColor;
+}
+
+.prio-menu-lista {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 176px;
+  padding: var(--space-1);
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.prio-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  font: var(--text-body);
+  color: var(--color-ink);
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.prio-menu-item:hover,
+.prio-menu-item:focus-visible {
+  background: var(--color-surface-200);
+  outline: none;
+}
+
+.prio-menu-item[aria-checked='true'] {
+  font-weight: 600;
+}
+
+.prio-menu-item[aria-checked='true']::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  margin-left: auto;
+  border: solid var(--color-ink);
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+
 /* Campo do painel "Editar tarefa". */
 .prio-campo {
   min-width: 0;
