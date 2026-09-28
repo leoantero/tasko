@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import './HomeScreen.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
@@ -7,15 +8,20 @@ import { ordenarPendentes, situacaoTarefa } from '../tasks/tarefas'
 import DayRhythm from './DayRhythm.jsx'
 import FocusCard from './FocusCard.jsx'
 import TodayTasks from './TodayTasks.jsx'
-import { AGORA_MIN, blocosHoje, sessaoAtual } from './mockData'
 import { saudacao } from './tempo'
 
 // HU10: reúne as tarefas do dia e a sessão de foco em andamento, com os mesmos dados
 // das outras telas (DadosProvider e FocoProvider).
 function HomeScreen({ usuario }) {
-  const { tarefas, atualizarTarefa } = useDados()
+  const { tarefas, sessoes, atualizarTarefa } = useDados()
   const { estado } = useFoco()
-  const agora = new Date()
+  const [agora, setAgora] = useState(() => new Date())
+
+  // A linha do tempo e a saudação só precisam de precisão de minuto.
+  useEffect(() => {
+    const id = setInterval(() => setAgora(new Date()), 30000)
+    return () => clearInterval(id)
+  }, [])
 
   const emFocoId = estado?.fase === 'foco' ? estado.tarefaId : null
 
@@ -53,7 +59,7 @@ function HomeScreen({ usuario }) {
       <div className="home-grid">
         <div className="home-col-main">
           <FocusCard proxima={proxima} />
-          <DayRhythm blocos={blocosHoje} sessaoInicio={sessaoAtual.inicio} agora={AGORA_MIN} />
+          <DayRhythm sessoes={sessoes.filter((s) => ehHoje(s.inicio, agora))} agora={agora} />
         </div>
 
         <TodayTasks

@@ -8,13 +8,26 @@ const HORAS_MARCADAS = [8, 10, 12, 14, 16, 18, 20, 22]
 const posicao = (minutos) =>
   Math.min(100, Math.max(0, ((minutos - INICIO_DIA) / (FIM_DIA - INICIO_DIA)) * 100))
 
-function DayRhythm({ blocos, sessaoInicio, agora }) {
-  const focos = blocos.filter((b) => b.tipo === 'foco')
-  const minutosFoco = focos.reduce((total, b) => total + (b.fim - b.inicio), 0)
-  const pausas = blocos.length - focos.length
-  const blocosComAtual = [...blocos, { inicio: sessaoInicio, fim: agora, tipo: 'atual' }]
+const minutosDoDia = (valor) => {
+  const data = new Date(valor)
+  return data.getHours() * 60 + data.getMinutes()
+}
+
+// Sessões de hoje (formato da API): cada finalizada vira um bloco; a aberta vai até agora.
+// Os vãos entre os blocos são as pausas.
+function DayRhythm({ sessoes, agora }) {
+  const agoraMin = minutosDoDia(agora)
+  const focos = sessoes.filter((s) => s.fim)
+  const minutosFoco = Math.round(focos.reduce((total, s) => total + (s.tempo_foco_segundos ?? 0), 0) / 60)
+  const tarefasFocadas = new Set(focos.map((s) => s.tarefa_id)).size
+  const blocos = sessoes.map((s) => ({
+    id: s.id,
+    inicio: minutosDoDia(s.inicio),
+    fim: s.fim ? minutosDoDia(s.fim) : agoraMin,
+    tipo: s.fim ? 'foco' : 'atual',
+  }))
   const descricao = focos.length
-    ? `${focos.length} ${focos.length === 1 ? 'sessão' : 'sessões'} de foco até ${formatarHora(agora)}`
+    ? `${focos.length} ${focos.length === 1 ? 'sessão' : 'sessões'} de foco até ${formatarHora(agoraMin)}`
     : 'nenhuma sessão de foco concluída ainda'
 
   return (
@@ -23,20 +36,20 @@ function DayRhythm({ blocos, sessaoInicio, agora }) {
         <h2 id="rhythm-title">Ritmo de hoje</h2>
         <span className="rhythm-legend" aria-hidden="true">
           <span><i className="rhythm-swatch rhythm-swatch--foco" />Foco</span>
-          <span><i className="rhythm-swatch rhythm-swatch--pausa" />Pausa</span>
+          <span><i className="rhythm-swatch rhythm-swatch--atual" />Em andamento</span>
         </span>
       </header>
 
       <div className="rhythm-track" role="img" aria-label={`Linha do tempo de hoje: ${descricao}`}>
-        {blocosComAtual.map((bloco) => (
+        {blocos.map((bloco) => (
           <span
-            key={`${bloco.tipo}-${bloco.inicio}`}
+            key={bloco.id}
             className={`rhythm-block rhythm-block--${bloco.tipo}`}
             style={{ left: `${posicao(bloco.inicio)}%`, width: `${posicao(bloco.fim) - posicao(bloco.inicio)}%` }}
           />
         ))}
-        <span className="rhythm-now" style={{ left: `${posicao(agora)}%` }}>
-          <span className="rhythm-now-label">{formatarHora(agora)}</span>
+        <span className="rhythm-now" style={{ left: `${posicao(agoraMin)}%` }}>
+          <span className="rhythm-now-label">{formatarHora(agoraMin)}</span>
         </span>
       </div>
 
@@ -58,8 +71,8 @@ function DayRhythm({ blocos, sessaoInicio, agora }) {
           <dd>{formatarDuracao(minutosFoco)}</dd>
         </div>
         <div>
-          <dt>Pausas</dt>
-          <dd>{pausas}</dd>
+          <dt>Tarefas</dt>
+          <dd>{tarefasFocadas}</dd>
         </div>
       </dl>
     </section>
