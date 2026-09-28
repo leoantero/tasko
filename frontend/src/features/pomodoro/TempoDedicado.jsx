@@ -1,6 +1,8 @@
 import { useId } from 'react'
 import './TempoDedicado.css'
-import { duracaoCurta, focoPorDia } from './produtividade'
+import { duracaoCurta, focoPorDia, focoPorTarefa } from './produtividade'
+
+const MAX_TAREFAS = 5
 
 const diaCurto = (data, hoje) =>
   data.toDateString() === hoje.toDateString()
@@ -9,7 +11,7 @@ const diaCurto = (data, hoje) =>
 
 const diaLongo = (data) => data.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' })
 
-// HU05: quanto tempo de foco foi dedicado ao projeto.
+// HU05: quanto tempo de foco foi dedicado ao projeto, por dia e por tarefa.
 function TempoDedicado({ tarefas, sessoes }) {
   const id = useId()
   const hoje = new Date()
@@ -20,6 +22,13 @@ function TempoDedicado({ tarefas, sessoes }) {
   const dias = focoPorDia(registradas, 7, hoje)
   const semana = dias.reduce((soma, d) => soma + d.segundos, 0)
   const maiorDia = Math.max(...dias.map((d) => d.segundos))
+
+  const focoDaTarefa = focoPorTarefa(registradas)
+  const porTarefa = tarefas
+    .map((tarefa) => ({ tarefa, segundos: focoDaTarefa.get(tarefa.id) ?? 0 }))
+    .filter((t) => t.segundos > 0)
+    .sort((a, b) => b.segundos - a.segundos)
+  const maiorTarefa = porTarefa[0]?.segundos ?? 0
 
   return (
     <section className="tempo" aria-labelledby={`${id}-titulo`}>
@@ -73,6 +82,26 @@ function TempoDedicado({ tarefas, sessoes }) {
                 ))}
               </tbody>
             </table>
+          </figure>
+
+          <figure className="tempo-figura">
+            <figcaption>Por tarefa</figcaption>
+            <ul className="tempo-tarefas">
+              {porTarefa.slice(0, MAX_TAREFAS).map(({ tarefa, segundos }) => (
+                <li key={tarefa.id}>
+                  <span className="tempo-tarefa-nome">{tarefa.titulo}</span>
+                  <span className="tempo-tarefa-linha">
+                    <span className="tempo-barra" style={{ '--proporcao': segundos / maiorTarefa }} />
+                    <span className="tempo-tarefa-valor">{duracaoCurta(segundos)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {porTarefa.length > MAX_TAREFAS && (
+              <p className="tempo-mais">
+                + {porTarefa.length - MAX_TAREFAS} {porTarefa.length - MAX_TAREFAS === 1 ? 'tarefa' : 'tarefas'}
+              </p>
+            )}
           </figure>
         </div>
       )}
