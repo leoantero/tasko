@@ -1,6 +1,11 @@
 from app.db import execute, query, query_one
 
 COLUNAS = "id, usuario_id, tarefa_id, inicio, fim, tempo_foco_segundos, tempo_total_segundos"
+# Mesmas colunas com o prefixo da tabela, para a consulta que faz JOIN.
+COLUNAS_S = """
+    s.id, s.usuario_id, s.tarefa_id, s.inicio, s.fim,
+    s.tempo_foco_segundos, s.tempo_total_segundos
+"""
 
 
 def listar(usuario_id):
@@ -21,9 +26,11 @@ def buscar_aberta(usuario_id):
     """Sessao ja iniciada e ainda sem fim, se houver alguma."""
     return query_one(
         f"""
-        SELECT {COLUNAS} FROM sessoes_pomodoro
-         WHERE usuario_id = %s AND fim IS NULL
-         ORDER BY inicio DESC
+        SELECT {COLUNAS_S}, t.titulo AS tarefa_titulo, t.projeto_id
+          FROM sessoes_pomodoro s
+          LEFT JOIN tarefas t ON s.tarefa_id = t.id
+         WHERE s.usuario_id = %s AND s.fim IS NULL
+         ORDER BY s.inicio DESC
          LIMIT 1
         """,
         (usuario_id,),

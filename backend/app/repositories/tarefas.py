@@ -13,7 +13,7 @@ ORDENACAO = """
 """
 
 
-def listar(usuario_id, projeto_id=None, status=None):
+def listar(usuario_id, projeto_id=None, status=None, prazo_ate=None):
     sql = f"SELECT {COLUNAS} FROM tarefas WHERE usuario_id = %s"
     params = [usuario_id]
 
@@ -24,6 +24,11 @@ def listar(usuario_id, projeto_id=None, status=None):
     if status:
         sql += " AND status = %s"
         params.append(status)
+
+    # prazo_ate inclui as atrasadas, que e o que a tela do dia precisa mostrar
+    if prazo_ate:
+        sql += " AND prazo <= %s"
+        params.append(prazo_ate)
 
     return query(sql + ORDENACAO, params)
 

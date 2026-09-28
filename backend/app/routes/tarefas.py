@@ -34,7 +34,8 @@ def _validar(projeto_id, prioridade, status):
 def listar():
     projeto_id = request.args.get("projeto_id", type=int)
     status = request.args.get("status")
-    return jsonify(repo.listar(g.usuario_id, projeto_id, status))
+    prazo_ate = request.args.get("prazo_ate")
+    return jsonify(repo.listar(g.usuario_id, projeto_id, status, prazo_ate))
 
 
 @bp.post("/tarefas")

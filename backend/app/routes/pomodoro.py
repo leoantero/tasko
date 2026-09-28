@@ -69,6 +69,13 @@ def listar():
     return jsonify(repo.listar(g.usuario_id))
 
 
+@bp.get("/sessoes-pomodoro/atual")
+@login_required
+def atual():
+    """Sessao em andamento, ou null. Usada ao abrir o app (HU10)."""
+    return jsonify(repo.buscar_aberta(g.usuario_id))
+
+
 @bp.get("/sessoes-pomodoro/<int:sessao_id>")
 @login_required
 def detalhar(sessao_id):
