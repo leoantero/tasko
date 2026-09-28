@@ -8,7 +8,7 @@ load_dotenv()
 class Config:
     """Configuracoes lidas das variaveis de ambiente."""
 
-    SECRET_KEY = os.getenv("SECRET_KEY", "chave-de-desenvolvimento") or ""
+    SECRET_KEY = os.getenv("SECRET_KEY") or ""
     DATABASE_URL = os.getenv("DATABASE_URL") or ""
     # Origens do front autorizadas a chamar a API, separadas por virgula.
     CORS_ORIGENS = os.getenv(
@@ -24,4 +24,10 @@ class Config:
         if not cls.DATABASE_URL:
             raise RuntimeError(
                 "DATABASE_URL nao definida. Copie .env.example para .env."
+            )
+        # Com chave padrao, qualquer um assina um token valido de qualquer
+        # usuario: a autenticacao inteira deixa de valer.
+        if not cls.SECRET_KEY:
+            raise RuntimeError(
+                "SECRET_KEY nao definida. Copie .env.example para .env."
             )
