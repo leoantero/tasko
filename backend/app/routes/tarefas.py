@@ -5,7 +5,7 @@ from app.errors import ApiError
 from psycopg import errors as pg_errors
 from app.repositories import projetos as repo_projetos
 from app.repositories import tarefas as repo
-from app.validacao import corpo, data, exigir, inteiro
+from app.validacao import corpo, data, exigir, inteiro, texto
 
 bp = Blueprint("tarefas", __name__)
 
@@ -50,7 +50,7 @@ def criar():
 
     tarefa = repo.criar(
         g.usuario_id,
-        dados["titulo"].strip(),
+        texto(dados["titulo"], "titulo"),
         projeto_id,
         dados.get("descricao"),
         prioridade,

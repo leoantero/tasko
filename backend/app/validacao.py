@@ -58,3 +58,18 @@ def email(valor, campo="email"):
     if not FORMATO_EMAIL.match(limpo):
         raise ApiError(f"O campo {campo} deve ser um email valido.")
     return limpo
+
+
+def texto(valor, campo):
+    """Normaliza texto obrigatorio.
+
+    Sem a checagem de tipo, um numero chegava no .strip() e derrubava a
+    rota com AttributeError, que o handler generico vira 500.
+    """
+    if not isinstance(valor, str):
+        raise ApiError(f"O campo {campo} deve ser um texto.")
+
+    limpo = valor.strip()
+    if not limpo:
+        raise ApiError(f"O campo {campo} e obrigatorio.")
+    return limpo

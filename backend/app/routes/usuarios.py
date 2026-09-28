@@ -5,7 +5,7 @@ from app.auth import gerar_hash, gerar_token, login_required, senha_confere
 from app.errors import ApiError
 from app import limite
 from app.repositories import usuarios as repo
-from app.validacao import corpo, email, exigir
+from app.validacao import corpo, email, exigir, texto
 
 bp = Blueprint("usuarios", __name__)
 
@@ -22,7 +22,7 @@ def cadastrar():
 
     try:
         usuario = repo.criar(
-            dados["nome"].strip(),
+            texto(dados["nome"], "nome"),
             email(dados["email"]),
             gerar_hash(dados["senha"]),
         )

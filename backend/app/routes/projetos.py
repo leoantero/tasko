@@ -4,7 +4,7 @@ from psycopg import errors as pg_errors
 from app.auth import login_required
 from app.errors import ApiError
 from app.repositories import projetos as repo
-from app.validacao import corpo, data, exigir
+from app.validacao import corpo, data, exigir, texto
 
 bp = Blueprint("projetos", __name__)
 
@@ -32,7 +32,7 @@ def criar():
 
     projeto = repo.criar(
         g.usuario_id,
-        dados["nome"].strip(),
+        texto(dados["nome"], "nome"),
         dados.get("categoria"),
         dados.get("descricao"),
         data(dados.get("prazo"), "prazo"),
