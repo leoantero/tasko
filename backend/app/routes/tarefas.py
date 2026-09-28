@@ -79,7 +79,7 @@ def atualizar(tarefa_id):
     tarefa = repo.atualizar(
         tarefa_id,
         g.usuario_id,
-        dados.get("titulo", atual["titulo"]),
+        texto(dados.get("titulo", atual["titulo"]), "titulo"),
         projeto_id,
         dados.get("descricao", atual["descricao"]),
         prioridade,

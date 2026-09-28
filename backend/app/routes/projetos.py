@@ -60,7 +60,7 @@ def atualizar(projeto_id):
         repo.atualizar(
             projeto_id,
             g.usuario_id,
-            dados.get("nome", atual["nome"]),
+            texto(dados.get("nome", atual["nome"]), "nome"),
             dados.get("categoria", atual["categoria"]),
             dados.get("descricao", atual["descricao"]),
             data(dados.get("prazo", atual["prazo"]), "prazo"),
