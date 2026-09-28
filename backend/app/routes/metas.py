@@ -14,6 +14,29 @@ TIPOS_VALIDOS = (
     "projetos_concluidos",
 )
 
+MSG_VALOR = "valor_alvo deve ser um numero maior que zero."
+
+
+def _validar(tipo, valor_alvo):
+    """Confere tipo e devolve o valor_alvo ja como numero.
+
+    Sem a conversao, um valor_alvo em texto (o que todo <input> envia por
+    padrao) chegava na comparacao "10" <= 0 e derrubava a rota com 500.
+    """
+    if tipo not in TIPOS_VALIDOS:
+        raise ApiError("Tipo deve ser: " + " ou ".join(TIPOS_VALIDOS) + ".")
+
+    if isinstance(valor_alvo, bool):
+        raise ApiError(MSG_VALOR)
+    try:
+        valor = float(valor_alvo)
+    except (TypeError, ValueError):
+        raise ApiError(MSG_VALOR)
+
+    if valor <= 0:
+        raise ApiError(MSG_VALOR)
+    return valor
+
 
 def _buscar_ou_404(meta_id):
     meta = repo.buscar(meta_id, g.usuario_id)
@@ -34,16 +57,11 @@ def criar():
     dados = corpo()
     exigir(dados, "tipo", "valor_alvo", "data_limite")
 
-    tipo = dados["tipo"]
-    valor_alvo = dados["valor_alvo"]
-    if tipo not in TIPOS_VALIDOS:
-        raise ApiError("Tipo deve ser: " + " ou ".join(TIPOS_VALIDOS) + ".")
-    if valor_alvo is None or valor_alvo <= 0:
-        raise ApiError("valor_alvo deve ser maior que zero.")
+    valor_alvo = _validar(dados["tipo"], dados["valor_alvo"])
 
     meta = repo.criar(
         g.usuario_id,
-        tipo,
+        dados["tipo"],
         valor_alvo,
         dados["data_limite"],
     )
@@ -66,12 +84,9 @@ def atualizar(meta_id):
     valor_alvo = dados.get("valor_alvo", atual["valor_alvo"])
     data_limite = dados.get("data_limite", atual["data_limite"])
 
-    if tipo not in TIPOS_VALIDOS:
-        raise ApiError("Tipo deve ser: " + " ou ".join(TIPOS_VALIDOS) + ".")
-    if valor_alvo is None or valor_alvo <= 0:
-        raise ApiError("valor_alvo deve ser maior que zero.")
-
-    meta = repo.atualizar(meta_id, g.usuario_id, tipo, valor_alvo, data_limite)
+    meta = repo.atualizar(
+        meta_id, g.usuario_id, tipo, _validar(tipo, valor_alvo), data_limite
+    )
     return jsonify(meta)
 
 
