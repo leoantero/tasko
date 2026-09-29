@@ -55,6 +55,10 @@ export function perfil() {
   return request('/perfil')
 }
 
+export function resumoDashboard() {
+  return request('/dashboard/resumo')
+}
+
 export function listarProjetos() {
   return request('/projetos')
 }
