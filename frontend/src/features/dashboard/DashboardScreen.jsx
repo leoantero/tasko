@@ -42,6 +42,8 @@ function DashboardScreen() {
   ]
   const dias = resumo.tempo_por_dia
   const maiorTempo = Math.max(...dias.map(({ total_segundos }) => total_segundos), 0)
+  const distribuicao = resumo.distribuicao_por_projeto
+  const totalDistribuido = distribuicao.reduce((total, projeto) => total + projeto.total_segundos, 0)
 
   return (
     <main className="dashboard-main">
@@ -85,6 +87,33 @@ function DashboardScreen() {
             )
           })}
         </ol>
+      </section>
+      <section className="dashboard-projetos" aria-labelledby="dashboard-projetos-titulo">
+        <h2 id="dashboard-projetos-titulo">Distribuição por projeto</h2>
+        {distribuicao.length ? (
+          <ol className="dashboard-projetos-lista">
+            {distribuicao.map(({ projeto_id, projeto_nome, total_segundos }) => {
+              const participacao = totalDistribuido ? (total_segundos / totalDistribuido) * 100 : 0
+
+              return (
+                <li className="dashboard-projeto" key={projeto_id ?? 'sem-projeto'}>
+                  <div className="dashboard-projeto-info">
+                    <strong>{projeto_nome}</strong>
+                    <span>
+                      {formatarDuracao(Math.round(total_segundos / 60))}
+                      {' · '}{formatarNumero.format(participacao)}%
+                    </span>
+                  </div>
+                  <div className="dashboard-projeto-trilho" aria-hidden="true">
+                    <span style={{ width: `${participacao}%` }} />
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        ) : (
+          <p className="dashboard-projetos-vazio">Sem sessões de foco no período.</p>
+        )}
       </section>
     </main>
   )
