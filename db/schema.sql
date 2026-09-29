@@ -49,3 +49,26 @@ CREATE TABLE metas (
     data_limite DATE NOT NULL,
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Regras que nao aparecem no tipo da coluna e que a aplicacao depende.
+-- Ficam no proprio banco para quem abrir o psql sem ler o codigo.
+COMMENT ON COLUMN tarefas.projeto_id IS
+    'Nulo = tarefa avulsa, sem projeto (HU11).';
+COMMENT ON COLUMN tarefas.prioridade IS
+    '3 alta, 2 media, 1 baixa; nulo = sem prioridade.';
+COMMENT ON COLUMN tarefas.status IS
+    'pendente ou concluida; concluida_em acompanha a mudanca.';
+COMMENT ON COLUMN projetos.status IS
+    'ativo ou concluido; concluido_em acompanha a mudanca.';
+COMMENT ON COLUMN sessoes_pomodoro.tarefa_id IS
+    'Nulo quando a tarefa foi excluida: a sessao fica, o tempo focado continua valendo.';
+COMMENT ON COLUMN sessoes_pomodoro.fim IS
+    'Nulo = sessao em andamento. So existe uma aberta por usuario.';
+COMMENT ON COLUMN sessoes_pomodoro.tempo_total_segundos IS
+    'Enquanto a sessao esta aberta, guarda a duracao escolhida; ao finalizar, vira o tempo decorrido entre inicio e fim.';
+COMMENT ON COLUMN sessoes_pomodoro.tempo_foco_segundos IS
+    'Tempo efetivamente focado, sem as pausas; limitado ao tempo decorrido.';
+COMMENT ON COLUMN metas.tipo IS
+    'tempo_foco_horas, tarefas_concluidas, sessoes_pomodoro ou projetos_concluidos.';
+COMMENT ON COLUMN metas.valor_alvo IS
+    'Alvo na unidade do tipo: horas, tarefas, sessoes ou projetos.';
