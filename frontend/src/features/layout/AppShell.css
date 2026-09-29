@@ -81,6 +81,7 @@
 .shell-avatar {
   display: grid;
   place-items: center;
+  text-decoration: none;
   width: 32px;
   height: 32px;
   font: var(--text-label);
@@ -104,8 +105,18 @@
   border-color: var(--color-ink-faint);
 }
 
+.shell-avatar:hover {
+  filter: brightness(0.96);
+}
+
+.shell-avatar[aria-current='page'] {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .shell-brand:focus-visible,
 .shell-link:focus-visible,
+.shell-avatar:focus-visible,
 .shell-sair:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;

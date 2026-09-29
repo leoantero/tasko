@@ -35,9 +35,15 @@ function AppShell({ rota, usuario, onSair, children }) {
         {rota !== 'foco' && <SessaoIndicador />}
 
         <div className="shell-user">
-          <span className="shell-avatar" aria-hidden="true">
-            {usuario.nome[0]}
-          </span>
+          {/* O avatar era decorativo (aria-hidden): como link precisa de nome próprio. */}
+          <a
+            className="shell-avatar"
+            href="#/perfil"
+            aria-label={`Sua conta, ${usuario.nome}`}
+            aria-current={rota === 'perfil' ? 'page' : undefined}
+          >
+            <span aria-hidden="true">{usuario.nome[0]}</span>
+          </a>
           <button type="button" className="shell-sair" onClick={onSair}>
             Sair
           </button>
