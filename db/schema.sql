@@ -39,8 +39,12 @@ CREATE TABLE sessoes_pomodoro (
     tarefa_id INT REFERENCES tarefas(id),
     inicio TIMESTAMPTZ NOT NULL,
     fim TIMESTAMPTZ,
-    tempo_foco_segundos INT,
-    tempo_total_segundos INT
+    tempo_foco_segundos INT CHECK (tempo_foco_segundos >= 0),
+    tempo_total_segundos INT CHECK (tempo_total_segundos >= 0),
+    CONSTRAINT sessao_termina_depois_de_comecar CHECK (fim IS NULL OR fim >= inicio),
+    CONSTRAINT foco_cabe_no_total CHECK (
+        fim IS NULL OR tempo_foco_segundos <= tempo_total_segundos
+    )
 );
 
 CREATE TABLE metas (
