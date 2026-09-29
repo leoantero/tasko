@@ -22,6 +22,10 @@ function PerfilScreen({ usuario }) {
 
       <dl className="perfil-dados">
         <div className="perfil-item">
+          <dt>ID da conta</dt>
+          <dd className="perfil-id">{usuario.id}</dd>
+        </div>
+        <div className="perfil-item">
           <dt>Nome</dt>
           <dd>{usuario.nome}</dd>
         </div>
@@ -29,15 +33,7 @@ function PerfilScreen({ usuario }) {
           <dt>Email</dt>
           <dd>{usuario.email}</dd>
         </div>
-        <div className="perfil-item">
-          <dt>ID da conta</dt>
-          <dd className="perfil-id">{usuario.id}</dd>
-        </div>
       </dl>
-
-      <p className="perfil-nota">
-        Para alterar nome, email ou senha, fale com o time: a edição ainda não existe.
-      </p>
     </main>
   )
 }
