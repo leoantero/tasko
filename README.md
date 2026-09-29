@@ -85,7 +85,7 @@ Como usuário, quero criar tarefas que não pertencem a nenhum projeto, para ano
 | Membro | Papel      |
 | ------ | ---------- |
 | Brisa Nascimento | Full Stack |
-| Luiz Gustavo | Backend    |
+| Luiz Gustavo | Full Stack |
 | Leonardo Mendes | Frontend   |
 | Arthur Faria | Backend |
 
