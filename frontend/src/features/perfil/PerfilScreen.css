@@ -1,0 +1,39 @@
+.perfil {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 680px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-12);
+}
+
+.perfil-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.perfil-head h1 {
+  margin: 0;
+  font: var(--text-display-lg);
+  color: var(--color-ink);
+}
+
+.perfil-dados {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.perfil-item dd {
+  margin: 0;
+  font: var(--text-body);
+  color: var(--color-ink);
+}
+
+.perfil-nota {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-ink-faint);
+}
