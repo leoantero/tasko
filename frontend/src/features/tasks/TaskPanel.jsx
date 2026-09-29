@@ -43,7 +43,13 @@ function TaskPanel({ projetoId, tarefas, vazio = 'Nenhuma tarefa ainda. Comece p
     if (pedido === null || editando || excluindo) return
     let alvo = campoNova.current
     if (pedido !== 'nova') {
-      if ((tarefas.find((t) => t.id === pedido.id)?.[pedido.campo] ?? null) !== pedido.valor) return
+      const alvoTarefa = tarefas.find((t) => t.id === pedido.id)
+      // Mover a tarefa para outro projeto a tira desta lista: não há botão para focar.
+      if (!alvoTarefa) {
+        focarDepois.current = null
+        return
+      }
+      if ((alvoTarefa[pedido.campo] ?? null) !== pedido.valor) return
       alvo = painel.current.querySelector(`[data-tarefa="${pedido.id}"] ${pedido.alvo}`)
       if (!alvo || alvo.closest('[hidden]')) return
     }
