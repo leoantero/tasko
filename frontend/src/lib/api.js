@@ -87,3 +87,21 @@ export function atualizarTarefa(id, mudancas) {
 export function excluirTarefa(id) {
   return request(`/tarefas/${id}`, { method: 'DELETE' })
 }
+
+export function listarSessoes() {
+  return request('/sessoes-pomodoro')
+}
+
+export function iniciarSessao(dados) {
+  return request('/sessoes-pomodoro/iniciar', {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}
+
+export function finalizarSessao(id, dados) {
+  return request(`/sessoes-pomodoro/${id}/finalizar`, {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}

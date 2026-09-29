@@ -1,28 +1,25 @@
 import { useEffect, useState } from 'react'
 import * as api from './api'
 import { DadosContext } from './dados'
-import { sessoesIniciais } from '../features/pomodoro/mockSessoes'
 
-// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Projetos e
-// tarefas já vêm da API; as sessões seguem em memória até o próximo commit.
-
-let ultimoId = 1000
-const agora = () => new Date().toISOString()
+// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Cada ação
+// chama a API e guarda no estado o objeto devolvido pelo servidor.
 
 export function DadosProvider({ children }) {
   const [projetos, setProjetos] = useState([])
   const [tarefas, setTarefas] = useState([])
-  const [sessoes, setSessoes] = useState(sessoesIniciais)
+  const [sessoes, setSessoes] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [erroCarga, setErroCarga] = useState('')
 
   // O App só mostra carregando e erro no commit do estado de carga; aqui os
   // valores já ficam no contexto para as telas não renderizarem lista vazia.
   useEffect(() => {
-    Promise.all([api.listarProjetos(), api.listarTarefas()])
-      .then(([listaProjetos, listaTarefas]) => {
+    Promise.all([api.listarProjetos(), api.listarTarefas(), api.listarSessoes()])
+      .then(([listaProjetos, listaTarefas, listaSessoes]) => {
         setProjetos(listaProjetos)
         setTarefas(listaTarefas)
+        setSessoes(listaSessoes)
       })
       .catch((erro) => setErroCarga(erro.message))
       .finally(() => setCarregando(false))
@@ -54,31 +51,16 @@ export function DadosProvider({ children }) {
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
   }
 
-  // POST /api/sessoes-pomodoro/iniciar: o início é a hora do servidor e só pode haver
-  // uma sessão aberta por vez (409).
-  async function iniciarSessao({ tarefa_id, tempo_total_segundos }) {
-    if (sessoes.some((s) => !s.fim)) throw new Error('Ja existe uma sessao em andamento.')
-    const sessao = {
-      id: ++ultimoId,
-      usuario_id: 1,
-      tarefa_id,
-      inicio: agora(),
-      fim: null,
-      tempo_foco_segundos: null,
-      tempo_total_segundos,
-    }
+  // O servidor define o início e recusa com 409 se já houver sessão aberta.
+  async function iniciarSessao(dados) {
+    const sessao = await api.iniciarSessao(dados)
     setSessoes((atuais) => [sessao, ...atuais])
     return sessao
   }
 
-  // POST /api/sessoes-pomodoro/<id>/finalizar: como no backend, o fim é a hora do servidor, o total
-  // é o tempo decorrido desde o início e o foco informado fica limitado a esse total.
-  async function finalizarSessao(id, { tempo_foco_segundos }) {
-    const atual = sessoes.find((s) => s.id === id)
-    const fim = new Date()
-    const total = Math.max(0, Math.round((fim - new Date(atual.inicio)) / 1000))
-    const foco = Math.min(Math.max(tempo_foco_segundos, 0), total)
-    const sessao = { ...atual, fim: fim.toISOString(), tempo_foco_segundos: foco, tempo_total_segundos: total }
+  // O fim, o tempo total e o limite do tempo focado vêm do servidor.
+  async function finalizarSessao(id, dados) {
+    const sessao = await api.finalizarSessao(id, dados)
     setSessoes((atuais) => atuais.map((s) => (s.id === id ? sessao : s)))
     return sessao
   }
