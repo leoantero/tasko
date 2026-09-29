@@ -45,10 +45,13 @@ export function DadosProvider({ children }) {
     return tarefa
   }
 
-  // O backend desvincula as sessões da tarefa em vez de recusar a exclusão.
+  // O backend desvincula as sessões da tarefa em vez de recusar a exclusão, então
+  // as sessões em memória continuariam apontando para uma tarefa que não existe
+  // mais e o tempo apareceria somado à tarefa errada nos resumos.
   async function excluirTarefa(id) {
     await api.excluirTarefa(id)
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
+    setSessoes((atuais) => atuais.map((s) => (s.tarefa_id === id ? { ...s, tarefa_id: null } : s)))
   }
 
   // Sessão que ficou aberta, para o FocoProvider retomar o timer ao abrir o app.
