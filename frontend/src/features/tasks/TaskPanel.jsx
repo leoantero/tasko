@@ -10,6 +10,7 @@ import TaskForm from './TaskForm.jsx'
 import TaskGrupos from './TaskGrupos.jsx'
 import TaskItem from './TaskItem.jsx'
 import TaskQuickAdd from './TaskQuickAdd.jsx'
+import { somarDias } from '../projects/datas'
 import { ordenarConcluidas, ordenarPendentes, rotuloPrioridade } from './tarefas'
 
 function TaskPanel({ projetoId, tarefas, vazio = 'Nenhuma tarefa ainda. Comece pela primeira acima.' }) {
@@ -82,9 +83,11 @@ function TaskPanel({ projetoId, tarefas, vazio = 'Nenhuma tarefa ainda. Comece p
     }
   }
 
+  // O campo rápido cria para hoje: sem prazo, a tarefa nunca entraria na lista da
+  // tela inicial, que é sobre o dia. O prazo pode ser mudado ou limpo no "Editar".
   async function adicionar(titulo) {
-    await criarTarefa({ projeto_id: projetoId, titulo })
-    setAviso(`Tarefa "${titulo}" adicionada.`)
+    await criarTarefa({ projeto_id: projetoId, titulo, prazo: somarDias(0) })
+    setAviso(`Tarefa "${titulo}" adicionada para hoje.`)
   }
 
   function alternar(tarefa) {
