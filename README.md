@@ -100,6 +100,74 @@ flowchart LR
     A --> B[(Banco de Dados)]
 ```
 
+### Modelo de dados
+
+Tudo pertence a um usuário: projetos, tarefas, sessões e metas guardam `usuario_id`, e
+é por ele que toda consulta filtra. Dois vínculos são opcionais de propósito — tarefa
+pode não ter projeto (HU11) e sessão pode ficar sem tarefa quando a tarefa é excluída,
+o que preserva o tempo já focado.
+
+```mermaid
+erDiagram
+    usuarios ||--o{ projetos : cria
+    usuarios ||--o{ tarefas : cria
+    usuarios ||--o{ sessoes_pomodoro : registra
+    usuarios ||--o{ metas : define
+    projetos |o--o{ tarefas : agrupa
+    tarefas |o--o{ sessoes_pomodoro : "recebe foco"
+
+    usuarios {
+        serial id PK
+        varchar nome
+        varchar email UK
+        varchar senha_hash
+        timestamptz criado_em
+    }
+    projetos {
+        serial id PK
+        int usuario_id FK
+        varchar nome
+        varchar categoria "opcional"
+        text descricao "opcional"
+        date prazo "opcional"
+        varchar status "ativo ou concluido"
+        timestamptz criado_em
+        timestamptz concluido_em "preenchido ao concluir"
+    }
+    tarefas {
+        serial id PK
+        int usuario_id FK
+        int projeto_id FK "nulo = tarefa avulsa"
+        varchar titulo
+        text descricao "opcional"
+        smallint prioridade "3 alta, 2 media, 1 baixa"
+        date prazo "opcional"
+        varchar status "pendente ou concluida"
+        timestamptz criado_em
+        timestamptz concluida_em "preenchido ao concluir"
+    }
+    sessoes_pomodoro {
+        serial id PK
+        int usuario_id FK
+        int tarefa_id FK "nulo = tarefa excluida"
+        timestamptz inicio
+        timestamptz fim "nulo = sessao em andamento"
+        int tempo_foco_segundos
+        int tempo_total_segundos "duracao escolhida, depois decorrido"
+    }
+    metas {
+        serial id PK
+        int usuario_id FK
+        varchar tipo
+        numeric valor_alvo
+        date data_limite
+        timestamptz criado_em
+    }
+```
+
+O arquivo aplicável está em [`db/schema.sql`](db/schema.sql); há também uma versão
+visual em `db/Diagrama_SQL.png`.
+
 ### Sessão de foco (HU04, HU05)
 
 O diagrama abaixo mostra por que o tempo registrado é sempre do servidor: o
