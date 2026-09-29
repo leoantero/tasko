@@ -24,6 +24,8 @@ function TaskPanel({ projetoId, tarefas }) {
   const [focando, setFocando] = useState(null)
   const [mostrarConcluidas, setMostrarConcluidas] = useState(false)
   const [aviso, setAviso] = useState('')
+  const [erro, setErro] = useState('')
+  const [ocupadas, setOcupadas] = useState(() => new Set())
 
   useEffect(() => {
     if (!aviso) return undefined
@@ -53,23 +55,48 @@ function TaskPanel({ projetoId, tarefas }) {
   const concluidas = tarefas.filter((t) => t.status === 'concluida').sort(ordenarConcluidas)
   const focoDaTarefa = focoPorTarefa(sessoes)
 
+  // Concluir e priorizar viram requisição: sem travar a tarefa, um clique repetido
+  // manda dois PUTs e a lista pisca entre as duas respostas. O mock nunca falhava,
+  // então também não havia o que mostrar quando a API recusa.
+  async function comTarefaOcupada(tarefa, acao) {
+    if (ocupadas.has(tarefa.id)) return
+    setOcupadas((atuais) => new Set(atuais).add(tarefa.id))
+    setErro('')
+    try {
+      await acao()
+    } catch (falha) {
+      focarDepois.current = null
+      setErro(falha.message)
+    } finally {
+      setOcupadas((atuais) => {
+        const proximas = new Set(atuais)
+        proximas.delete(tarefa.id)
+        return proximas
+      })
+    }
+  }
+
   async function adicionar(titulo) {
     await criarTarefa({ projeto_id: projetoId, titulo })
     setAviso(`Tarefa "${titulo}" adicionada.`)
   }
 
-  async function alternar(tarefa) {
+  function alternar(tarefa) {
     const status = tarefa.status === 'concluida' ? 'pendente' : 'concluida'
-    focarDepois.current = { id: tarefa.id, campo: 'status', valor: status, alvo: '.task-item-check' }
-    await atualizarTarefa(tarefa.id, { status })
-    if (status === 'concluida') setMostrarConcluidas(true)
-    setAviso(status === 'concluida' ? 'Tarefa concluída.' : 'Tarefa reaberta.')
+    return comTarefaOcupada(tarefa, async () => {
+      focarDepois.current = { id: tarefa.id, campo: 'status', valor: status, alvo: '.task-item-check' }
+      await atualizarTarefa(tarefa.id, { status })
+      if (status === 'concluida') setMostrarConcluidas(true)
+      setAviso(status === 'concluida' ? 'Tarefa concluída.' : 'Tarefa reaberta.')
+    })
   }
 
-  async function priorizar(tarefa, prioridade) {
-    focarDepois.current = { id: tarefa.id, campo: 'prioridade', valor: prioridade, alvo: '.prio-bandeira' }
-    await atualizarTarefa(tarefa.id, { prioridade })
-    setAviso(`${rotuloPrioridade(prioridade)}: ${tarefa.titulo}.`)
+  function priorizar(tarefa, prioridade) {
+    return comTarefaOcupada(tarefa, async () => {
+      focarDepois.current = { id: tarefa.id, campo: 'prioridade', valor: prioridade, alvo: '.prio-bandeira' }
+      await atualizarTarefa(tarefa.id, { prioridade })
+      setAviso(`${rotuloPrioridade(prioridade)}: ${tarefa.titulo}.`)
+    })
   }
 
   function renderizar(tarefa) {
@@ -80,6 +107,7 @@ function TaskPanel({ projetoId, tarefas }) {
         tarefa={tarefa}
         emFoco={emFoco}
         focoSeg={focoDaTarefa.get(tarefa.id)}
+        ocupada={ocupadas.has(tarefa.id)}
         onFocar={() => (emFoco ? (window.location.hash = '#/foco') : setFocando(tarefa))}
         onAlternar={() => alternar(tarefa)}
         onPriorizar={(prioridade) => priorizar(tarefa, prioridade)}
@@ -148,6 +176,12 @@ function TaskPanel({ projetoId, tarefas }) {
             setAviso(`Tarefa "${excluindo.titulo}" excluída.`)
           }}
         />
+      )}
+
+      {erro && (
+        <p className="task-erro" role="alert">
+          {erro}
+        </p>
       )}
 
       <p className="sr-only" role="status">

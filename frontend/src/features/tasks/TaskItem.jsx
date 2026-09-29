@@ -2,7 +2,7 @@ import { duracaoCurta } from '../pomodoro/produtividade'
 import PrioridadeMenu from './PrioridadeMenu.jsx'
 import { situacaoTarefa } from './tarefas'
 
-function TaskItem({ tarefa, emFoco, focoSeg = 0, onAlternar, onFocar, onPriorizar, onEditar, onExcluir }) {
+function TaskItem({ tarefa, emFoco, focoSeg = 0, ocupada = false, onAlternar, onFocar, onPriorizar, onEditar, onExcluir }) {
   const situacao = situacaoTarefa(tarefa)
   const concluida = tarefa.status === 'concluida'
 
@@ -12,6 +12,7 @@ function TaskItem({ tarefa, emFoco, focoSeg = 0, onAlternar, onFocar, onPrioriza
         type="checkbox"
         className="task-item-check"
         checked={concluida}
+        disabled={ocupada}
         onChange={onAlternar}
         aria-label={`Concluir: ${tarefa.titulo}`}
       />
