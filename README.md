@@ -49,7 +49,7 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### HU09 — Login
 
-Como usuário, quero criar minha conta e fazer login com email e senha para acessar meus projetos e tarefas de forma segura.
+Como usuário, quero criar minha conta e fazer login com email e senha para acessar meus projetos e tarefas de forma segura, e consultar os dados da minha conta quando precisar.
 
 ### HU10 — Tela inicial
 
