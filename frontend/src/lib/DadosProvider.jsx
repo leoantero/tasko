@@ -1,22 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import * as api from './api'
 import { DadosContext } from './dados'
 import { sessoesIniciais } from '../features/pomodoro/mockSessoes'
-import { projetosIniciais } from '../features/projects/mockProjetos'
 import { tarefasIniciais } from '../features/tasks/mockTarefas'
 
-// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Hoje em memória (mock);
-// na integração, cada ação passa a chamar a API e as telas não mudam.
+// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Projetos já
+// vêm da API; tarefas e sessões seguem em memória até os próximos commits.
 
 let ultimoId = 1000
 const agora = () => new Date().toISOString()
 
 export function DadosProvider({ children }) {
-  const [projetos, setProjetos] = useState(projetosIniciais)
+  const [projetos, setProjetos] = useState([])
   const [tarefas, setTarefas] = useState(tarefasIniciais)
   const [sessoes, setSessoes] = useState(sessoesIniciais)
+  const [carregando, setCarregando] = useState(true)
+  const [erroCarga, setErroCarga] = useState('')
 
+  // O App só mostra carregando e erro no commit do estado de carga; aqui os
+  // valores já ficam no contexto para as telas não renderizarem lista vazia.
+  useEffect(() => {
+    api
+      .listarProjetos()
+      .then(setProjetos)
+      .catch((erro) => setErroCarga(erro.message))
+      .finally(() => setCarregando(false))
+  }, [])
+
+  // A resposta traz id, criado_em e status definidos pelo servidor.
   async function criarProjeto(dados) {
-    const projeto = { ...dados, id: ++ultimoId, status: 'ativo', criado_em: agora(), concluido_em: null }
+    const projeto = await api.criarProjeto(dados)
     setProjetos((atuais) => [projeto, ...atuais])
     return projeto
   }
@@ -87,6 +100,8 @@ export function DadosProvider({ children }) {
 
   const valor = {
     projetos,
+    carregando,
+    erroCarga,
     tarefas,
     sessoes,
     criarProjeto,

@@ -54,3 +54,14 @@ export function cadastrar(nome, email, senha) {
 export function perfil() {
   return request('/perfil')
 }
+
+export function listarProjetos() {
+  return request('/projetos')
+}
+
+export function criarProjeto(dados) {
+  return request('/projetos', {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}
