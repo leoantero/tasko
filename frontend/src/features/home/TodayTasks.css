@@ -184,3 +184,8 @@
   text-transform: uppercase;
   color: var(--color-ink-muted);
 }
+
+/* Tarefa avulsa (HU11): o rótulo aparece, mas sem competir com o nome do projeto. */
+.tasks-avulsa {
+  color: var(--color-ink-faint);
+}

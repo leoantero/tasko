@@ -53,12 +53,11 @@ function TodayTasks({ tarefas, emFocoId, onAlternar }) {
                 aria-label={rotuloPrioridade(tarefa.prioridade)}
               />
             )}
-            {projeto && (
-              <>
-                <span>{projeto.nome}</span>
-                <span aria-hidden="true">·</span>
-              </>
-            )}
+            {/* Sem projeto é informação, não ausência: a tarefa veio da lista de avulsas. */}
+            <span className={projeto ? undefined : 'tasks-avulsa'}>
+              {projeto ? projeto.nome : 'Sem projeto'}
+            </span>
+            <span aria-hidden="true">·</span>
             {atrasada ? (
               <span className="task-badge task-badge--atrasada">{situacao.rotulo}</span>
             ) : (
