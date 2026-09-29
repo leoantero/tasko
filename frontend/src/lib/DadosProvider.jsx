@@ -32,6 +32,29 @@ export function DadosProvider({ children }) {
     return projeto
   }
 
+  async function atualizarProjeto(id, mudancas) {
+    const projeto = await api.atualizarProjeto(id, mudancas)
+    setProjetos((atuais) => atuais.map((p) => (p.id === id ? projeto : p)))
+    return projeto
+  }
+
+  // Espelha no estado o que o servidor faz com as tarefas do projeto: soltá-las
+  // (viram avulsas) ou apagá-las, deixando as sessões delas sem tarefa.
+  async function excluirProjeto(id, destino = 'soltar') {
+    await api.excluirProjeto(id, destino)
+    setProjetos((atuais) => atuais.filter((p) => p.id !== id))
+
+    const doProjeto = tarefas.filter((t) => t.projeto_id === id).map((t) => t.id)
+    if (destino === 'excluir') {
+      setTarefas((atuais) => atuais.filter((t) => !doProjeto.includes(t.id)))
+      setSessoes((atuais) =>
+        atuais.map((s) => (doProjeto.includes(s.tarefa_id) ? { ...s, tarefa_id: null } : s)),
+      )
+    } else {
+      setTarefas((atuais) => atuais.map((t) => (t.projeto_id === id ? { ...t, projeto_id: null } : t)))
+    }
+  }
+
   async function criarTarefa(dados) {
     const tarefa = await api.criarTarefa(dados)
     setTarefas((atuais) => [tarefa, ...atuais])
@@ -80,6 +103,8 @@ export function DadosProvider({ children }) {
     tarefas,
     sessoes,
     criarProjeto,
+    atualizarProjeto,
+    excluirProjeto,
     criarTarefa,
     atualizarTarefa,
     excluirTarefa,

@@ -66,6 +66,18 @@ export function criarProjeto(dados) {
   })
 }
 
+export function atualizarProjeto(id, mudancas) {
+  return request(`/projetos/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(mudancas),
+  })
+}
+
+// destino: 'soltar' transforma as tarefas do projeto em avulsas; 'excluir' apaga junto.
+export function excluirProjeto(id, destino = 'soltar') {
+  return request(`/projetos/${id}?tarefas=${destino}`, { method: 'DELETE' })
+}
+
 export function listarTarefas() {
   return request('/tarefas')
 }
