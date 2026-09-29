@@ -27,6 +27,12 @@ def register_error_handlers(app):
     def _unique_violation(erro):
         return jsonify(erro="Registro ja cadastrado."), 409
 
+    @app.errorhandler(pg_errors.CheckViolation)
+    def _check_violation(erro):
+        """Constraint do banco barrou o dado: e erro do pedido, nao do servidor."""
+        app.logger.warning("check violado: %s", erro)
+        return jsonify(erro="Dados invalidos para esta operacao."), 400
+
     @app.errorhandler(pg_errors.ForeignKeyViolation)
     def _foreign_key_violation(erro):
         return jsonify(erro="Referencia informada nao existe."), 400
