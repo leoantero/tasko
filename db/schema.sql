@@ -25,7 +25,7 @@ CREATE TABLE tarefas (
     usuario_id INT NOT NULL REFERENCES usuarios(id),
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
-    prioridade SMALLINT,
+    prioridade SMALLINT CHECK (prioridade BETWEEN 1 AND 3),
     prazo DATE,
     status VARCHAR(20) NOT NULL DEFAULT 'pendente'
         CHECK (status IN ('pendente', 'concluida')),
