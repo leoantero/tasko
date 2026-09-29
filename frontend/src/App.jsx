@@ -8,6 +8,7 @@ import FocusScreen from './features/pomodoro/FocusScreen.jsx'
 import { FocoProvider } from './features/pomodoro/FocoProvider.jsx'
 import { perfil } from './lib/api'
 import { DadosProvider } from './lib/DadosProvider.jsx'
+import { useDados } from './lib/dados'
 import { useRota } from './lib/rota'
 import { limparToken, obterToken } from './lib/session'
 
@@ -16,6 +17,23 @@ function lerTela(rota) {
   if (secao === 'foco') return { tela: 'foco' }
   if (secao !== 'projetos') return { tela: 'inicio' }
   return id ? { tela: 'projeto', projetoId: Number(id) } : { tela: 'projetos' }
+}
+
+// Enquanto a carga inicial não termina, as telas mostrariam listas vazias como se
+// a conta não tivesse nada; se a API não responde, o erro precisa aparecer.
+function Conteudo({ children }) {
+  const { carregando, erroCarga } = useDados()
+
+  if (carregando) return <main className="app-estado">Carregando seus dados…</main>
+  if (erroCarga) {
+    return (
+      <main className="app-estado">
+        <strong>Não foi possível carregar seus dados.</strong>
+        <p>{erroCarga}</p>
+      </main>
+    )
+  }
+  return children
 }
 
 function App() {
@@ -72,10 +90,12 @@ function App() {
     <DadosProvider>
       <FocoProvider>
         <AppShell rota={tela === 'projeto' ? 'projetos' : tela} usuario={usuario} onSair={sair}>
-          {tela === 'inicio' && <HomeScreen usuario={usuario} />}
-          {tela === 'projetos' && <ProjectsScreen />}
-          {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
-          {tela === 'foco' && <FocusScreen />}
+          <Conteudo>
+            {tela === 'inicio' && <HomeScreen usuario={usuario} />}
+            {tela === 'projetos' && <ProjectsScreen />}
+            {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
+            {tela === 'foco' && <FocusScreen />}
+          </Conteudo>
         </AppShell>
       </FocoProvider>
     </DadosProvider>
