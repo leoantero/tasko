@@ -16,7 +16,10 @@ CREATE TABLE projetos (
     status VARCHAR(20) NOT NULL DEFAULT 'ativo'
         CHECK (status IN ('ativo', 'concluido')),
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
-    concluido_em TIMESTAMPTZ
+    concluido_em TIMESTAMPTZ,
+    CONSTRAINT projeto_conclusao_coerente CHECK (
+        (status = 'concluido') = (concluido_em IS NOT NULL)
+    )
 );
 
 CREATE TABLE tarefas (
@@ -30,7 +33,10 @@ CREATE TABLE tarefas (
     status VARCHAR(20) NOT NULL DEFAULT 'pendente'
         CHECK (status IN ('pendente', 'concluida')),
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
-    concluida_em TIMESTAMPTZ
+    concluida_em TIMESTAMPTZ,
+    CONSTRAINT tarefa_conclusao_coerente CHECK (
+        (status = 'concluida') = (concluida_em IS NOT NULL)
+    )
 );
 
 CREATE TABLE sessoes_pomodoro (
