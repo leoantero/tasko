@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { resumoDashboard } from '../../lib/api'
+import { dataParaInput, formatarData, lerData } from '../projects/datas'
+import { formatarDuracao } from '../home/tempo'
+import './DashboardDaily.css'
 
 const formatarNumero = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
+const formatarSemana = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' })
 
 function DashboardScreen() {
   const [resumo, setResumo] = useState(null)
@@ -36,6 +40,8 @@ function DashboardScreen() {
     { rotulo: 'Tarefas concluídas', valor: formatarNumero.format(resumo.tarefas_concluidas) },
     { rotulo: 'Projetos ativos', valor: formatarNumero.format(resumo.projetos_ativos) },
   ]
+  const dias = resumo.tempo_por_dia
+  const maiorTempo = Math.max(...dias.map(({ total_segundos }) => total_segundos), 0)
 
   return (
     <main className="dashboard-main">
@@ -55,6 +61,30 @@ function DashboardScreen() {
             </div>
           ))}
         </dl>
+      </section>
+      <section className="dashboard-serie" aria-labelledby="dashboard-serie-titulo">
+        <h2 id="dashboard-serie-titulo">Tempo de foco por dia</h2>
+        <ol className="dashboard-serie-lista">
+          {dias.map(({ dia, total_segundos }) => {
+            const data = lerData(dia)
+            const chaveDia = dataParaInput(dia)
+            const largura = maiorTempo ? (total_segundos / maiorTempo) * 100 : 0
+
+            return (
+              <li className="dashboard-serie-item" key={chaveDia}>
+                <time dateTime={chaveDia}>
+                  {formatarSemana.format(data)} {formatarData(data)}
+                </time>
+                <div className="dashboard-serie-trilho" aria-hidden="true">
+                  <span style={{ width: `${largura}%` }} />
+                </div>
+                <span className="dashboard-serie-valor">
+                  {formatarDuracao(Math.round(total_segundos / 60))}
+                </span>
+              </li>
+            )
+          })}
+        </ol>
       </section>
     </main>
   )
