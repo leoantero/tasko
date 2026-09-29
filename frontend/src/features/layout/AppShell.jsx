@@ -4,6 +4,7 @@ import SessaoIndicador from '../pomodoro/SessaoIndicador.jsx'
 const LINKS = [
   { rota: 'inicio', href: '#/', rotulo: 'Início' },
   { rota: 'projetos', href: '#/projetos', rotulo: 'Projetos' },
+  { rota: 'tarefas', href: '#/tarefas', rotulo: 'Tarefas' },
 ]
 
 function AppShell({ rota, usuario, onSair, children }) {
