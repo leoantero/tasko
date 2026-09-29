@@ -71,7 +71,9 @@ function App() {
     if (!token) return
     let ativo = true
     perfil()
-      .then((dados) => ativo && setUsuario(dados))
+      // Resposta vazia derrubaria o app numa tela branca sem erro nenhum:
+      // sem usuario nao ha o que mostrar, entao vale como sessao invalida.
+      .then((dados) => ativo && (dados ? setUsuario(dados) : sair()))
       .catch(() => ativo && sair())
     return () => {
       ativo = false
