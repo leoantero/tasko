@@ -58,7 +58,7 @@ Dados do dono do token: `{id, nome, email, criado_em}`.
 | `POST /projetos` | cria; só `nome` é obrigatório |
 | `GET /projetos/<id>` | detalhe |
 | `PUT /projetos/<id>` | **atualização parcial**: envie só o que mudou |
-| `DELETE /projetos/<id>` | 204; as tarefas do projeto viram avulsas (HU11) |
+| `DELETE /projetos/<id>` | 204. `?tarefas=soltar` (padrão) transforma as tarefas em avulsas; `?tarefas=excluir` apaga junto |
 
 Campos: `nome`, `categoria`, `descricao`, `prazo`, `status`
 (`ativo` ou `concluido`). Concluir preenche `concluido_em` automaticamente;

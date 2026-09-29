@@ -8,6 +8,7 @@ from app.validacao import corpo, data, exigir, texto, texto_opcional
 bp = Blueprint("projetos", __name__)
 
 STATUS_VALIDOS = ("ativo", "concluido")
+DESTINOS_TAREFAS = ("soltar", "excluir")
 NOME_MAXIMO = 120  # VARCHAR(120) em projetos.nome
 CATEGORIA_MAXIMA = 60  # VARCHAR(60) em projetos.categoria
 
@@ -75,6 +76,11 @@ def atualizar(projeto_id):
 @bp.delete("/projetos/<int:projeto_id>")
 @login_required
 def excluir(projeto_id):
-    if repo.excluir(projeto_id, g.usuario_id) is None:
+    """?tarefas=soltar (padrao) transforma em avulsas; ?tarefas=excluir apaga."""
+    destino = request.args.get("tarefas", "soltar")
+    if destino not in DESTINOS_TAREFAS:
+        raise ApiError(f"tarefas deve ser: {' ou '.join(DESTINOS_TAREFAS)}.")
+
+    if repo.excluir(projeto_id, g.usuario_id, destino == "excluir") is None:
         raise ApiError("Projeto nao encontrado.", 404)
     return "", 204

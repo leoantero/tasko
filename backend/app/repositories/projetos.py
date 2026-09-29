@@ -58,18 +58,37 @@ def atualizar(projeto_id, usuario_id, nome, categoria, descricao, prazo, status)
     )
 
 
-def excluir(projeto_id, usuario_id):
-    """Solta as tarefas do projeto antes de apaga-lo, na mesma transacao.
+# As tarefas do projeto viram avulsas (HU11), preservando prazo e historico.
+SOLTAR_TAREFAS = """
+    WITH soltas AS (
+        UPDATE tarefas SET projeto_id = NULL
+         WHERE projeto_id = %(id)s AND usuario_id = %(usuario)s
+    )
+"""
 
-    A tarefa vira avulsa (HU11) em vez de ser apagada junto: o historico de
-    foco dela continua valendo e a pessoa nao perde trabalho registrado.
-    """
+# As tarefas somem junto, mas as sessoes ficam: o tempo ja focado e real e
+# continua valendo no dashboard, so perde o vinculo com a tarefa.
+EXCLUIR_TAREFAS = """
+    WITH soltas AS (
+        UPDATE sessoes_pomodoro SET tarefa_id = NULL
+         WHERE usuario_id = %(usuario)s
+           AND tarefa_id IN (
+               SELECT id FROM tarefas
+                WHERE projeto_id = %(id)s AND usuario_id = %(usuario)s
+           )
+    ), apagadas AS (
+        DELETE FROM tarefas
+         WHERE projeto_id = %(id)s AND usuario_id = %(usuario)s
+    )
+"""
+
+
+def excluir(projeto_id, usuario_id, com_tarefas=False):
+    """Apaga o projeto, decidindo o destino das tarefas na mesma transacao."""
+    inicio = EXCLUIR_TAREFAS if com_tarefas else SOLTAR_TAREFAS
     return execute(
-        """
-        WITH soltas AS (
-            UPDATE tarefas SET projeto_id = NULL
-             WHERE projeto_id = %(id)s AND usuario_id = %(usuario)s
-        )
+        inicio
+        + """
         DELETE FROM projetos
          WHERE id = %(id)s AND usuario_id = %(usuario)s
         RETURNING id
