@@ -16,6 +16,18 @@
   list-style: none;
 }
 
+.historico-dias {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.historico-dia h2 {
+  margin: 0 0 var(--space-2);
+  font: var(--text-body-lg);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
 .historico-item {
   display: flex;
   flex-wrap: wrap;
@@ -27,6 +39,7 @@
 
 .historico-tipo,
 .historico-item time,
+.historico-duracao,
 .historico-vazio {
   color: var(--color-ink-muted);
   font: var(--text-body-sm);
