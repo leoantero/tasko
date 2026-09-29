@@ -12,7 +12,7 @@ import TaskItem from './TaskItem.jsx'
 import TaskQuickAdd from './TaskQuickAdd.jsx'
 import { ordenarConcluidas, ordenarPendentes, rotuloPrioridade } from './tarefas'
 
-function TaskPanel({ projetoId, tarefas }) {
+function TaskPanel({ projetoId, tarefas, vazio = 'Nenhuma tarefa ainda. Comece pela primeira acima.' }) {
   const { sessoes, criarTarefa, atualizarTarefa, excluirTarefa } = useDados()
   const { estado: foco } = useFoco()
   const id = useId()
@@ -132,7 +132,7 @@ function TaskPanel({ projetoId, tarefas }) {
         <TaskGrupos pendentes={pendentes} renderizar={renderizar} />
       ) : (
         <p className="task-vazio">
-          {tarefas.length === 0 ? 'Nenhuma tarefa ainda. Comece pela primeira acima.' : 'Tudo em dia por aqui.'}
+          {tarefas.length === 0 ? vazio : 'Tudo em dia por aqui.'}
         </p>
       )}
 

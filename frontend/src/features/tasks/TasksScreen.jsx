@@ -30,7 +30,11 @@ function TasksScreen() {
         </p>
       </header>
 
-      <TaskPanel projetoId={null} tarefas={avulsas} />
+      <TaskPanel
+        projetoId={null}
+        tarefas={avulsas}
+        vazio="Nada solto por aqui. Use esta lista para o que não pertence a um projeto."
+      />
     </main>
   )
 }
