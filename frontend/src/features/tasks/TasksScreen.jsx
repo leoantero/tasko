@@ -3,7 +3,7 @@ import TaskPanel from './TaskPanel.jsx'
 import { useDados } from '../../lib/dados'
 import { situacaoTarefa } from './tarefas'
 
-// HU11: tarefas que não pertencem a projeto nenhum. A criação e as ações são as mesmas
+// HU02: tarefas que não pertencem a projeto nenhum. A criação e as ações são as mesmas
 // da página do projeto — o painel só recebe a lista filtrada e projetoId nulo, o que faz
 // o POST /tarefas ir sem projeto_id.
 function TasksScreen() {

@@ -21,7 +21,7 @@ Como usuário, quero criar projetos com nome, categoria, descrição e prazo par
 
 ### HU02 — Gerenciar tarefas
 
-Como usuário, quero criar, editar, concluir e excluir tarefas dentro de um projeto para acompanhar minhas atividades.
+Como usuário, quero criar, editar, concluir e excluir tarefas — dentro de um projeto ou avulsas, para o que não se encaixa em nenhum objetivo maior — e ver as duas na tela inicial, para acompanhar minhas atividades.
 
 ### HU03 — Priorizar tarefas
 
@@ -49,15 +49,11 @@ Como usuário, quero definir metas de produtividade e acompanhar meu progresso p
 
 ### HU09 — Login
 
-Como usuário, quero criar minha conta e fazer login com email e senha para acessar meus projetos e tarefas de forma segura.
+Como usuário, quero criar minha conta e fazer login com email e senha para acessar meus projetos e tarefas de forma segura, e consultar os dados da minha conta quando precisar.
 
 ### HU10 — Tela inicial
 
 Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas do dia e a sessão de foco em andamento, para retomar meu trabalho rapidamente.
-
-### HU11 — Tarefas avulsas
-
-Como usuário, quero criar tarefas que não pertencem a nenhum projeto, para anotar o que não se encaixa em um objetivo maior, e vê-las na tela inicial junto com as tarefas dos projetos.
 
 ## Tecnologias
 
@@ -85,7 +81,7 @@ Como usuário, quero criar tarefas que não pertencem a nenhum projeto, para ano
 | Membro | Papel      |
 | ------ | ---------- |
 | Brisa Nascimento | Full Stack |
-| Luiz Gustavo | Backend    |
+| Luiz Gustavo | Full Stack |
 | Leonardo Mendes | Frontend   |
 | Arthur Faria | Backend |
 
@@ -100,39 +96,73 @@ flowchart LR
     A --> B[(Banco de Dados)]
 ```
 
-### Sessão de foco (HU04, HU05)
+### Modelo de dados
 
-O diagrama abaixo mostra por que o tempo registrado é sempre do servidor: o
-cliente informa apenas quanto tempo ficou em foco (ele sabe das pausas), e
-quem decide `inicio`, `fim` e o total decorrido é o backend.
+Tudo pertence a um usuário: projetos, tarefas, sessões e metas guardam `usuario_id`, e
+é por ele que toda consulta filtra. Dois vínculos são opcionais de propósito — tarefa
+pode não ter projeto (HU02) e sessão pode ficar sem tarefa quando a tarefa é excluída,
+o que preserva o tempo já focado.
 
 ```mermaid
-sequenceDiagram
-    actor U as Usuário
-    participant F as Frontend
-    participant A as API
-    participant B as Banco
+erDiagram
+    usuarios ||--o{ projetos : cria
+    usuarios ||--o{ tarefas : cria
+    usuarios ||--o{ sessoes_pomodoro : registra
+    usuarios ||--o{ metas : define
+    projetos |o--o{ tarefas : agrupa
+    tarefas |o--o{ sessoes_pomodoro : "recebe foco"
 
-    U->>F: inicia o foco em uma tarefa
-    F->>A: POST /sessoes-pomodoro/iniciar
-    A->>B: descarta sessões abertas há mais de 4h
-    A->>B: INSERT com inicio = agora
-    B-->>A: sessão criada
-    A-->>F: 201 (ou 409 se já houver sessão aberta)
-
-    Note over F: o timer roda no navegador
-
-    U->>F: encerra o foco
-    F->>A: POST /sessoes-pomodoro/<id>/finalizar
-    A->>B: UPDATE fim = agora, tempos calculados no banco
-    B-->>A: sessão finalizada
-    A-->>F: 200 com tempo de foco e total
-
-    F->>A: GET /dashboard/resumo
-    A->>B: agrega as sessões dos últimos 7 dias
-    B-->>A: total, série diária e distribuição por projeto
-    A-->>F: 200
+    usuarios {
+        serial id PK
+        varchar nome
+        varchar email UK
+        varchar senha_hash
+        timestamptz criado_em
+    }
+    projetos {
+        serial id PK
+        int usuario_id FK
+        varchar nome
+        varchar categoria "opcional"
+        text descricao "opcional"
+        date prazo "opcional"
+        varchar status "ativo ou concluido"
+        timestamptz criado_em
+        timestamptz concluido_em "preenchido ao concluir"
+    }
+    tarefas {
+        serial id PK
+        int usuario_id FK
+        int projeto_id FK "nulo = tarefa avulsa"
+        varchar titulo
+        text descricao "opcional"
+        smallint prioridade "3 alta, 2 media, 1 baixa"
+        date prazo "opcional"
+        varchar status "pendente ou concluida"
+        timestamptz criado_em
+        timestamptz concluida_em "preenchido ao concluir"
+    }
+    sessoes_pomodoro {
+        serial id PK
+        int usuario_id FK
+        int tarefa_id FK "nulo = tarefa excluida"
+        timestamptz inicio
+        timestamptz fim "nulo = sessao em andamento"
+        int tempo_foco_segundos
+        int tempo_total_segundos "duracao escolhida, depois decorrido"
+    }
+    metas {
+        serial id PK
+        int usuario_id FK
+        varchar tipo
+        numeric valor_alvo
+        date data_limite
+        timestamptz criado_em
+    }
 ```
+
+O arquivo aplicável está em [`db/schema.sql`](db/schema.sql); há também uma versão
+visual em `db/Diagrama_SQL.png`.
 
 O estado do frontend, o que falta e o guia de integração com a API estão em [docs/FRONTEND.md](docs/FRONTEND.md). O contrato de todas as rotas está em [docs/api.md](docs/api.md).
 

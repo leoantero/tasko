@@ -79,7 +79,7 @@ function TaskForm({ tarefa, onFechar, onSalvar }) {
           />
         </div>
 
-        {/* Mover entre projeto e avulsas (HU11): a API aceita projeto_id no PUT. */}
+        {/* Mover entre projeto e avulsas (HU02): a API aceita projeto_id no PUT. */}
         <div className="campo">
           <label htmlFor={`${id}-projeto`}>Projeto</label>
           <select id={`${id}-projeto`} value={projetoId} onChange={(e) => setProjetoId(e.target.value)}>

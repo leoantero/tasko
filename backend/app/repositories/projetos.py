@@ -58,7 +58,7 @@ def atualizar(projeto_id, usuario_id, nome, categoria, descricao, prazo, status)
     )
 
 
-# As tarefas do projeto viram avulsas (HU11), preservando prazo e historico.
+# As tarefas do projeto viram avulsas (HU02), preservando prazo e historico.
 SOLTAR_TAREFAS = """
     WITH soltas AS (
         UPDATE tarefas SET projeto_id = NULL

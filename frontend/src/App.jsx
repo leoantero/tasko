@@ -3,6 +3,7 @@ import AuthForm from './features/auth/AuthForm.jsx'
 import DashboardScreen from './features/dashboard/DashboardScreen.jsx'
 import HistoryScreen from './features/history/HistoryScreen.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
+import PerfilScreen from './features/perfil/PerfilScreen.jsx'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
 import ProjectsScreen from './features/projects/ProjectsScreen.jsx'
@@ -19,6 +20,7 @@ function lerTela(rota) {
   const [secao, id] = rota.split('/')
   if (secao === 'foco') return { tela: 'foco' }
   if (secao === 'tarefas') return { tela: 'tarefas' }
+  if (secao === 'perfil') return { tela: 'perfil' }
   if (secao === 'dashboard') return { tela: 'dashboard' }
   if (secao === 'historico') return { tela: 'historico' }
   if (secao !== 'projetos') return { tela: 'inicio' }
@@ -49,7 +51,7 @@ function App() {
 
   // O detalhe do projeto e a sessão de foco definem o próprio título (nome do projeto, timer).
   useEffect(() => {
-    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas', dashboard: 'Dashboard', historico: 'Histórico' }
+    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas', perfil: 'Conta', dashboard: 'Dashboard', historico: 'Histórico' }
     if (!token) document.title = 'Entrar · Tasko'
     else if (titulos[tela]) document.title = `${titulos[tela]} · Tasko`
   }, [token, tela])
@@ -73,7 +75,9 @@ function App() {
     if (!token) return
     let ativo = true
     perfil()
-      .then((dados) => ativo && setUsuario(dados))
+      // Resposta vazia derrubaria o app numa tela branca sem erro nenhum:
+      // sem usuario nao ha o que mostrar, entao vale como sessao invalida.
+      .then((dados) => ativo && (dados ? setUsuario(dados) : sair()))
       .catch(() => ativo && sair())
     return () => {
       ativo = false
@@ -102,6 +106,7 @@ function App() {
             {tela === 'historico' && <HistoryScreen />}
             {tela === 'projetos' && <ProjectsScreen />}
             {tela === 'tarefas' && <TasksScreen />}
+            {tela === 'perfil' && <PerfilScreen usuario={usuario} />}
             {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
             {tela === 'foco' && <FocusScreen />}
           </Conteudo>
