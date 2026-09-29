@@ -168,40 +168,6 @@ erDiagram
 O arquivo aplicável está em [`db/schema.sql`](db/schema.sql); há também uma versão
 visual em `db/Diagrama_SQL.png`.
 
-### Sessão de foco (HU04, HU05)
-
-O diagrama abaixo mostra por que o tempo registrado é sempre do servidor: o
-cliente informa apenas quanto tempo ficou em foco (ele sabe das pausas), e
-quem decide `inicio`, `fim` e o total decorrido é o backend.
-
-```mermaid
-sequenceDiagram
-    actor U as Usuário
-    participant F as Frontend
-    participant A as API
-    participant B as Banco
-
-    U->>F: inicia o foco em uma tarefa
-    F->>A: POST /sessoes-pomodoro/iniciar
-    A->>B: descarta sessões abertas há mais de 4h
-    A->>B: INSERT com inicio = agora
-    B-->>A: sessão criada
-    A-->>F: 201 (ou 409 se já houver sessão aberta)
-
-    Note over F: o timer roda no navegador
-
-    U->>F: encerra o foco
-    F->>A: POST /sessoes-pomodoro/<id>/finalizar
-    A->>B: UPDATE fim = agora, tempos calculados no banco
-    B-->>A: sessão finalizada
-    A-->>F: 200 com tempo de foco e total
-
-    F->>A: GET /dashboard/resumo
-    A->>B: agrega as sessões dos últimos 7 dias
-    B-->>A: total, série diária e distribuição por projeto
-    A-->>F: 200
-```
-
 O estado do frontend, o que falta e o guia de integração com a API estão em [docs/FRONTEND.md](docs/FRONTEND.md). O contrato de todas as rotas está em [docs/api.md](docs/api.md).
 
 ## Possíveis extensões
