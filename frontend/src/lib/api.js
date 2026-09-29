@@ -59,6 +59,19 @@ export function resumoDashboard() {
   return request('/dashboard/resumo')
 }
 
+export function listarHistorico({ tipo, desde, ate, limite } = {}) {
+  const parametros = new URLSearchParams()
+
+  Object.entries({ tipo, desde, ate, limite }).forEach(([campo, valor]) => {
+    if (valor !== undefined && valor !== null && valor !== '') {
+      parametros.set(campo, String(valor))
+    }
+  })
+
+  const query = parametros.toString()
+  return request(`/historico${query ? `?${query}` : ''}`)
+}
+
 export function listarProjetos() {
   return request('/projetos')
 }

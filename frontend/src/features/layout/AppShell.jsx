@@ -4,6 +4,7 @@ import SessaoIndicador from '../pomodoro/SessaoIndicador.jsx'
 const LINKS = [
   { rota: 'inicio', href: '#/', rotulo: 'Início' },
   { rota: 'dashboard', href: '#/dashboard', rotulo: 'Dashboard' },
+  { rota: 'historico', href: '#/historico', rotulo: 'Histórico' },
   { rota: 'projetos', href: '#/projetos', rotulo: 'Projetos' },
   { rota: 'tarefas', href: '#/tarefas', rotulo: 'Tarefas' },
 ]
