@@ -59,7 +59,20 @@ def atualizar(projeto_id, usuario_id, nome, categoria, descricao, prazo, status)
 
 
 def excluir(projeto_id, usuario_id):
+    """Solta as tarefas do projeto antes de apaga-lo, na mesma transacao.
+
+    A tarefa vira avulsa (HU11) em vez de ser apagada junto: o historico de
+    foco dela continua valendo e a pessoa nao perde trabalho registrado.
+    """
     return execute(
-        "DELETE FROM projetos WHERE id = %s AND usuario_id = %s RETURNING id",
-        (projeto_id, usuario_id),
+        """
+        WITH soltas AS (
+            UPDATE tarefas SET projeto_id = NULL
+             WHERE projeto_id = %(id)s AND usuario_id = %(usuario)s
+        )
+        DELETE FROM projetos
+         WHERE id = %(id)s AND usuario_id = %(usuario)s
+        RETURNING id
+        """,
+        {"id": projeto_id, "usuario": usuario_id},
     )

@@ -1,5 +1,4 @@
 from flask import Blueprint, g, jsonify, request
-from psycopg import errors as pg_errors
 
 from app.auth import login_required
 from app.errors import ApiError
@@ -76,11 +75,6 @@ def atualizar(projeto_id):
 @bp.delete("/projetos/<int:projeto_id>")
 @login_required
 def excluir(projeto_id):
-    try:
-        removido = repo.excluir(projeto_id, g.usuario_id)
-    except pg_errors.ForeignKeyViolation:
-        raise ApiError("Exclua as tarefas do projeto antes de exclui-lo.", 409)
-
-    if removido is None:
+    if repo.excluir(projeto_id, g.usuario_id) is None:
         raise ApiError("Projeto nao encontrado.", 404)
     return "", 204

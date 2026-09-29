@@ -14,7 +14,7 @@ Erro sempre no formato `{"erro": "mensagem"}`:
 | 400 | campo faltando, formato inválido, valor fora da faixa |
 | 401 | token ausente, inválido ou expirado |
 | 404 | recurso não existe **ou não é do usuário do token** |
-| 409 | conflito (email repetido, sessão já aberta, projeto com tarefas) |
+| 409 | conflito (email repetido, sessão já aberta) |
 | 429 | muitas tentativas de login |
 | 503 | banco indisponível |
 
@@ -58,7 +58,7 @@ Dados do dono do token: `{id, nome, email, criado_em}`.
 | `POST /projetos` | cria; só `nome` é obrigatório |
 | `GET /projetos/<id>` | detalhe |
 | `PUT /projetos/<id>` | **atualização parcial**: envie só o que mudou |
-| `DELETE /projetos/<id>` | 204; 409 se ainda houver tarefas |
+| `DELETE /projetos/<id>` | 204; as tarefas do projeto viram avulsas (HU11) |
 
 Campos: `nome`, `categoria`, `descricao`, `prazo`, `status`
 (`ativo` ou `concluido`). Concluir preenche `concluido_em` automaticamente;
