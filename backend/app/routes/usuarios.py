@@ -3,7 +3,7 @@ from psycopg import errors as pg_errors
 
 from app.auth import gerar_hash, gerar_token, login_required, senha_confere
 from app.errors import ApiError
-from app import limite
+from app.limite import conferir_limite, limpar_falhas, registrar_falha
 from app.repositories import usuarios as repo
 from app.validacao import corpo, email, exigir, texto
 
@@ -39,14 +39,14 @@ def login():
     exigir(dados, "email", "senha")
 
     chave = dados["email"].strip().lower()
-    limite.conferir(chave)
+    conferir_limite(chave)
 
     usuario = repo.buscar_por_email(chave)
     if not usuario or not senha_confere(dados["senha"], usuario["senha_hash"]):
-        limite.registrar_falha(chave)
+        registrar_falha(chave)
         raise ApiError("Email ou senha invalidos.", 401)
 
-    limite.limpar(chave)
+    limpar_falhas(chave)
     return jsonify(token=gerar_token(usuario["id"]))
 
 

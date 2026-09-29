@@ -15,7 +15,7 @@ def _recentes(chave, agora):
     return [t for t in _falhas.get(chave, []) if agora - t < JANELA_SEGUNDOS]
 
 
-def conferir(chave):
+def conferir_limite(chave):
     """Recusa novas tentativas quando o limite da janela foi atingido."""
     agora = monotonic()
     tentativas = _recentes(chave, agora)
@@ -33,5 +33,5 @@ def registrar_falha(chave):
     _falhas[chave] = _recentes(chave, agora) + [agora]
 
 
-def limpar(chave):
+def limpar_falhas(chave):
     _falhas.pop(chave, None)
