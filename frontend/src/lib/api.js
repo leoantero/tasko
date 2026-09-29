@@ -92,6 +92,10 @@ export function listarSessoes() {
   return request('/sessoes-pomodoro')
 }
 
+export function sessaoAtual() {
+  return request('/sessoes-pomodoro/atual')
+}
+
 export function iniciarSessao(dados) {
   return request('/sessoes-pomodoro/iniciar', {
     method: 'POST',

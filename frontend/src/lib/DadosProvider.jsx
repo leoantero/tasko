@@ -51,6 +51,11 @@ export function DadosProvider({ children }) {
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
   }
 
+  // Sessão que ficou aberta, para o FocoProvider retomar o timer ao abrir o app.
+  function buscarSessaoAberta() {
+    return api.sessaoAtual()
+  }
+
   // O servidor define o início e recusa com 409 se já houver sessão aberta.
   async function iniciarSessao(dados) {
     const sessao = await api.iniciarSessao(dados)
@@ -75,6 +80,7 @@ export function DadosProvider({ children }) {
     criarTarefa,
     atualizarTarefa,
     excluirTarefa,
+    buscarSessaoAberta,
     iniciarSessao,
     finalizarSessao,
   }

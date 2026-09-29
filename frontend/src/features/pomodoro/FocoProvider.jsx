@@ -9,7 +9,7 @@ const TEMPOS_PADRAO = { focoSeg: 25 * 60, intervaloSeg: 5 * 60 }
 // Fases: foco → fim-foco → intervalo → fim-intervalo → foco (próxima sessão).
 // "Pausar" congela o foco; "intervalo" é o descanso entre sessões.
 export function FocoProvider({ children }) {
-  const { iniciarSessao, finalizarSessao } = useDados()
+  const { buscarSessaoAberta, iniciarSessao, finalizarSessao } = useDados()
   const [estado, setEstado] = useState(null)
   const [tempos, setTempos] = useState(TEMPOS_PADRAO)
   const [erro, setErro] = useState('')
@@ -45,6 +45,33 @@ export function FocoProvider({ children }) {
       finalizando.current = false
     }
   }
+
+  // Fechar a aba no meio do foco deixa a sessão aberta no servidor: ao abrir o app
+  // de novo, o timer volta de onde estava. Enquanto aberta, tempo_total_segundos
+  // guarda a duração escolhida. Se o tempo já passou, o timer dispara na hora e a
+  // sessão é finalizada, como em qualquer fim de foco.
+  const retomarSessaoAberta = useEffectEvent(() => {
+    let ativo = true
+    buscarSessaoAberta().then((sessao) => {
+      if (!ativo || !sessao) return
+      const focoSeg = sessao.tempo_total_segundos ?? tempos.focoSeg
+      setEstado({
+        fase: 'foco',
+        sessaoId: sessao.id,
+        tarefaId: sessao.tarefa_id,
+        focoSeg,
+        intervaloSeg: tempos.intervaloSeg,
+        fimEm: new Date(sessao.inicio).getTime() + focoSeg * 1000,
+        parado: null,
+        focadoSeg: 0,
+      })
+    })
+    return () => {
+      ativo = false
+    }
+  })
+
+  useEffect(() => retomarSessaoAberta(), [])
 
   // Fim do tempo: encerra o foco (registrando a sessão) ou o intervalo.
   const acabouOTempo = useEffectEvent(() => {
