@@ -13,7 +13,8 @@ CREATE TABLE projetos (
     categoria VARCHAR(60),
     descricao TEXT,
     prazo DATE,
-    status VARCHAR(20) NOT NULL DEFAULT 'ativo',
+    status VARCHAR(20) NOT NULL DEFAULT 'ativo'
+        CHECK (status IN ('ativo', 'concluido')),
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
     concluido_em TIMESTAMPTZ
 );
@@ -26,7 +27,8 @@ CREATE TABLE tarefas (
     descricao TEXT,
     prioridade SMALLINT,
     prazo DATE,
-    status VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    status VARCHAR(20) NOT NULL DEFAULT 'pendente'
+        CHECK (status IN ('pendente', 'concluida')),
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now(),
     concluida_em TIMESTAMPTZ
 );
