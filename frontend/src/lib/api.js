@@ -65,3 +65,25 @@ export function criarProjeto(dados) {
     body: JSON.stringify(dados),
   })
 }
+
+export function listarTarefas() {
+  return request('/tarefas')
+}
+
+export function criarTarefa(dados) {
+  return request('/tarefas', {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}
+
+export function atualizarTarefa(id, mudancas) {
+  return request(`/tarefas/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(mudancas),
+  })
+}
+
+export function excluirTarefa(id) {
+  return request(`/tarefas/${id}`, { method: 'DELETE' })
+}

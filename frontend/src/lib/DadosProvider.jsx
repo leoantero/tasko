@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react'
 import * as api from './api'
 import { DadosContext } from './dados'
 import { sessoesIniciais } from '../features/pomodoro/mockSessoes'
-import { tarefasIniciais } from '../features/tasks/mockTarefas'
 
-// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Projetos já
-// vêm da API; tarefas e sessões seguem em memória até os próximos commits.
+// Fonte única de projetos, tarefas e sessões Pomodoro para todas as telas. Projetos e
+// tarefas já vêm da API; as sessões seguem em memória até o próximo commit.
 
 let ultimoId = 1000
 const agora = () => new Date().toISOString()
 
 export function DadosProvider({ children }) {
   const [projetos, setProjetos] = useState([])
-  const [tarefas, setTarefas] = useState(tarefasIniciais)
+  const [tarefas, setTarefas] = useState([])
   const [sessoes, setSessoes] = useState(sessoesIniciais)
   const [carregando, setCarregando] = useState(true)
   const [erroCarga, setErroCarga] = useState('')
@@ -20,9 +19,11 @@ export function DadosProvider({ children }) {
   // O App só mostra carregando e erro no commit do estado de carga; aqui os
   // valores já ficam no contexto para as telas não renderizarem lista vazia.
   useEffect(() => {
-    api
-      .listarProjetos()
-      .then(setProjetos)
+    Promise.all([api.listarProjetos(), api.listarTarefas()])
+      .then(([listaProjetos, listaTarefas]) => {
+        setProjetos(listaProjetos)
+        setTarefas(listaTarefas)
+      })
       .catch((erro) => setErroCarga(erro.message))
       .finally(() => setCarregando(false))
   }, [])
@@ -35,37 +36,21 @@ export function DadosProvider({ children }) {
   }
 
   async function criarTarefa(dados) {
-    const tarefa = {
-      descricao: null,
-      prioridade: null,
-      prazo: null,
-      ...dados,
-      id: ++ultimoId,
-      status: 'pendente',
-      criado_em: agora(),
-      concluida_em: null,
-    }
+    const tarefa = await api.criarTarefa(dados)
     setTarefas((atuais) => [tarefa, ...atuais])
     return tarefa
   }
 
-  // Como o backend: concluida_em é preenchido ao concluir e limpo ao reabrir.
+  // A resposta já vem com concluida_em preenchido ou limpo pelo servidor.
   async function atualizarTarefa(id, mudancas) {
-    setTarefas((atuais) =>
-      atuais.map((t) => {
-        if (t.id !== id) return t
-        const status = mudancas.status ?? t.status
-        const concluida_em = status === 'concluida' ? (t.concluida_em ?? agora()) : null
-        return { ...t, ...mudancas, status, concluida_em }
-      }),
-    )
+    const tarefa = await api.atualizarTarefa(id, mudancas)
+    setTarefas((atuais) => atuais.map((t) => (t.id === id ? tarefa : t)))
+    return tarefa
   }
 
-  // Como o backend (409): tarefa com Pomodoros não pode ser excluída.
+  // O backend desvincula as sessões da tarefa em vez de recusar a exclusão.
   async function excluirTarefa(id) {
-    if (sessoes.some((s) => s.tarefa_id === id)) {
-      throw new Error('Esta tarefa possui Pomodoros. Apague-os primeiro.')
-    }
+    await api.excluirTarefa(id)
     setTarefas((atuais) => atuais.filter((t) => t.id !== id))
   }
 
