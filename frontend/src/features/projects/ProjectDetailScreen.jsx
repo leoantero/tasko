@@ -3,6 +3,7 @@ import './ProjectDetailScreen.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
 import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
+import ConfirmarExclusaoProjeto from './ConfirmarExclusaoProjeto.jsx'
 import ProjectForm from './ProjectForm.jsx'
 import { listarCategorias } from './categorias'
 import TempoDedicado from '../pomodoro/TempoDedicado.jsx'
@@ -14,10 +15,11 @@ const RAIO = 52
 const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 function ProjectDetailScreen({ projetoId }) {
-  const { projetos, tarefas, sessoes, atualizarProjeto } = useDados()
+  const { projetos, tarefas, sessoes, atualizarProjeto, excluirProjeto } = useDados()
   const { estado: foco } = useFoco()
   const [focando, setFocando] = useState(null)
   const [editando, setEditando] = useState(false)
+  const [excluindo, setExcluindo] = useState(false)
   const [erro, setErro] = useState('')
   const projeto = projetos.find((p) => p.id === projetoId)
 
@@ -82,6 +84,9 @@ function ProjectDetailScreen({ projetoId }) {
             }}
           >
             {projeto.status === 'concluido' ? 'Reabrir projeto' : 'Concluir projeto'}
+          </button>
+          <button type="button" className="projeto-btn projeto-btn--perigo" onClick={() => setExcluindo(true)}>
+            Excluir
           </button>
         </div>
 
@@ -174,6 +179,18 @@ function ProjectDetailScreen({ projetoId }) {
       </div>
 
       {focando && <IniciarSessao tarefa={focando} onFechar={() => setFocando(null)} />}
+
+      {excluindo && (
+        <ConfirmarExclusaoProjeto
+          projeto={projeto}
+          quantasTarefas={doProjeto.length}
+          onFechar={() => setExcluindo(false)}
+          onConfirmar={async (destino) => {
+            await excluirProjeto(projeto.id, destino)
+            window.location.hash = '#/projetos'
+          }}
+        />
+      )}
 
       {editando && (
         <ProjectForm

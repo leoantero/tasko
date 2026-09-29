@@ -301,3 +301,7 @@
   font: var(--text-body-sm);
   color: var(--color-danger);
 }
+
+.projeto-btn--perigo {
+  color: var(--color-danger);
+}
