@@ -34,6 +34,16 @@ function App() {
     window.scrollTo(0, 0)
   }, [tela, projetoId])
 
+  // O api.js avisa quando alguma rota responde 401; o token ja foi limpo la.
+  useEffect(() => {
+    const aoExpirar = () => {
+      setToken(null)
+      setUsuario(null)
+    }
+    window.addEventListener('sessao-expirada', aoExpirar)
+    return () => window.removeEventListener('sessao-expirada', aoExpirar)
+  }, [])
+
   // O nome exibido vem do dono do token; token invalido ou expirado derruba a sessao.
   useEffect(() => {
     if (!token) return

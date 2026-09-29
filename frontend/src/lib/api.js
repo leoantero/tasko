@@ -1,4 +1,4 @@
-import { obterToken } from './session'
+import { limparToken, obterToken } from './session'
 
 // 5001 e nao 5000: no macOS a 5000 e do Receptor AirPlay.
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5001/api'
@@ -22,6 +22,13 @@ async function request(path, options = {}) {
   }
 
   const dados = await response.json().catch(() => ({}))
+
+  // Token vencido ou invalido derruba a sessao em qualquer rota, nao so no
+  // perfil. Erro de rede nao passa por aqui, entao nao desloga.
+  if (response.status === 401 && token) {
+    limparToken()
+    window.dispatchEvent(new Event('sessao-expirada'))
+  }
 
   if (!response.ok) {
     throw new Error(dados.erro || 'Erro inesperado. Tente novamente.')
