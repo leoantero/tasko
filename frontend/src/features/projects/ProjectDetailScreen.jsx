@@ -3,6 +3,8 @@ import './ProjectDetailScreen.css'
 import { useDados } from '../../lib/dados'
 import { useFoco } from '../pomodoro/foco'
 import IniciarSessao from '../pomodoro/IniciarSessao.jsx'
+import ProjectForm from './ProjectForm.jsx'
+import { listarCategorias } from './categorias'
 import TempoDedicado from '../pomodoro/TempoDedicado.jsx'
 import TaskPanel from '../tasks/TaskPanel.jsx'
 import { ordenarPendentes, rotuloPrioridade, situacaoTarefa } from '../tasks/tarefas'
@@ -12,9 +14,11 @@ const RAIO = 52
 const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 function ProjectDetailScreen({ projetoId }) {
-  const { projetos, tarefas, sessoes } = useDados()
+  const { projetos, tarefas, sessoes, atualizarProjeto } = useDados()
   const { estado: foco } = useFoco()
   const [focando, setFocando] = useState(null)
+  const [editando, setEditando] = useState(false)
+  const [erro, setErro] = useState('')
   const projeto = projetos.find((p) => p.id === projetoId)
 
   useEffect(() => {
@@ -61,6 +65,32 @@ function ProjectDetailScreen({ projetoId }) {
         </span>
         <h1>{projeto.nome}</h1>
         {projeto.descricao && <p className="projeto-descricao">{projeto.descricao}</p>}
+        <div className="projeto-acoes">
+          <button type="button" className="projeto-btn" onClick={() => setEditando(true)}>
+            Editar
+          </button>
+          <button
+            type="button"
+            className="projeto-btn"
+            onClick={async () => {
+              const status = projeto.status === 'concluido' ? 'ativo' : 'concluido'
+              try {
+                await atualizarProjeto(projeto.id, { status })
+              } catch (falha) {
+                setErro(falha.message)
+              }
+            }}
+          >
+            {projeto.status === 'concluido' ? 'Reabrir projeto' : 'Concluir projeto'}
+          </button>
+        </div>
+
+        {erro && (
+          <p className="projeto-erro" role="alert">
+            {erro}
+          </p>
+        )}
+
         <div className="projeto-prazo">
           {progressoDoPrazo !== null && (
             <div className="projeto-regua" aria-hidden="true">
@@ -144,6 +174,15 @@ function ProjectDetailScreen({ projetoId }) {
       </div>
 
       {focando && <IniciarSessao tarefa={focando} onFechar={() => setFocando(null)} />}
+
+      {editando && (
+        <ProjectForm
+          projeto={projeto}
+          categorias={listarCategorias(projetos)}
+          onFechar={() => setEditando(false)}
+          onSalvar={(mudancas) => atualizarProjeto(projeto.id, mudancas)}
+        />
+      )}
     </main>
   )
 }
