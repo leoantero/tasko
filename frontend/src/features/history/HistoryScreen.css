@@ -58,6 +58,11 @@
   opacity: 0.55;
 }
 
+.historico-filtros :is(select, input, button):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
 .historico-lista {
   display: grid;
   margin: 0;
@@ -97,6 +102,12 @@
 .historico-titulo {
   flex: 1 1 200px;
   overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .historico-filtros {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 480px) {
