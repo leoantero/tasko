@@ -60,4 +60,9 @@ def renovar():
 @bp.get("/perfil")
 @login_required
 def perfil():
-    return jsonify(repo.buscar_por_id(g.usuario_id))
+    """Token assinado nao garante conta viva: ela pode ter sido apagada."""
+    usuario = repo.buscar_por_id(g.usuario_id)
+    if usuario is None:
+        raise ApiError("Conta nao encontrada.", 401)
+
+    return jsonify(usuario)
