@@ -46,8 +46,10 @@ CREATE TABLE sessoes_pomodoro (
 CREATE TABLE metas (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL REFERENCES usuarios(id),
-    tipo VARCHAR(20) NOT NULL,
-    valor_alvo NUMERIC NOT NULL,
+    tipo VARCHAR(20) NOT NULL
+        CHECK (tipo IN ('tempo_foco_horas', 'tarefas_concluidas',
+                        'sessoes_pomodoro', 'projetos_concluidos')),
+    valor_alvo NUMERIC NOT NULL CHECK (valor_alvo > 0),
     data_limite DATE NOT NULL,
     criado_em TIMESTAMPTZ NOT NULL DEFAULT now()
 );
