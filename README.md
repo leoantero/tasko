@@ -21,7 +21,7 @@ Como usuário, quero criar projetos com nome, categoria, descrição e prazo par
 
 ### HU02 — Gerenciar tarefas
 
-Como usuário, quero criar, editar, concluir e excluir tarefas dentro de um projeto para acompanhar minhas atividades.
+Como usuário, quero criar, editar, concluir e excluir tarefas — dentro de um projeto ou avulsas, para o que não se encaixa em nenhum objetivo maior — e ver as duas na tela inicial, para acompanhar minhas atividades.
 
 ### HU03 — Priorizar tarefas
 
@@ -54,10 +54,6 @@ Como usuário, quero criar minha conta e fazer login com email e senha para aces
 ### HU10 — Tela inicial
 
 Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas do dia e a sessão de foco em andamento, para retomar meu trabalho rapidamente.
-
-### HU11 — Tarefas avulsas
-
-Como usuário, quero criar tarefas que não pertencem a nenhum projeto, para anotar o que não se encaixa em um objetivo maior, e vê-las na tela inicial junto com as tarefas dos projetos.
 
 ## Tecnologias
 
@@ -104,7 +100,7 @@ flowchart LR
 
 Tudo pertence a um usuário: projetos, tarefas, sessões e metas guardam `usuario_id`, e
 é por ele que toda consulta filtra. Dois vínculos são opcionais de propósito — tarefa
-pode não ter projeto (HU11) e sessão pode ficar sem tarefa quando a tarefa é excluída,
+pode não ter projeto (HU02) e sessão pode ficar sem tarefa quando a tarefa é excluída,
 o que preserva o tempo já focado.
 
 ```mermaid

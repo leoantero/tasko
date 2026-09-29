@@ -67,7 +67,7 @@ CREATE TABLE metas (
 -- Regras que nao aparecem no tipo da coluna e que a aplicacao depende.
 -- Ficam no proprio banco para quem abrir o psql sem ler o codigo.
 COMMENT ON COLUMN tarefas.projeto_id IS
-    'Nulo = tarefa avulsa, sem projeto (HU11).';
+    'Nulo = tarefa avulsa, sem projeto (HU02).';
 COMMENT ON COLUMN tarefas.prioridade IS
     '3 alta, 2 media, 1 baixa; nulo = sem prioridade.';
 COMMENT ON COLUMN tarefas.status IS

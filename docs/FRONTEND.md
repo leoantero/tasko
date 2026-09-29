@@ -14,13 +14,12 @@ Resumo para o time: o que o front já faz e o que falta. Rodar: `cd frontend && 
 | HU | No front | Dados |
 |---|---|---|
 | HU01 Criar projeto | Grade com filtros, painel "Novo projeto" com prévia e atalhos de prazo | **API real** |
-| HU02 Gerenciar tarefas | Página do projeto: criar, editar, concluir, excluir | **API real** |
+| HU02 Gerenciar tarefas | Página do projeto: criar, editar, concluir, excluir; tela `#/tarefas` com as avulsas, reaproveitando o mesmo painel; seletor de projeto no "Editar tarefa" | **API real** |
 | HU03 Priorizar | Bandeira com menu na tarefa, campo no "Editar", pendentes agrupadas por prioridade, "Comece por" | **API real** |
 | HU04 Pomodoro | Iniciar pela tarefa escolhendo foco e intervalo; tela `#/foco` (pausar, encerrar, intervalo, concluir tarefa); timer na barra do topo | **API real** |
 | HU05 Registrar produtividade | Registro automático no fim do tempo; tempo de foco por tarefa, por projeto e "Tempo dedicado" (7 dias + por tarefa) | **API real** |
 | HU09 Login e conta | Cadastro, login, nome do usuário via `/perfil`; tela `#/perfil` com nome, email e id, aberta pelo avatar da barra do topo | **API real** |
 | HU10 Tela inicial | Sessão em andamento, tarefas de hoje, ritmo do dia, sugestão da próxima tarefa | **API real** (mesmos dados das outras telas) |
-| HU11 Tarefas avulsas | Tela `#/tarefas` com as tarefas sem projeto, reaproveitando o painel da página do projeto; seletor de projeto no "Editar tarefa" | **API real** |
 
 Os mocks foram removidos: o `DadosProvider` carrega projetos, tarefas e sessões da API na
 montagem e cada ação chama a rota correspondente, guardando o objeto que o servidor devolve.
