@@ -13,10 +13,28 @@
   gap: var(--space-4);
 }
 
+/* Mesma identidade do avatar da barra do topo, em tamanho de página. */
+.perfil-avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  font: var(--text-display-md);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border-radius: var(--radius-full);
+}
+
 .perfil-head h1 {
   margin: 0;
   font: var(--text-display-lg);
   color: var(--color-ink);
+}
+
+.perfil-desde {
+  margin: var(--space-1) 0 0;
+  font: var(--text-body);
+  color: var(--color-ink-muted);
 }
 
 .perfil-dados {
@@ -26,10 +44,29 @@
   margin: 0;
 }
 
+.perfil-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.perfil-item dt {
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  color: var(--color-ink-muted);
+}
+
 .perfil-item dd {
   margin: 0;
   font: var(--text-body);
   color: var(--color-ink);
+}
+
+.perfil-id {
+  font-family: var(--font-mono);
 }
 
 .perfil-nota {
