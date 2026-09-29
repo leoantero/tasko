@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import './ProjectForm.css'
 import CampoPrazo from './CampoPrazo.jsx'
+import { dataParaInput } from './datas'
 import Dialogo from '../../components/Dialogo.jsx'
 import ProjectCard from './ProjectCard.jsx'
 import { mesmaCategoria } from './categorias'
@@ -12,15 +13,17 @@ const ATALHOS_PRAZO = [
   { rotulo: '+1 mês', dias: 30 },
 ]
 
-function ProjectForm({ categorias, onFechar, onCriar }) {
+// Serve para criar e para editar: com projeto, os campos vêm preenchidos.
+function ProjectForm({ projeto, categorias, onFechar, onSalvar }) {
   const id = useId()
-  const [nome, setNome] = useState('')
-  const [categoria, setCategoria] = useState('')
-  const [descricao, setDescricao] = useState('')
-  const [prazo, setPrazo] = useState('')
+  const [nome, setNome] = useState(projeto?.nome ?? '')
+  const [categoria, setCategoria] = useState(projeto?.categoria ?? '')
+  const [descricao, setDescricao] = useState(projeto?.descricao ?? '')
+  const [prazo, setPrazo] = useState(dataParaInput(projeto?.prazo))
   const [erro, setErro] = useState('')
+  const [salvando, setSalvando] = useState(false)
 
-  function enviar(evento) {
+  async function enviar(evento) {
     evento.preventDefault()
     const nomeLimpo = nome.trim()
     if (!nomeLimpo) {
@@ -28,14 +31,21 @@ function ProjectForm({ categorias, onFechar, onCriar }) {
       evento.currentTarget.querySelector('[data-autofocus]').focus()
       return
     }
+
     const categoriaLimpa = categoria.trim()
-    onCriar({
-      nome: nomeLimpo,
-      categoria: categorias.find((c) => mesmaCategoria(c, categoriaLimpa)) ?? (categoriaLimpa || null),
-      descricao: descricao.trim() || null,
-      prazo: prazo || null,
-    })
-    onFechar()
+    setSalvando(true)
+    try {
+      await onSalvar({
+        nome: nomeLimpo,
+        categoria: categorias.find((c) => mesmaCategoria(c, categoriaLimpa)) ?? (categoriaLimpa || null),
+        descricao: descricao.trim() || null,
+        prazo: prazo || null,
+      })
+      onFechar()
+    } catch (erroApi) {
+      setErro(erroApi.message)
+      setSalvando(false)
+    }
   }
 
   const previa = {
@@ -43,13 +53,13 @@ function ProjectForm({ categorias, onFechar, onCriar }) {
     categoria: categoria.trim() || null,
     descricao: descricao.trim() || null,
     prazo: prazo || null,
-    status: 'ativo',
-    criado_em: new Date().toISOString(),
-    concluido_em: null,
+    status: projeto?.status ?? 'ativo',
+    criado_em: projeto?.criado_em ?? new Date().toISOString(),
+    concluido_em: projeto?.concluido_em ?? null,
   }
 
   return (
-    <Dialogo titulo="Novo projeto" onFechar={onFechar}>
+    <Dialogo titulo={projeto ? 'Editar projeto' : 'Novo projeto'} onFechar={onFechar}>
       <div className="project-dialog-grid">
         <form className="formulario" onSubmit={enviar} noValidate>
           <div className="campo">
@@ -118,8 +128,8 @@ function ProjectForm({ categorias, onFechar, onCriar }) {
             <button type="button" className="btn btn--secundario" onClick={onFechar}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn--primario">
-              Criar projeto
+            <button type="submit" className="btn btn--primario" disabled={salvando}>
+              {salvando ? 'Salvando…' : projeto ? 'Salvar' : 'Criar projeto'}
             </button>
           </footer>
         </form>

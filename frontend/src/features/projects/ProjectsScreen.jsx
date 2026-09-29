@@ -157,7 +157,7 @@ function ProjectsScreen() {
       )}
 
       {formAberto && (
-        <ProjectForm categorias={categorias} onFechar={() => setFormAberto(false)} onCriar={criar} />
+        <ProjectForm categorias={categorias} onFechar={() => setFormAberto(false)} onSalvar={criar} />
       )}
 
       <p className="projects-toast" role="status" data-visivel={aviso !== ''}>
