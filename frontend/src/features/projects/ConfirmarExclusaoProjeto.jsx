@@ -30,24 +30,26 @@ function ConfirmarExclusaoProjeto({ projeto, quantasTarefas, onFechar, onConfirm
           <legend>
             {quantasTarefas === 1 ? 'A tarefa deste projeto' : `As ${quantasTarefas} tarefas deste projeto`}
           </legend>
-          <label className="dialogo-opcao">
-            <input
-              type="radio"
-              name="destino-tarefas"
-              checked={destino === 'soltar'}
-              onChange={() => setDestino('soltar')}
-            />
-            Viram tarefas avulsas
-          </label>
-          <label className="dialogo-opcao">
-            <input
-              type="radio"
-              name="destino-tarefas"
-              checked={destino === 'excluir'}
-              onChange={() => setDestino('excluir')}
-            />
-            São excluídas junto
-          </label>
+          <div className="dialogo-opcoes">
+            <label className="dialogo-opcao">
+              <input
+                type="radio"
+                name="destino-tarefas"
+                checked={destino === 'soltar'}
+                onChange={() => setDestino('soltar')}
+              />
+              Viram tarefas avulsas
+            </label>
+            <label className="dialogo-opcao">
+              <input
+                type="radio"
+                name="destino-tarefas"
+                checked={destino === 'excluir'}
+                onChange={() => setDestino('excluir')}
+              />
+              São excluídas junto
+            </label>
+          </div>
           <span className="campo-info">O tempo de foco já registrado é mantido nos dois casos.</span>
         </fieldset>
       )}

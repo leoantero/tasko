@@ -226,17 +226,41 @@
   }
 }
 
-/* Escolha dentro da confirmação (ex.: destino das tarefas ao excluir o projeto). */
+/* Escolha dentro da confirmação (ex.: destino das tarefas ao excluir o projeto).
+   O fieldset precisa perder a borda e o recuo do navegador, senão a legenda fica
+   encaixada na moldura e as opções saem da caixa. Mesmo tratamento do .prio-campo. */
 .dialogo-escolha {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.dialogo-escolha legend {
+  padding: 0;
+  margin-bottom: var(--space-1);
+  font: var(--text-label);
+  letter-spacing: var(--text-label-tracking);
+  color: var(--color-ink-muted);
+}
+
+.dialogo-opcoes {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.dialogo-opcao {
+/* Vence o .campo label, que é mais específico que uma classe sozinha. */
+.dialogo-escolha .dialogo-opcao {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font: var(--text-body-sm);
+  font: var(--text-body);
+  letter-spacing: normal;
   color: var(--color-ink);
+}
+
+.dialogo-escolha .dialogo-opcao input {
+  width: auto;
+  margin: 0;
 }
