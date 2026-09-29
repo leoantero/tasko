@@ -4,6 +4,7 @@ import HomeScreen from './features/home/HomeScreen.jsx'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
 import ProjectsScreen from './features/projects/ProjectsScreen.jsx'
+import TasksScreen from './features/tasks/TasksScreen.jsx'
 import FocusScreen from './features/pomodoro/FocusScreen.jsx'
 import { FocoProvider } from './features/pomodoro/FocoProvider.jsx'
 import { perfil } from './lib/api'
@@ -15,6 +16,7 @@ import { limparToken, obterToken } from './lib/session'
 function lerTela(rota) {
   const [secao, id] = rota.split('/')
   if (secao === 'foco') return { tela: 'foco' }
+  if (secao === 'tarefas') return { tela: 'tarefas' }
   if (secao !== 'projetos') return { tela: 'inicio' }
   return id ? { tela: 'projeto', projetoId: Number(id) } : { tela: 'projetos' }
 }
@@ -43,7 +45,7 @@ function App() {
 
   // O detalhe do projeto e a sessão de foco definem o próprio título (nome do projeto, timer).
   useEffect(() => {
-    const titulos = { inicio: 'Início', projetos: 'Projetos' }
+    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas' }
     if (!token) document.title = 'Entrar · Tasko'
     else if (titulos[tela]) document.title = `${titulos[tela]} · Tasko`
   }, [token, tela])
@@ -93,6 +95,7 @@ function App() {
           <Conteudo>
             {tela === 'inicio' && <HomeScreen usuario={usuario} />}
             {tela === 'projetos' && <ProjectsScreen />}
+            {tela === 'tarefas' && <TasksScreen />}
             {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
             {tela === 'foco' && <FocusScreen />}
           </Conteudo>
