@@ -5,7 +5,7 @@ Aplicação web de produtividade voltada para organização de projetos, gerenci
 ## Funcionalidades
 
 * Criação e gerenciamento de projetos
-* Criação e gerenciamento de tarefas
+* Criação e gerenciamento de tarefas, dentro de um projeto ou avulsas
 * Definição de prioridades e prazos
 * Sessões de foco utilizando a técnica Pomodoro
 * Registro automático do tempo de foco
@@ -54,6 +54,10 @@ Como usuário, quero criar minha conta e fazer login com email e senha para aces
 ### HU10 — Tela inicial
 
 Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas do dia e a sessão de foco em andamento, para retomar meu trabalho rapidamente.
+
+### HU11 — Tarefas avulsas
+
+Como usuário, quero criar tarefas que não pertencem a nenhum projeto, para anotar o que não se encaixa em um objetivo maior, e vê-las na tela inicial junto com as tarefas dos projetos.
 
 ## Tecnologias
 
