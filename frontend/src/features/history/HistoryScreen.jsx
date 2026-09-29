@@ -16,17 +16,31 @@ function HistoryScreen() {
   const [eventos, setEventos] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
+  const [filtrosAplicados, setFiltrosAplicados] = useState({})
 
   useEffect(() => {
     let ativo = true
-    listarHistorico()
+    listarHistorico(filtrosAplicados)
       .then((lista) => ativo && setEventos(lista))
       .catch((falha) => ativo && setErro(falha.message))
       .finally(() => ativo && setCarregando(false))
     return () => {
       ativo = false
     }
-  }, [])
+  }, [filtrosAplicados])
+
+  function aplicarFiltros(event) {
+    event.preventDefault()
+    setCarregando(true)
+    setErro('')
+    setFiltrosAplicados(Object.fromEntries(new FormData(event.currentTarget).entries()))
+  }
+
+  function limparFiltros() {
+    setCarregando(true)
+    setErro('')
+    setFiltrosAplicados({})
+  }
 
   if (carregando) {
     return <main className="app-estado" aria-live="polite">Carregando histórico…</main>
@@ -52,6 +66,31 @@ function HistoryScreen() {
   return (
     <main className="historico-main">
       <h1>Histórico</h1>
+      <form
+        className="historico-filtros"
+        onSubmit={aplicarFiltros}
+        onReset={limparFiltros}
+      >
+        <label>
+          Tipo
+          <select name="tipo" defaultValue="">
+            <option value="">Todos</option>
+            <option value="sessao">Sessões</option>
+            <option value="tarefa">Tarefas</option>
+            <option value="projeto">Projetos</option>
+          </select>
+        </label>
+        <label>
+          Desde
+          <input type="date" name="desde" />
+        </label>
+        <label>
+          Até
+          <input type="date" name="ate" />
+        </label>
+        <button type="submit">Filtrar</button>
+        <button type="reset">Limpar</button>
+      </form>
       {eventos.length ? (
         <div className="historico-dias">
           {[...grupos].map(([chave, grupo]) => (
@@ -78,7 +117,11 @@ function HistoryScreen() {
           ))}
         </div>
       ) : (
-        <p className="historico-vazio">Nenhuma atividade no histórico ainda.</p>
+        <p className="historico-vazio">
+          {Object.values(filtrosAplicados).some(Boolean)
+            ? 'Nenhuma atividade encontrada para esses filtros.'
+            : 'Nenhuma atividade no histórico ainda.'}
+        </p>
       )}
     </main>
   )
