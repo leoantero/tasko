@@ -1,6 +1,7 @@
 import { obterToken } from './session'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api'
+// 5001 e nao 5000: no macOS a 5000 e do Receptor AirPlay.
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5001/api'
 
 async function request(path, options = {}) {
   let response
