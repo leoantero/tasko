@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AuthForm from './features/auth/AuthForm.jsx'
+import DashboardScreen from './features/dashboard/DashboardScreen.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
@@ -17,6 +18,7 @@ function lerTela(rota) {
   const [secao, id] = rota.split('/')
   if (secao === 'foco') return { tela: 'foco' }
   if (secao === 'tarefas') return { tela: 'tarefas' }
+  if (secao === 'dashboard') return { tela: 'dashboard' }
   if (secao !== 'projetos') return { tela: 'inicio' }
   return id ? { tela: 'projeto', projetoId: Number(id) } : { tela: 'projetos' }
 }
@@ -45,7 +47,7 @@ function App() {
 
   // O detalhe do projeto e a sessão de foco definem o próprio título (nome do projeto, timer).
   useEffect(() => {
-    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas' }
+    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas', dashboard: 'Dashboard' }
     if (!token) document.title = 'Entrar · Tasko'
     else if (titulos[tela]) document.title = `${titulos[tela]} · Tasko`
   }, [token, tela])
@@ -94,6 +96,7 @@ function App() {
         <AppShell rota={tela === 'projeto' ? 'projetos' : tela} usuario={usuario} onSair={sair}>
           <Conteudo>
             {tela === 'inicio' && <HomeScreen usuario={usuario} />}
+            {tela === 'dashboard' && <DashboardScreen />}
             {tela === 'projetos' && <ProjectsScreen />}
             {tela === 'tarefas' && <TasksScreen />}
             {tela === 'projeto' && <ProjectDetailScreen key={projetoId} projetoId={projetoId} />}
