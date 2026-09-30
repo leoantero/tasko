@@ -89,12 +89,32 @@ Como usuário, quero uma tela inicial ao abrir o app que reúna minhas tarefas d
 
 O sistema será desenvolvido seguindo uma arquitetura web composta por um frontend responsável pela interface do usuário e um backend responsável pela API e pela persistência dos dados em banco de dados.
 
+#### Diagrama UML de componentes
+
 ```mermaid
 flowchart LR
-    U[Usuário] --> F[Frontend Web]
-    F --> A[Backend / API]
-    A --> B[(Banco de Dados)]
+    U[Usuario] --> APP
+
+    subgraph FE[Frontend React / Vite - porta 5173]
+        APP["App.jsx<br/>roteamento"]
+        DADOS["DadosProvider.jsx<br/>estado global"]
+        API["api.js<br/>HTTP e JWT"]
+        APP --> DADOS --> API
+    end
+
+    subgraph BE[Backend Flask - porta 5001]
+        AUTH{{"Barreira<br/>login_required"}}
+        ROTAS["Controllers / Rotas<br/>corpo() e exigir()"]
+        REPOS["Repositories<br/>queries SQL"]
+        AUTH -->|JWT | ROTAS
+        ROTAS --> REPOS
+    end
+
+    API -->|REST <br/>Authorization: JWT| AUTH
+    API -.->|Login e cadastro| ROTAS
+    REPOS --> DB[(PostgreSQL)]
 ```
+
 
 ### Modelo de dados
 
