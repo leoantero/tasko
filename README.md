@@ -186,6 +186,62 @@ visual em `db/Diagrama_SQL.png`.
 
 O estado do frontend, o que falta e o guia de integração com a API estão em [docs/FRONTEND.md](docs/FRONTEND.md). O contrato de todas as rotas está em [docs/api.md](docs/api.md).
 
+
+
+### Diagrama UML de sequência Login e autenticacao
+
+Apresentamos aqui um diagrama de sequência do processo de login e autenticação com o token JWT, como forma de exemplificar o funcionamento do sistema em mais baixo nível.
+
+```mermaid
+sequenceDiagram
+    actor Usuario as Usuario
+    participant Front as Frontend (AuthForm / App)
+    participant API as api.js
+    participant Back as Backend Flask (rotas e JWT)
+    participant DB as PostgreSQL
+
+    opt Criar conta
+        Usuario->>Front: Nome, email e senha
+        Front->>API: POST /usuarios
+        API->>Back: Cadastrar e gerar hash da senha
+        Back->>DB: INSERT usuario
+        DB-->>Back: Conta criada
+        Back-->>Front: 201 Created
+    end
+
+    Usuario->>Front: Email e senha
+    Front->>API: POST /login
+    API->>Back: Autenticar credenciais
+    Back->>DB: Buscar usuario e hash da senha
+    DB-->>Back: Dados do usuario
+    alt Email ou senha incorretos
+        Back-->>API: 401 Unauthorized
+        API-->>Front: Exibir erro
+    else Credenciais validas
+        Back-->>API: JWT com expiracao
+        API-->>Front: Token
+        Front->>Front: Salvar token no localStorage
+        Front->>API: GET /perfil + Bearer JWT
+        API->>Back: Validar JWT e consultar perfil
+        Back->>DB: Buscar perfil do usuario
+        DB-->>Back: Perfil
+        Back-->>Front: 200 OK
+        Front->>Usuario: Exibir area autenticada
+    end
+
+    opt JWT invalido ou expirado em rota protegida
+        Front->>API: Requisicao + Bearer JWT
+        API->>Back: Validar token
+        Back-->>API: 401 Unauthorized
+        API->>API: Remover token e emitir sessao-expirada
+        API-->>Front: Encerrar sessao
+        Front->>Usuario: Exibir login novamente
+    end
+```
+
+
+
+
 ## Possíveis extensões
 
 * Notificações
