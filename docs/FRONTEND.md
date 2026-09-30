@@ -5,8 +5,8 @@ Resumo para o time: o que o front já faz e o que falta. Rodar: `cd frontend && 
 ## Estrutura
 
 - `src/lib/`: `api.js` (fetch com `Authorization: Bearer`), `session.js` (token no `localStorage`), `rota.js` (rotas por hash), `DadosProvider.jsx` (**fonte única** de projetos, tarefas e sessões).
-- `src/features/<área>/`: `auth`, `home`, `projects`, `tasks`, `pomodoro`, `layout`. `src/components/Dialogo.jsx` é o painel modal compartilhado.
-- Rotas: `#/` (início), `#/dashboard`, `#/historico`, `#/projetos`, `#/projetos/:id`, `#/tarefas` (avulsas), `#/perfil` (conta), `#/foco` (sessão em andamento).
+- `src/features/<área>/`: `auth`, `home`, `projects`, `tasks`, `metas`, `pomodoro`, `layout`. `src/components/Dialogo.jsx` é o painel modal compartilhado.
+- Rotas: `#/` (início), `#/dashboard`, `#/historico`, `#/metas`, `#/projetos`, `#/projetos/:id`, `#/tarefas` (avulsas), `#/perfil` (conta), `#/foco` (sessão em andamento).
 - Visual: tokens de `docs/design/` em `src/styles/tokens.css`. Acessibilidade conferida em cada tela (teclado, leitor de tela, contraste AA, 320px).
 
 ## O que está pronto
@@ -20,6 +20,7 @@ Resumo para o time: o que o front já faz e o que falta. Rodar: `cd frontend && 
 | HU05 Registrar produtividade | Registro automático no fim do tempo; tempo de foco por tarefa, por projeto e "Tempo dedicado" (7 dias + por tarefa) | **API real** |
 | HU06 Dashboard | Métricas da semana, série diária e distribuição de tempo por projeto | **API real** (`GET /dashboard/resumo`) |
 | HU07 Histórico | Eventos agrupados por dia, duração de foco nas sessões e filtros por tipo e período | **API real** (`GET /historico`) |
+| HU08 Metas (parcial) | Listar, criar, acompanhar progresso e excluir; edição ainda pendente | **API real** (`GET/POST/DELETE /metas`) |
 | HU09 Login e conta | Cadastro, login, nome do usuário via `/perfil`; tela `#/perfil` com nome, email e id, aberta pelo avatar da barra do topo | **API real** |
 | HU10 Tela inicial | Sessão em andamento, tarefas de hoje, ritmo do dia, sugestão da próxima tarefa | **API real** (mesmos dados das outras telas) |
 
@@ -29,11 +30,11 @@ As telas não mudaram — continuam sem saber de onde os dados vêm.
 
 ## O que falta
 
-1. **HU08 Metas**: tela nova. Rotas prontas: `GET/POST/PUT/DELETE /metas` (com progresso).
+1. **HU08 Metas**: edição via `PUT /metas/:id` ainda não está implementada no front.
 2. Editar e concluir projeto ainda não têm tela (a API já tem `PUT /projetos/:id`).
 3. A tela de avulsas lista só as tarefas sem projeto; não existe uma listagem de todas as tarefas do usuário.
 4. A tela de conta é só leitura: editar nome, email ou senha exigiria rotas novas na API.
-7. README: completar o texto da HU04 ("…com tempos"). Os 2 tipos de diagrama UML já estão lá (fluxo de arquitetura e sequência da sessão de foco).
+5. README: completar o texto da HU04 ("…com tempos"). Os 2 tipos de diagrama UML já estão lá (fluxo de arquitetura e sequência da sessão de foco).
 
 ## Integração com o backend: feita
 
