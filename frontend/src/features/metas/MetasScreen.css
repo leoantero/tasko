@@ -103,6 +103,12 @@
   border-radius: var(--radius-sm);
 }
 
+.metas-main button:focus-visible,
+.meta-formulario select:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
 @media (max-width: 480px) {
   .metas-main {
     padding: var(--space-6) var(--space-4) var(--space-8);

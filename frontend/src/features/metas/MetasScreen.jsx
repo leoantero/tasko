@@ -110,6 +110,7 @@ function MetasScreen() {
                     <button
                       type="button"
                       className="btn btn--perigo"
+                      aria-label={`Excluir meta ${rotulosTipo[meta.tipo]} de ${formatarNumero.format(meta.valor_alvo)} ${unidade}, até ${formatarData(lerData(meta.data_limite))}`}
                       onClick={() => setMetaParaExcluir(meta)}
                     >
                       Excluir
