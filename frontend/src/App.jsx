@@ -3,6 +3,7 @@ import AuthForm from './features/auth/AuthForm.jsx'
 import DashboardScreen from './features/dashboard/DashboardScreen.jsx'
 import HistoryScreen from './features/history/HistoryScreen.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
+import MetasScreen from './features/metas/MetasScreen.jsx'
 import PerfilScreen from './features/perfil/PerfilScreen.jsx'
 import AppShell from './features/layout/AppShell.jsx'
 import ProjectDetailScreen from './features/projects/ProjectDetailScreen.jsx'
@@ -23,6 +24,7 @@ function lerTela(rota) {
   if (secao === 'perfil') return { tela: 'perfil' }
   if (secao === 'dashboard') return { tela: 'dashboard' }
   if (secao === 'historico') return { tela: 'historico' }
+  if (secao === 'metas') return { tela: 'metas' }
   if (secao !== 'projetos') return { tela: 'inicio' }
   return id ? { tela: 'projeto', projetoId: Number(id) } : { tela: 'projetos' }
 }
@@ -51,7 +53,7 @@ function App() {
 
   // O detalhe do projeto e a sessão de foco definem o próprio título (nome do projeto, timer).
   useEffect(() => {
-    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas', perfil: 'Conta', dashboard: 'Dashboard', historico: 'Histórico' }
+    const titulos = { inicio: 'Início', projetos: 'Projetos', tarefas: 'Tarefas', perfil: 'Conta', dashboard: 'Dashboard', historico: 'Histórico', metas: 'Metas' }
     if (!token) document.title = 'Entrar · Tasko'
     else if (titulos[tela]) document.title = `${titulos[tela]} · Tasko`
   }, [token, tela])
@@ -104,6 +106,7 @@ function App() {
             {tela === 'inicio' && <HomeScreen usuario={usuario} />}
             {tela === 'dashboard' && <DashboardScreen />}
             {tela === 'historico' && <HistoryScreen />}
+            {tela === 'metas' && <MetasScreen />}
             {tela === 'projetos' && <ProjectsScreen />}
             {tela === 'tarefas' && <TasksScreen />}
             {tela === 'perfil' && <PerfilScreen usuario={usuario} />}
