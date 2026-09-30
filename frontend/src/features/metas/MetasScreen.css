@@ -5,8 +5,17 @@
 }
 
 .metas-main h1 {
-  margin: 0 0 var(--space-6);
+  margin: 0;
   font: var(--text-display-lg);
+}
+
+.metas-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .metas-lista {
@@ -82,6 +91,16 @@
 .meta-card progress::-moz-progress-bar {
   background: var(--color-accent);
   border-radius: var(--radius-full);
+}
+
+.meta-formulario select {
+  width: 100%;
+  padding: var(--space-3);
+  font: var(--text-body);
+  color: var(--color-ink);
+  background: var(--color-surface-200);
+  border: 1px solid var(--color-ink-muted);
+  border-radius: var(--radius-sm);
 }
 
 @media (max-width: 480px) {

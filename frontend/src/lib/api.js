@@ -59,6 +59,13 @@ export function listarMetas() {
   return request('/metas')
 }
 
+export function criarMeta(dados) {
+  return request('/metas', {
+    method: 'POST',
+    body: JSON.stringify(dados),
+  })
+}
+
 export function resumoDashboard() {
   return request('/dashboard/resumo')
 }
