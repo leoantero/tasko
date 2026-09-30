@@ -1,7 +1,8 @@
 import { useEffect, useId, useState } from 'react'
-import { criarMeta, listarMetas } from '../../lib/api'
+import { criarMeta, excluirMeta, listarMetas } from '../../lib/api'
 import { formatarData, lerData } from '../projects/datas'
 import Dialogo from '../../components/Dialogo.jsx'
+import ConfirmarExclusaoMeta from './ConfirmarExclusaoMeta.jsx'
 import './MetasScreen.css'
 
 const rotulosTipo = {
@@ -27,6 +28,7 @@ function MetasScreen() {
   const [tipoFormulario, setTipoFormulario] = useState('tempo_foco_horas')
   const [criando, setCriando] = useState(false)
   const [erroCriacao, setErroCriacao] = useState('')
+  const [metaParaExcluir, setMetaParaExcluir] = useState(null)
 
   useEffect(() => {
     let ativo = true
@@ -57,6 +59,11 @@ function MetasScreen() {
     } finally {
       setCriando(false)
     }
+  }
+
+  async function removerMeta(metaId) {
+    await excluirMeta(metaId)
+    setMetas((atuais) => atuais.filter((meta) => meta.id !== metaId))
   }
 
   if (carregando) {
@@ -100,6 +107,13 @@ function MetasScreen() {
                   <header>
                     <h2>{rotulosTipo[meta.tipo]}</h2>
                     <p>Até {formatarData(lerData(meta.data_limite))}</p>
+                    <button
+                      type="button"
+                      className="btn btn--perigo"
+                      onClick={() => setMetaParaExcluir(meta)}
+                    >
+                      Excluir
+                    </button>
                   </header>
                   <p className="meta-valores">
                     <strong>{formatarNumero.format(meta.progresso)}</strong>
@@ -162,6 +176,14 @@ function MetasScreen() {
             </footer>
           </form>
         </Dialogo>
+      )}
+      {metaParaExcluir && (
+        <ConfirmarExclusaoMeta
+          meta={metaParaExcluir}
+          descricao={`${rotulosTipo[metaParaExcluir.tipo]}: ${formatarNumero.format(metaParaExcluir.valor_alvo)} ${unidadesTipo[metaParaExcluir.tipo]}`}
+          onFechar={() => setMetaParaExcluir(null)}
+          onConfirmar={() => removerMeta(metaParaExcluir.id)}
+        />
       )}
     </main>
   )

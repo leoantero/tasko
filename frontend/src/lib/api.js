@@ -66,6 +66,10 @@ export function criarMeta(dados) {
   })
 }
 
+export function excluirMeta(id) {
+  return request(`/metas/${id}`, { method: 'DELETE' })
+}
+
 export function resumoDashboard() {
   return request('/dashboard/resumo')
 }
